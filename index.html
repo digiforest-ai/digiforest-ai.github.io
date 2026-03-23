@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ロボット研究所 | Robot Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3EE;
+    --warm-beige: #EDE6DA;
+    --earth: #C4A882;
+    --moss: #7A8C6E;
+    --bark: #5C4A36;
+    --charcoal: #1A1A2E;
+    --navy-deep: #0F0F23;
+    --electric-blue: #00D4FF;
+    --steel: #2A3A5C;
+    --silver: #A0B4C8;
+    --accent-teal: #00F5C8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ========== NAVIGATION ========== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(247, 243, 238, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(196, 168, 130, 0.3);
+    transition: all 0.4s ease;
+  }
+
+  nav.scrolled {
+    background: rgba(15, 15, 35, 0.95);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: var(--bark);
+    letter-spacing: 0.05em;
+    transition: color 0.4s;
+  }
+
+  nav.scrolled .nav-logo { color: var(--electric-blue); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--bark);
+    transition: color 0.3s;
+  }
+
+  nav.scrolled .nav-links a { color: var(--silver); }
+  nav.scrolled .nav-links a:hover { color: var(--electric-blue); }
+  .nav-links a:hover { color: var(--moss); }
+
+  /* ========== HERO ========== */
+  #hero {
+    min-height: 100vh;
+    background: var(--cream);
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 70% 30%, rgba(196,168,130,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 20% 80%, rgba(122,140,110,0.12) 0%, transparent 40%);
+  }
+
+  .hero-organic-shape {
+    position: absolute;
+    right: -5%;
+    top: 10%;
+    width: 55%;
+    height: 80%;
+    background: linear-gradient(135deg, var(--warm-beige) 0%, var(--earth) 100%);
+    border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%;
+    opacity: 0.5;
+    animation: morphShape 8s ease-in-out infinite;
+  }
+
+  @keyframes morphShape {
+    0%, 100% { border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%; }
+    50% { border-radius: 60% 40% 30% 70% / 40% 60% 50% 40%; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 6rem;
+    max-width: 700px;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: var(--moss);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 300;
+    color: var(--bark);
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title span {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--moss);
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: #7a6a58;
+    line-height: 1.9;
+    margin-bottom: 2.5rem;
+    max-width: 480px;
+  }
+
+  .btn-natural {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background: var(--bark);
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+  }
+
+  .btn-natural:hover {
+    background: var(--moss);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline-natural {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    border: 1.5px solid var(--earth);
+    color: var(--bark);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-natural:hover {
+    background: var(--warm-beige);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    animation: bounceDown 2s infinite;
+  }
+
+  .hero-scroll span {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--earth);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--earth), transparent);
+    margin: 0 auto;
+  }
+
+  @keyframes bounceDown {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ========== ROBOT LAB SECTION ========== */
+  #robot-lab {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--warm-beige) 100%);
+    padding: 8rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .label-natural { color: var(--moss); }
+
+  .section-title-natural {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    color: var(--bark);
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .section-subtitle {
+    color: #7a6a58;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    max-width: 520px;
+    margin-bottom: 4rem;
+  }
+
+  .lab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .lab-card {
+    background: rgba(255,255,255,0.6);
+    border-radius: 4px;
+    padding: 2.5rem;
+    border: 1px solid rgba(196, 168, 130, 0.25);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lab-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--moss), var(--earth));
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+
+  .lab-card:hover::before { transform: scaleX(1); }
+  .lab-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(92,74,54,0.12); }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    color: var(--bark);
+    margin-bottom: 0.8rem;
+  }
+
+  .card-text {
+    font-size: 0.85rem;
+    color: #7a6a58;
+    line-height: 1.8;
+  }
+
+  .custom-select-wrapper {
+    position: relative;
+  }
+  .custom-select-display {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(160,180,200,0.2);
+    border-radius: 4px;
+    color: rgba(160,180,200,0.5);
+    font-size: 0.9rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.3s;
+    user-select: none;
+  }
+  .custom-select-display.selected { color: #fff; }
+  .custom-select-display:hover,
+  .custom-select-display.open { border-color: var(--electric-blue); }
+  .custom-select-arrow {
+    font-size: 0.75rem;
+    transition: transform 0.3s;
+    opacity: 0.5;
+  }
+  .custom-select-display.open .custom-select-arrow { transform: rotate(180deg); }
+  .custom-select-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: #0e1828;
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 50;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  .custom-select-dropdown.open { display: block; }
+  .custom-select-option {
+    padding: 0.85rem 1.2rem;
+    font-size: 0.88rem;
+    color: var(--silver);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .custom-select-option:last-child { border-bottom: none; }
+  .custom-select-option:hover { background: rgba(0,212,255,0.1); color: #fff; }
+  .custom-select-option.active { background: rgba(0,212,255,0.12); color: var(--electric-blue); }
+
+  /* ========== MISSION NATURAL ========== */
+  .mission-natural {
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(196,168,130,0.3);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .mission-nat-header {
+    background: linear-gradient(90deg, rgba(122,140,110,0.15), transparent);
+    border-bottom: 1px solid rgba(196,168,130,0.25);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--moss);
+  }
+  .mission-nat-id { margin-left: auto; color: var(--earth); font-size: 0.68rem; }
+  .mission-nat-body { padding: 1.8rem; }
+  .mission-nat-steps { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+  .mission-nat-step { display: flex; align-items: center; gap: 1rem; }
+  .step-nat-num {
+    width: 34px; height: 34px;
+    border: 1.5px solid var(--earth);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; color: var(--bark);
+    flex-shrink: 0; background: rgba(196,168,130,0.1);
+  }
+  .step-nat-text { font-size: 0.9rem; color: #7a6a58; }
+  .step-nat-text strong { color: var(--bark); }
+  .mission-nat-reward {
+    background: rgba(196,168,130,0.12);
+    border: 1px solid rgba(196,168,130,0.3);
+    border-radius: 10px; padding: 1rem 1.2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  /* ========== LAB ACTION CARDS ========== */
+  .lab-action-card {
+    display: flex; align-items: center; gap: 1.2rem;
+    padding: 1.4rem 1.5rem; border-radius: 12px;
+    text-decoration: none; border: 1px solid transparent;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative; overflow: hidden;
+  }
+  .lab-action-card:hover { transform: translateY(-3px); }
+  .lab-card-cyan   { background: linear-gradient(135deg,#e8f7fa,#d0eef5); border-color: #8acfe0; }
+  .lab-card-pink   { background: linear-gradient(135deg,#fce8f8,#f5d0f0); border-color: #d88ed4; }
+  .lab-card-green  { background: linear-gradient(135deg,#e8f7ee,#ccf0da); border-color: #80c99a; }
+  .lab-card-lime   { background: linear-gradient(135deg,#eef8e8,#d8f0c0); border-color: #96c87a; }
+  .lab-card-orange { background: linear-gradient(135deg,#fdf0e8,#f5dcc8); border-color: #d4a478; }
+  .lab-card-yellow { background: linear-gradient(135deg,#fdf8e0,#f5ecc0); border-color: #d4c070; }
+  .lab-card-ghost  { background: rgba(255,255,255,0.5); border-color: rgba(196,168,130,0.3); }
+  .lac-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .lac-content { flex: 1; }
+  .lac-main { font-size: 0.95rem; font-weight: 700; color: var(--bark); margin-bottom: 0.2rem; }
+  .lac-sub  { font-size: 0.78rem; color: #7a6a58; }
+  .lac-arrow { font-size: 1.4rem; color: var(--earth); opacity: 0.6; }
+
+  .parents-divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 3rem 0 2rem;
+  }
+  .pd-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--earth)); }
+  .pd-line:last-child { background: linear-gradient(90deg, var(--earth), transparent); }
+  .pd-label {
+    font-size: 0.75rem; letter-spacing: 0.2em; color: var(--bark);
+    white-space: nowrap; padding: 0.4rem 1.2rem;
+    border: 1px solid var(--earth); border-radius: 20px;
+    background: rgba(196,168,130,0.08);
+  }
+
+  /* ========== MARCHE SCHEDULE ========== */
+  #marche {
+    background: linear-gradient(180deg, var(--warm-beige) 0%, var(--cream) 100%);
+    padding: 8rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #marche::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 80% 20%, rgba(196,168,130,0.13) 0%, transparent 50%),
+      radial-gradient(circle at 10% 70%, rgba(122,140,110,0.10) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  .marche-header {
+    text-align: center;
+    margin-bottom: 5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .marche-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    color: var(--bark);
+    margin-bottom: 0.8rem;
+  }
+
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .schedule-card {
+    background: rgba(255,255,255,0.60);
+    border: 1px solid rgba(196,168,130,0.28);
+    border-radius: 4px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  .schedule-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--moss), var(--earth));
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+
+  .schedule-card:hover::before { transform: scaleX(1); }
+
+  .schedule-card:hover {
+    transform: translateY(-6px);
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 20px 40px rgba(92,74,54,0.12);
+    border-color: rgba(196,168,130,0.5);
+  }
+
+  .schedule-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    color: var(--earth);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .schedule-month {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--moss);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .schedule-event {
+    font-size: 0.95rem;
+    color: var(--bark);
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+
+  .schedule-place {
+    font-size: 0.8rem;
+    color: #7a6a58;
+  }
+
+  /* ========== COOL SECTIONS (下半分) ========== */
+
+  /* ========== TELECOM CONSULTING ========== */
+  #telecom {
+    background: var(--navy-deep);
+    padding: 9rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .telecom-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 50%, rgba(0,212,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 10% 80%, rgba(0,245,200,0.04) 0%, transparent 50%);
+  }
+
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .label-cool {
+    color: var(--electric-blue);
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-title-cool {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .section-subtitle-cool {
+    color: var(--silver);
+    font-size: 0.95rem;
+    line-height: 1.9;
+    max-width: 520px;
+    margin-bottom: 4rem;
+  }
+
+  .telecom-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .price-check-widget {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 8px;
+    padding: 3rem;
+    position: relative;
+  }
+
+  .price-check-widget::before {
+    content: 'PRICE CHECK';
+    position: absolute;
+    top: -0.6rem;
+    left: 2rem;
+    background: var(--navy-deep);
+    padding: 0 0.8rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--electric-blue);
+  }
+
+  .widget-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .select-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .select-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--silver);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .select-cool {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  .select-cool:focus {
+    outline: none;
+    border-color: var(--electric-blue);
+  }
+
+  .btn-cool {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--electric-blue), var(--accent-teal));
+    color: var(--navy-deep);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-cool:hover { opacity: 0.85; transform: translateY(-2px); }
+
+  .telecom-features {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .feature-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    color: rgba(0,212,255,0.2);
+    line-height: 1;
+    min-width: 50px;
+  }
+
+  .feature-content h4 {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  .feature-content p {
+    color: var(--silver);
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  /* ========== SMARTPHONE LADY ========== */
+  #smartphone-lady {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--steel) 100%);
+    padding: 9rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .smartphone-bg-circle {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,212,255,0.08);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .smartphone-bg-circle:nth-child(2) {
+    width: 400px;
+    height: 400px;
+    border-color: rgba(0,245,200,0.07);
+    animation: rotateSlow 20s linear infinite;
+  }
+
+  @keyframes rotateSlow {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  .sl-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .merit-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-bottom: 3rem;
+  }
+
+  .merit-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--silver);
+    font-size: 0.9rem;
+  }
+
+  .merit-check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--electric-blue), var(--accent-teal));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--navy-deep);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .income-display {
+    background: rgba(0,212,255,0.05);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 8px;
+    padding: 2.5rem;
+    text-align: center;
+  }
+
+  .income-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--silver);
+    margin-bottom: 0.8rem;
+  }
+
+  .income-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    color: var(--electric-blue);
+    line-height: 1;
+  }
+
+  .income-unit {
+    font-size: 0.9rem;
+    color: var(--silver);
+    margin-top: 0.3rem;
+  }
+
+  .income-note {
+    font-size: 0.75rem;
+    color: rgba(160,180,200,0.6);
+    margin-top: 1.5rem;
+  }
+
+  /* ========== CONTACT / LINE ========== */
+  #contact {
+    background: var(--charcoal);
+    padding: 9rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 60%);
+  }
+
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .input-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--silver);
+  }
+
+  .input-cool {
+    padding: 0.9rem 1.2rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(160,180,200,0.2);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: border-color 0.3s;
+  }
+
+  .input-cool:focus {
+    outline: none;
+    border-color: var(--electric-blue);
+  }
+
+  .textarea-cool {
+    padding: 0.9rem 1.2rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(160,180,200,0.2);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.3s;
+  }
+
+  .textarea-cool:focus {
+    outline: none;
+    border-color: var(--electric-blue);
+  }
+
+  .line-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .line-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  .line-divider::before,
+  .line-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(160,180,200,0.2);
+  }
+
+  .line-divider span {
+    font-size: 0.75rem;
+    color: var(--silver);
+    letter-spacing: 0.15em;
+  }
+
+  .line-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 2.5rem;
+    background: #06C755;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .line-btn:hover {
+    background: #05b34b;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(6, 199, 85, 0.3);
+  }
+
+  .line-icon {
+    font-size: 1.4rem;
+  }
+
+  .line-desc {
+    color: var(--silver);
+    font-size: 0.85rem;
+    line-height: 1.8;
+    max-width: 300px;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: var(--navy-deep);
+    padding: 3rem 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(0,212,255,0.1);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--silver);
+  }
+
+  .footer-copy {
+    font-size: 0.72rem;
+    color: rgba(160,180,200,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  /* ========== DIVIDER ========== */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--earth), transparent);
+  }
+
+  /* ========== SCROLL ANIMATIONS ========== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .sl-recruiting-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-bottom: 4rem;
+    padding: 1rem 2rem;
+    border: 1px solid rgba(0,245,200,0.35);
+    border-radius: 50px;
+    background: rgba(0,245,200,0.05);
+    max-width: 420px;
+  }
+  .sl-rec-text {
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    color: var(--accent-teal);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .sl-rec-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    box-shadow: 0 0 8px var(--accent-teal);
+    animation: blink-dot 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .sl-rec-dot:last-child { animation-delay: 0.7s; }
+  @keyframes blink-dot {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* ========== PHONE HEALTH CHECK ========== */
+  .phone-check-section {
+    background: var(--navy-deep);
+    padding: 9rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .phone-check-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(0,212,255,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,245,200,0.05) 0%, transparent 45%);
+  }
+  .phone-check-inner { position: relative; z-index: 2; }
+  .check-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .check-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .check-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--electric-blue), var(--accent-teal));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  .check-item:hover::before { transform: scaleX(1); }
+  .check-item:hover {
+    background: rgba(0,212,255,0.06);
+    border-color: rgba(0,212,255,0.35);
+    transform: translateY(-5px);
+  }
+  .check-item-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .check-item-title {
+    font-size: 0.95rem; font-weight: 700;
+    color: #fff; margin-bottom: 0.6rem;
+  }
+  .check-item-desc { font-size: 0.82rem; color: var(--silver); line-height: 1.7; }
+
+  /* ========== SMARTPHONE LADY INFO ========== */
+  .sl-info-section {
+    background: linear-gradient(160deg, #0e1828 0%, #1a2a42 100%);
+    padding: 9rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .sl-info-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  .sl-info-inner { position: relative; z-index: 2; }
+  .sl-info-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 6rem;
+    align-items: start;
+  }
+  .sl-points { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+  .sl-point { display: flex; gap: 1rem; align-items: flex-start; }
+  .sl-point-icon {
+    color: var(--electric-blue);
+    font-size: 1rem;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+  .sl-point-title { color: #fff; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .sl-point-desc  { color: var(--silver); font-size: 0.83rem; line-height: 1.7; }
+
+  .sl-income-panel {
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.18);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+  .sl-income-label {
+    font-size: 0.68rem; letter-spacing: 0.3em;
+    color: var(--electric-blue); margin-bottom: 2rem;
+  }
+  .sl-income-rows { display: flex; flex-direction: column; gap: 1.4rem; margin-bottom: 1.5rem; }
+  .sl-income-row { display: flex; flex-direction: column; gap: 0.4rem; }
+  .sl-income-time { font-size: 0.78rem; color: var(--silver); }
+  .sl-income-bar {
+    height: 6px; background: rgba(255,255,255,0.07);
+    border-radius: 10px; overflow: hidden;
+  }
+  .sl-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,212,255,0.5), rgba(0,212,255,0.8));
+    border-radius: 10px;
+  }
+  .sl-income-amount { font-size: 1.1rem; font-weight: 700; color: var(--electric-blue); }
+  .sl-income-note { font-size: 0.7rem; color: rgba(160,180,200,0.4); margin-bottom: 2rem; }
+  .sl-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .sl-tag {
+    padding: 0.3rem 0.9rem;
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 20px;
+    font-size: 0.72rem;
+    color: var(--silver);
+    background: rgba(0,212,255,0.05);
+  }
+
+  /* ========== TELECOM CTA ========== */
+  .telecom-cta-section {
+    background: var(--charcoal);
+    padding: 7rem 6rem;
+    position: relative;
+  }
+  .telecom-cta-inner { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
+  .cta-btn-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .cta-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    padding: 2.5rem 1.5rem;
+    border-radius: 14px;
+    text-decoration: none;
+    border: 1px solid rgba(0,212,255,0.18);
+    background: rgba(255,255,255,0.03);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--electric-blue), var(--accent-teal));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .cta-card:hover::after { transform: scaleX(1); }
+  .cta-card:hover { background: rgba(0,212,255,0.07); transform: translateY(-4px); }
+  .cta-card-line { border-color: rgba(6,199,85,0.25); }
+  .cta-card-line:hover { background: rgba(6,199,85,0.06); }
+  .cta-card-line::after { background: linear-gradient(90deg, #06c755, #04d160); }
+  .cta-card-ig { border-color: rgba(224,64,251,0.2); }
+  .cta-card-ig:hover { background: rgba(224,64,251,0.05); }
+  .cta-card-ig::after { background: linear-gradient(90deg, #e040fb, #ff6b9d); }
+  .cta-card-icon { font-size: 2.2rem; }
+  .cta-card-title { font-size: 1rem; font-weight: 700; color: #fff; }
+  .cta-card-desc  { font-size: 0.78rem; color: var(--silver); }
+  .cta-card-arrow { font-size: 1.2rem; color: var(--electric-blue); opacity: 0.5; margin-top: 0.3rem; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 2rem; }
+    .nav-links { display: none; }
+    .hero-content { padding: 0 2rem; }
+    #robot-lab, #marche, #telecom, #contact { padding: 6rem 2rem; }
+    .phone-check-section, .sl-info-section, .telecom-cta-section { padding: 6rem 2rem; }
+    .lab-grid, .check-grid, .cta-btn-row { grid-template-columns: 1fr; }
+    .sl-info-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .telecom-layout, .sl-layout, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem; }
+  }
+  @media (min-width: 601px) and (max-width: 900px) {
+    .check-grid { grid-template-columns: 1fr 1fr; }
+    .cta-btn-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <div class="nav-logo">Robot Lab &amp; Marché</div>
+  <ul class="nav-links">
+    <li><a href="#robot-lab">研究所</a></li>
+    <li><a href="#marche">マルシェ</a></li>
+    <li><a href="#telecom">料金診断</a></li>
+    <li><a href="#smartphone-lady-info">募集</a></li>
+    <li><a href="#contact">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-organic-shape"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Robot Lab × Marché × Telecom</div>
+    <h1 class="hero-title">
+      つながる、<span>ひろがる</span>、<br>あたらしい日常
+    </h1>
+    <p class="hero-desc">
+      ロボット研究所のクリエイティブな世界と、<br>
+      スマートな通信サービスをひとつの場所で。<br>
+      あなたの暮らしをもっと豊かに。
+    </p>
+    <a href="#robot-lab" class="btn-natural">研究所を見る</a>
+    <a href="#telecom" class="btn-outline-natural">料金診断</a>
+  </div>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<!-- ROBOT LAB -->
+<section id="robot-lab">
+  <div class="section-label label-natural reveal">ROBOT LABORATORY × DIGIFOREST</div>
+  <h2 class="section-title-natural reveal">ロボット研究所・<br>マルシェ活動紹介</h2>
+  <p class="section-subtitle reveal">マルシェでキミだけのロボットを作って、研究員に認定されよう！<br>みんなのロボットはロボット図鑑に載るよ。</p>
+
+  <!-- MISSION STEPS -->
+  <div class="mission-natural reveal">
+    <div class="mission-nat-header">
+      <span>📋</span>
+      <span>MISSION FILE</span>
+      <span class="mission-nat-id">TOP SECRET</span>
+    </div>
+    <div class="mission-nat-body">
+      <div class="mission-nat-steps">
+        <div class="mission-nat-step">
+          <div class="step-nat-num">01</div>
+          <div class="step-nat-text"><strong>ロボットを作る</strong> — キミだけのロボットが誕生！</div>
+        </div>
+        <div class="mission-nat-step">
+          <div class="step-nat-num">02</div>
+          <div class="step-nat-text"><strong>写真を撮る</strong> — ロボットの記録を残せ</div>
+        </div>
+        <div class="mission-nat-step">
+          <div class="step-nat-num">03</div>
+          <div class="step-nat-text"><strong>研究員申請する</strong> — 下のボタンから登録！</div>
+        </div>
+      </div>
+      <div class="mission-nat-reward">
+        <span style="font-size:1.6rem;">🏅</span>
+        <div>
+          <div style="font-weight:700; color:var(--bark); margin-bottom:0.2rem;">全クリアで研究員認定！</div>
+          <div style="font-size:0.8rem; color:#7a6a58;">キミのロボットがロボット図鑑に載るよ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="lab-grid reveal">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvEuixTxzoWe-hIwjc23tuxrESrDFKblRezXMKSA7y6IxGyA/viewform" class="lab-action-card lab-card-cyan">
+      <div class="lac-icon">🪪</div>
+      <div class="lac-content">
+        <div class="lac-main">研究員登録する</div>
+        <div class="lac-sub">ロボットに名前をつけて図鑑に載せよう！</div>
+      </div>
+      <div class="lac-arrow">›</div>
+    </a>
+    <a href="https://www.instagram.com/digiforestjp/" class="lab-action-card lab-card-pink">
+      <div class="lac-icon">📖</div>
+      <div class="lac-content">
+        <div class="lac-main">ロボット図鑑を見る</div>
+        <div class="lac-sub">みんなのロボットが集まってるよ！</div>
+      </div>
+      <div class="lac-arrow">›</div>
+    </a>
+    <a href="https://www.instagram.com/digiforestjp/" class="lab-action-card lab-card-ghost">
+      <div class="lac-icon">📸</div>
+      <div class="lac-content">
+        <div class="lac-main">Instagram — デジフォレスト</div>
+        <div class="lac-sub">活動の最新情報をチェック！</div>
+      </div>
+      <div class="lac-arrow">›</div>
+    </a>
+  </div>
+
+
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SMARTPHONE HEALTH CHECK -->
+<section id="phone-check" class="phone-check-section">
+  <div class="phone-check-bg"></div>
+  <div class="phone-check-inner">
+    <div class="label-cool reveal">SMARTPHONE HEALTH CHECK</div>
+    <h2 class="section-title-cool reveal">スマホの健康診断</h2>
+    <p class="section-subtitle-cool reveal">あなたのスマホ、知らないうちに無駄が溜まっていませんか？<br>バッテリー・サブスク・クラウドなど、プロが一緒に確認します。</p>
+
+    <div class="check-grid reveal">
+      <div class="check-item">
+        <div class="check-item-icon">🔋</div>
+        <div class="check-item-title">バッテリー診断</div>
+        <div class="check-item-desc">劣化状況・充電の癖・消費の原因をチェック。寿命を延ばすアドバイスも。</div>
+      </div>
+      <div class="check-item">
+        <div class="check-item-icon">🔄</div>
+        <div class="check-item-title">サブスク診断</div>
+        <div class="check-item-desc">知らず知らずに課金されているアプリ・サービスを洗い出します。</div>
+      </div>
+      <div class="check-item">
+        <div class="check-item-icon">☁️</div>
+        <div class="check-item-title">クラウド診断</div>
+        <div class="check-item-desc">iCloud・Googleドライブ等の容量・コストを整理して最適化。</div>
+      </div>
+      <div class="check-item">
+        <div class="check-item-icon">📶</div>
+        <div class="check-item-title">通信プラン診断</div>
+        <div class="check-item-desc">実際の使用量に合った最適なプランをご提案。月々の節約につなげます。</div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:3rem;" class="reveal">
+      <a href="https://lin.ee/oL9z25j2" class="btn-cool" style="display:inline-block; width:auto; padding:1rem 3rem;">
+        LINEで相談・予約する →
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" style="background:linear-gradient(90deg,transparent,rgba(0,212,255,0.3),transparent);"></div>
+
+<!-- SMARTPHONE LADY (スマホレディ) -->
+<section id="smartphone-lady-info" class="sl-info-section">
+  <div class="sl-info-bg"></div>
+  <div class="sl-info-inner">
+
+    <!-- 募集中バナー -->
+    <div class="sl-recruiting-banner reveal">
+      <div class="sl-rec-dot"></div>
+      <span class="sl-rec-text">✦ スマホレディ 募集中 ✦</span>
+      <div class="sl-rec-dot"></div>
+    </div>
+
+    <div class="sl-info-grid">
+      <div class="sl-info-left">
+        <div class="label-cool reveal">WORK WITH US</div>
+        <h2 class="section-title-cool reveal">スマホレディとは？</h2>
+        <p class="section-subtitle-cool reveal">
+          スマホ1台・すきま時間・在宅OK。<br>
+          通信サービスの案内や契約サポートを行う<br>
+          <strong style="color:#fff;">女性が主役の代理店スタイル</strong>の働き方です。
+        </p>
+
+        <div class="sl-points reveal">
+          <div class="sl-point">
+            <div class="sl-point-icon">✦</div>
+            <div>
+              <div class="sl-point-title">初期費用・ノルマなし</div>
+              <div class="sl-point-desc">費用ゼロでスタート。プレッシャーなく自分のペースで活動できます。</div>
+            </div>
+          </div>
+          <div class="sl-point">
+            <div class="sl-point-icon">✦</div>
+            <div>
+              <div class="sl-point-title">育児・家事と両立できる</div>
+              <div class="sl-point-desc">すきま時間に活動するママさん・主婦の方が多数活躍中。</div>
+            </div>
+          </div>
+          <div class="sl-point">
+            <div class="sl-point-icon">✦</div>
+            <div>
+              <div class="sl-point-title">副業〜本業まで幅広く</div>
+              <div class="sl-point-desc">月数万円の副収入から、本業として稼ぐ方まで。成果に応じた報酬制。</div>
+            </div>
+          </div>
+          <div class="sl-point">
+            <div class="sl-point-icon">✦</div>
+            <div>
+              <div class="sl-point-title">LINEで全サポート</div>
+              <div class="sl-point-desc">専任サポーターがLINEで丁寧にフォロー。初めてでも安心。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal" style="margin-top:2.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+          <a href="https://drive.google.com/file/d/1QuvaFBehEa3Ct6AEhLR5ieuYYnJl8EpT/view" class="btn-cool" style="display:inline-block; width:auto; padding:1rem 2rem;">
+            詳しい資料を見る →
+          </a>
+          <a href="https://lin.ee/oL9z25j2" class="btn-cool" style="display:inline-block; width:auto; padding:1rem 2rem; background:linear-gradient(135deg,#06c755,#04a844);">
+            LINEで問い合わせ →
+          </a>
+        </div>
+      </div>
+
+      <div class="sl-income-panel reveal">
+        <div class="sl-income-label">WORK STYLE</div>
+        <div class="sl-income-rows">
+          <div class="sl-income-row">
+            <div class="sl-income-time">副業・すきま時間</div>
+            <div class="sl-income-bar"><div class="sl-bar-fill" style="width:35%"></div></div>
+            <div class="sl-income-amount">¥10,000〜</div>
+          </div>
+          <div class="sl-income-row">
+            <div class="sl-income-time">セミ本業</div>
+            <div class="sl-income-bar"><div class="sl-bar-fill" style="width:60%"></div></div>
+            <div class="sl-income-amount">¥30,000〜</div>
+          </div>
+          <div class="sl-income-row">
+            <div class="sl-income-time">本業として</div>
+            <div class="sl-income-bar"><div class="sl-bar-fill" style="width:100%; background:linear-gradient(90deg,var(--electric-blue),var(--accent-teal));"></div></div>
+            <div class="sl-income-amount" style="color:var(--accent-teal);">¥100,000〜</div>
+          </div>
+        </div>
+        <div class="sl-income-note">※個人の実績により異なります</div>
+
+        <div class="sl-tags">
+          <span class="sl-tag">在宅OK</span>
+          <span class="sl-tag">スマホ1台</span>
+          <span class="sl-tag">主婦歓迎</span>
+          <span class="sl-tag">副業OK</span>
+          <span class="sl-tag">初期費用なし</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LINE / TELECOM CTA -->
+<section id="telecom-cta" class="telecom-cta-section">
+  <div class="telecom-cta-inner">
+    <div class="label-cool reveal" style="text-align:center;">FOLLOW &amp; CONNECT</div>
+    <h2 class="section-title-cool reveal" style="text-align:center;">つながる</h2>
+    <p class="section-subtitle-cool reveal" style="text-align:center; margin:0 auto 3rem; max-width:500px;">
+      最新マルシェ情報・スマホ相談・スマホレディ情報はLINEとInstagramで発信中。
+    </p>
+    <div class="cta-btn-row reveal" style="max-width:600px; grid-template-columns:1fr 1fr;">
+      <a href="https://lin.ee/oL9z25j2" class="cta-card cta-card-line">
+        <div class="cta-card-icon">💬</div>
+        <div class="cta-card-title">公式LINE</div>
+        <div class="cta-card-desc">お問い合わせ・マルシェ情報</div>
+        <div class="cta-card-arrow">›</div>
+      </a>
+      <a href="https://www.instagram.com/digiforestjp/" class="cta-card cta-card-ig">
+        <div class="cta-card-icon">📸</div>
+        <div class="cta-card-title">Instagram</div>
+        <div class="cta-card-desc">デジフォレスト最新情報</div>
+        <div class="cta-card-arrow">›</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- MARCHE SCHEDULE -->
+<section id="marche">
+  <div class="marche-header">
+    <div class="section-label label-natural reveal">UPCOMING EVENTS</div>
+    <h2 class="marche-title reveal">マルシェスケジュール</h2>
+    <p style="color:#7a6a58; font-size:0.9rem;" class="reveal">次回のマルシェでお会いしましょう</p>
+  </div>
+
+  <div class="schedule-grid">
+    <div class="schedule-card reveal">
+      <div class="schedule-date">15</div>
+      <div class="schedule-month">April 2025</div>
+      <div class="schedule-event">春のナチュラルマルシェ</div>
+      <div class="schedule-place">📍 〇〇公園 グリーンエリア</div>
+    </div>
+    <div class="schedule-card reveal">
+      <div class="schedule-date">03</div>
+      <div class="schedule-month">May 2025</div>
+      <div class="schedule-event">こどもの日スペシャル</div>
+      <div class="schedule-place">📍 〇〇ショッピングモール</div>
+    </div>
+    <div class="schedule-card reveal">
+      <div class="schedule-date">22</div>
+      <div class="schedule-month">May 2025</div>
+      <div class="schedule-event">ロボット体験ワークショップ</div>
+      <div class="schedule-place">📍 〇〇コミュニティセンター</div>
+    </div>
+    <div class="schedule-card reveal">
+      <div class="schedule-date">08</div>
+      <div class="schedule-month">June 2025</div>
+      <div class="schedule-event">梅雨前の青空マルシェ</div>
+      <div class="schedule-place">📍 〇〇駅前広場</div>
+    </div>
+  </div>
+</section>
+
+<!-- TELECOM CONSULTING -->
+<section id="telecom">
+  <div class="telecom-bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="telecom-layout">
+    <div>
+      <div class="label-cool reveal">TELECOM CONSULTING</div>
+      <h2 class="section-title-cool reveal">通信コンサルタント・<br>料金診断</h2>
+      <p class="section-subtitle-cool reveal">今のスマホ料金、本当に最適ですか？あなたの使い方に合ったプランをプロが無料で診断します。</p>
+
+      <div class="telecom-features reveal">
+        <div class="feature-item">
+          <div class="feature-num">01</div>
+          <div class="feature-content">
+            <h4>無料プラン診断</h4>
+            <p>現在のご利用状況をもとに、最もお得なプランをご提案します。</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-num">02</div>
+          <div class="feature-content">
+            <h4>乗り換えサポート</h4>
+            <p>手続きから開通まで、専任コンサルタントが全面サポート。</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-num">03</div>
+          <div class="feature-content">
+            <h4>アフターフォロー</h4>
+            <p>契約後も安心のLINEサポート。疑問や不安もすぐに解決。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-check-widget reveal">
+      <h3 class="widget-title">通信プラン診断</h3>
+      <p style="color:var(--silver); font-size:0.88rem; line-height:1.8; margin-bottom:2rem;">
+        今のキャリア・使用量・ライフスタイルをもとに、<br>あなたに最適なプランを診断します。<br>無料・かんたん・すぐわかる。
+      </p>
+      <div style="display:flex; flex-direction:column; gap:0.8rem; margin-bottom:2rem;">
+        <div style="display:flex; align-items:center; gap:0.8rem; font-size:0.82rem; color:var(--silver);">
+          <span style="color:var(--accent-teal); font-size:1rem;">✓</span> 最短3分で診断完了
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem; font-size:0.82rem; color:var(--silver);">
+          <span style="color:var(--accent-teal); font-size:1rem;">✓</span> 完全無料・登録不要
+        </div>
+        <div style="display:flex; align-items:center; gap:0.8rem; font-size:0.82rem; color:var(--silver);">
+          <span style="color:var(--accent-teal); font-size:1rem;">✓</span> 乗り換えサポートも対応
+        </div>
+      </div>
+      <a href="https://shindan.dmobile.jp/" target="_blank" class="btn-cool">通信プラン診断をはじめる →</a>
+      <div style="height:1px; background:rgba(0,212,255,0.15); margin:2rem 0;"></div>
+      <p style="color:var(--silver); font-size:0.82rem; margin-bottom:1rem;">診断後はそのまま回線契約へ</p>
+      <a href="https://mypage.dmobile.jp/DJP644132?openExternalBrowser=1" target="_blank" class="btn-cool" style="background:linear-gradient(135deg,#ff6b35,#ff8c42); color:#fff; border:none; box-shadow:0 4px 20px rgba(255,107,53,0.35);">🔗 回線契約・プラン変更はこちら →</a>
+    </div>
+  </div>
+</section>
+<section id="contact">
+  <div class="contact-bg"></div>
+  <div style="text-align:center; margin-bottom:4rem; position:relative; z-index:2;">
+    <div class="label-cool reveal">GET IN TOUCH</div>
+    <h2 class="section-title-cool reveal">お問い合わせ・LINE登録</h2>
+    <p style="color:var(--silver); font-size:0.9rem;" class="reveal">お気軽にご連絡ください。通常24時間以内にご返信します。</p>
+  </div>
+
+  <div class="contact-layout">
+    <div>
+      <h3 style="color:#fff; font-family:'Noto Serif JP',serif; font-weight:300; font-size:1.3rem; margin-bottom:2rem;" class="reveal">メールでのお問い合わせ</h3>
+      <div class="contact-form reveal">
+        <div class="input-group">
+          <label class="input-label">お名前</label>
+          <input type="text" class="input-cool" placeholder="山田 花子">
+        </div>
+        <div class="input-group">
+          <label class="input-label">メールアドレス</label>
+          <input type="email" class="input-cool" placeholder="example@email.com">
+        </div>
+        <div class="input-group">
+          <label class="input-label">お問い合わせ種別</label>
+          <div class="custom-select-wrapper">
+            <div class="custom-select-display" onclick="toggleSelect(this)">
+              <span class="custom-select-text">お問い合わせ種別を選択</span>
+              <span class="custom-select-arrow">▾</span>
+            </div>
+            <div class="custom-select-dropdown">
+              <div class="custom-select-option" onclick="selectOption(this)">通信プラン相談</div>
+              <div class="custom-select-option" onclick="selectOption(this)">回線契約・乗り換えについて</div>
+              <div class="custom-select-option" onclick="selectOption(this)">スマホの健康診断について</div>
+              <div class="custom-select-option" onclick="selectOption(this)">スマホレディ募集について</div>
+              <div class="custom-select-option" onclick="selectOption(this)">マルシェ・ワークショップについて</div>
+              <div class="custom-select-option" onclick="selectOption(this)">ロボット研究所について</div>
+              <div class="custom-select-option" onclick="selectOption(this)">その他</div>
+            </div>
+          </div>
+          <input type="hidden" name="inquiry_type" id="inquiry_type">
+        </div>
+        <div class="input-group">
+          <label class="input-label">メッセージ</label>
+          <textarea class="textarea-cool" placeholder="ご質問・ご相談内容をご記入ください"></textarea>
+        </div>
+        <button class="btn-cool">送信する →</button>
+      </div>
+    </div>
+
+    <div class="line-section reveal">
+      <h3 style="color:#fff; font-family:'Noto Serif JP',serif; font-weight:300; font-size:1.3rem;">LINEでお気軽に</h3>
+      <p class="line-desc">
+        LINEから友だち追加するだけで、<br>
+        最新マルシェ情報・料金診断・<br>
+        スマホレディ情報をお届けします。
+      </p>
+
+      <a href="#" class="line-btn">
+        <span class="line-icon">💬</span>
+        LINE友だち追加
+      </a>
+
+      <div class="line-divider">
+        <span>または</span>
+      </div>
+
+      <div style="text-align:center;">
+        <div style="width:160px; height:160px; background:rgba(255,255,255,0.05); border:1px solid rgba(0,212,255,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; margin:0 auto; color:var(--silver); font-size:0.75rem;">QRコードを<br>ここに配置</div>
+        <p style="color:rgba(160,180,200,0.5); font-size:0.72rem; margin-top:0.8rem;">カメラで読み取り</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Robot Lab &amp; Marché</div>
+  <div class="footer-copy">© 2025 Robot Lab. All rights reserved.</div>
+</footer>
+
+<script>
+  function toggleSelect(el) {
+    const wrapper = el.closest('.custom-select-wrapper');
+    const dropdown = wrapper.querySelector('.custom-select-dropdown');
+    const isOpen = dropdown.classList.contains('open');
+    // Close all others
+    document.querySelectorAll('.custom-select-dropdown.open').forEach(d => {
+      d.classList.remove('open');
+      d.previousElementSibling.classList.remove('open');
+    });
+    if (!isOpen) {
+      dropdown.classList.add('open');
+      el.classList.add('open');
+    }
+  }
+
+  function selectOption(el) {
+    const wrapper = el.closest('.custom-select-wrapper');
+    const display = wrapper.querySelector('.custom-select-display');
+    const text = wrapper.querySelector('.custom-select-text');
+    const hidden = wrapper.nextElementSibling;
+    wrapper.querySelectorAll('.custom-select-option').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    text.textContent = el.textContent;
+    display.classList.add('selected');
+    if (hidden) hidden.value = el.textContent;
+    wrapper.querySelector('.custom-select-dropdown').classList.remove('open');
+    display.classList.remove('open');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.custom-select-wrapper')) {
+      document.querySelectorAll('.custom-select-dropdown.open').forEach(d => {
+        d.classList.remove('open');
+        d.previousElementSibling.classList.remove('open');
+      });
+    }
+  });
+
+  // NAV scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > window.innerHeight * 0.5) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 100);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
