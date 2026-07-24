@@ -535,6 +535,53 @@ footer {
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ========== FAQ ========== */
+#faq { background: var(--cream-warm); }
+.faq-inner { max-width: 760px; margin: 0 auto; }
+
+.faq-group { margin-bottom: 3rem; }
+.faq-group-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.2rem;
+}
+
+.faq-item {
+  border-top: 1px solid rgba(201,168,118,0.3);
+}
+.faq-item:last-child { border-bottom: 1px solid rgba(201,168,118,0.3); }
+
+.faq-item summary {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.3rem 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--purple-deep);
+  cursor: pointer;
+  line-height: 1.6;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary .faq-icon {
+  font-size: 1.2rem;
+  color: var(--gold);
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+.faq-item[open] summary .faq-icon { transform: rotate(45deg); }
+
+.faq-body {
+  font-size: 0.88rem;
+  line-height: 1.95;
+  color: var(--purple-mid);
+  padding: 0 0 1.4rem;
+}
 </style>
 </head>
 <body>
@@ -546,6 +593,7 @@ footer {
     <li><a href="#dx-series">DXシリーズ</a></li>
     <li><a href="#analysis">集客力分析</a></li>
     <li><a href="#flow">ご利用の流れ</a></li>
+    <li><a href="#faq">FAQ</a></li>
   </ul>
   <a href="#contact" class="nav-cta">お問い合わせ</a>
 </nav>
@@ -724,6 +772,97 @@ footer {
         <h4>導入・運用サポート</h4>
         <p>導入後も運用に慣れるまでサポートし、継続的な改善をご一緒に行います。</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section id="faq">
+  <div class="faq-inner">
+    <div class="section-head reveal">
+      <div class="eyebrow">FAQ</div>
+      <h2 class="section-title">よくあるご質問</h2>
+    </div>
+
+    <!-- 店舗・施設オーナー向け -->
+    <div class="faq-group reveal">
+      <p class="faq-group-label">店舗・施設オーナーの方へ</p>
+
+      <details class="faq-item">
+        <summary>Q. 診断は本当に無料ですか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">はい、MEO・SEO・AIO の集客力分析レポートは無料でお渡ししています。レポートをご覧いただいた上で、改善のご相談をいただければと思います。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q. ITに詳しくなくても大丈夫ですか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">大丈夫です。「今あるスマホとPCでできること」から始めるのがDigiForestのスタイルです。専門用語なしで、現場の言葉でご説明します。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q. 宇治・京都以外の店舗でも相談できますか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">はい、全国対応しています。ヒアリングや相談はZoomでも承りますので、どこからでもお気軽にご連絡ください。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q. 料金の仕組みを教えてください。<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">DXシリーズはサブスクリプション制です。例えばdx-tableは月額15,000円からスタートし、必要な機能をオプションで追加していただけます（最大60,000円程度）。基本プランで使い始めて、現場に合わせて育てていけるのが特長です。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q. 導入後のサポートはありますか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">あります。運用に慣れるまでのサポートを含め、継続的にご相談いただける体制を整えています。</p>
+      </details>
+    </div>
+
+    <!-- 販売パートナー向け（日本語） -->
+    <div class="faq-group reveal">
+      <p class="faq-group-label">販売パートナーの方へ</p>
+
+      <details class="faq-item">
+        <summary>Q. 代理店・販売パートナーとして参加できますか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">はい、歓迎しています。三次店・二次店・一次店の階層があり、それぞれコミッションや条件が異なります。詳しい仕組みはお気軽にお問い合わせください。Zoomでご説明することも可能です。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q. 海外からでもパートナーになれますか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">はい、日本製AIツールの海外展開に関心のある方からのご連絡をお待ちしています。英語でのご相談も承ります。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q. 取り扱い商材にはどんなものがありますか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">
+          現在、以下の商材をご案内しています。順次拡充予定です。<br><br>
+          ・業種別DXシリーズ（dx-table / dx-salon / dx-night / dx-hotel / dx-kango）<br>
+          　飲食・美容・宿泊・夜間業態・介護向けのサブスク型DXツール<br><br>
+          ・JTBC Business Analyzer<br>
+          　MEO・SEO・AIOの3軸で集客力を診断するツール<br><br>
+          ・JTBC BOOSTER<br>
+          　診断結果をもとにMEO・SEO・AIOのスコアを継続的に引き上げるサブスク型サービス
+        </p>
+      </details>
+    </div>
+
+    <!-- 海外パートナー向け -->
+    <div class="faq-group reveal">
+      <p class="faq-group-label">海外パートナーの方へ</p>
+
+      <details class="faq-item">
+        <summary>Q. 海外からでもパートナーになれますか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">はい、歓迎しています。日本製AIツールの海外展開に関心のある方からのご連絡をお待ちしています。英語でのご相談も承ります。まずはメール（dgfrstjp@gmail.com）またはお問い合わせフォームからお気軽にご連絡ください。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q. 海外パートナーが扱える商材はありますか？<span class="faq-icon">＋</span></summary>
+        <p class="faq-body">
+          現在、業種別DXシリーズをご案内しています。順次拡充予定です。<br><br>
+          ・dx-table　飲食店向け<br>
+          ・dx-salon　美容サロン向け<br>
+          ・dx-night　夜間業態向け<br>
+          ・dx-hotel　宿泊施設向け<br>
+          ・dx-kango　介護・看護施設向け<br><br>
+          詳しい条件はお問い合わせください。
+        </p>
+      </details>
     </div>
   </div>
 </section>
