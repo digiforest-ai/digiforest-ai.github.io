@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ACTIVITY PORTAL | Kyoko Murasaki — DigiForest</title>
-  <meta name="description" content="Discover Uji through local stories, creative tools, and practical digital support from Kyoko Murasaki / 紫野今日子.">
+  <title>活動ポータル | 紫野今日子 — DigiForest</title>
+  <meta name="description" content="京都・宇治を起点に、地域の物語、クリエイティブ、通信・DX支援を発信する紫野今日子（Kyoko Murasaki）の活動ポータルです。">
   <meta name="robots" content="index,follow">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content="ja_JP">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Noto+Sans+JP:wght@400;500;600&family=Noto+Serif+JP:wght@300;400;500&display=swap');
     
     :root {
       --deep-purple: #2D1B3D;
@@ -26,7 +26,7 @@
     body { 
       background: var(--ink); 
       color: var(--mist); 
-      font-family: 'DM Sans', sans-serif; 
+      font-family: 'Noto Sans JP', 'DM Sans', sans-serif; 
       line-height: 1.75; 
       overflow-x: hidden;
     }
@@ -62,7 +62,7 @@
       background: radial-gradient(circle at center, rgba(201,168,118,0.1) 0%, var(--ink) 70%);
     }
     .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Noto Serif JP', 'Cormorant Garamond', serif;
       font-size: clamp(3rem, 8vw, 5rem);
       font-weight: 300;
       color: var(--gold);
@@ -93,7 +93,7 @@
       display: block;
     }
     .section-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Noto Serif JP', 'Cormorant Garamond', serif;
       font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 300;
     }
@@ -122,7 +122,7 @@
       align-items: center;
     }
     .dstudio-content h2 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Noto Serif JP', 'Cormorant Garamond', serif;
       font-size: 3.5rem;
       color: var(--neon-gold);
       line-height: 1;
@@ -197,7 +197,7 @@
       flex-direction: column;
     }
     .uji-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-    .uji-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--gold); }
+    .uji-card h3 { font-family: 'Noto Serif JP', 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--gold); }
     .uji-card p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 1.5rem; flex-grow: 1; }
     .uji-link { color: var(--gold); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid; align-self: flex-start; }
 
@@ -213,7 +213,7 @@
       border-radius: 16px;
       border: 1px solid rgba(201,168,118,0.3);
     }
-    .universe-item h3 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 1rem; color: var(--gold); }
+    .universe-item h3 { font-family: 'Noto Serif JP', 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 1rem; color: var(--gold); }
 
     /* --- FOOTER --- */
     footer {
@@ -237,19 +237,19 @@
 <body>
 
   <nav>
-    <a href="/">← Back to Main Site</a>
+    <a href="/">← メインサイトへ</a>
     <div class="nav-links">
-      <a href="portal-ja.html" class="lang-toggle" lang="ja">日本語</a>
+      <a href="portal.html" class="lang-toggle" lang="en">English</a>
       <a href="#dstudio">dstudio</a>
-      <a href="#guides">Guides</a>
-      <a href="#universe">Creative</a>
+      <a href="#universe">作品</a>
+      <a href="#business">DX支援</a>
     </div>
   </nav>
 
   <header class="hero">
-    <span class="section-eyebrow">Activity Portal</span>
-    <h1>Uji & Beyond</h1>
-    <p>From Uji, Kyoto—where culture, craft, and technology meet. Explore the work of <strong>Kyoko Murasaki</strong> (紫野今日子): local stories, creative tools, and practical digital support for connected travel.</p>
+    <span class="section-eyebrow">活動ポータル</span>
+    <h1>宇治から、その先へ。</h1>
+    <p>京都・宇治から、文化・創作・テクノロジーの接点を届けます。<strong>紫野今日子</strong>（Kyoko Murasaki）の地域の物語、クリエイティブツール、旅と仕事を支えるデジタルサービスをまとめました。</p>
   </header>
 
   <!-- DSTUDIO PREMIUM SECTION -->
@@ -257,67 +257,37 @@
     <div class="dstudio-block">
       <div class="dstudio-grid">
         <div class="dstudio-content">
-          <span class="section-eyebrow" style="color: var(--neon-gold);">Premium AI Studio</span>
-          <h2>One Platform.<br>Every Creative Need.</h2>
-          <p class="dstudio-subtitle">Music · Video · Logo · Website · Story · Narration</p>
-          <p style="margin-bottom: 2rem; opacity: 0.9;">dstudio is not just a music generator. It's a complete AI creative studio. From content creators to businesses — we make professional creation accessible to everyone.</p>
+          <span class="section-eyebrow" style="color: var(--neon-gold);">AIクリエイティブ・スタジオ</span>
+          <h2>ひとつの場所で、<br>創作をもっと自由に。</h2>
+          <p class="dstudio-subtitle">音楽 · 映像 · ロゴ · Webサイト · ストーリー · ナレーション</p>
+          <p style="margin-bottom: 2rem; opacity: 0.9;">dstudioは、単なる音楽生成ツールではありません。音楽、映像、ブランド、物語までを扱うAIクリエイティブ・スタジオです。個人のクリエイターから事業者まで、プロフェッショナルな制作をもっと身近にします。</p>
           
           <ul class="dstudio-list">
-            <li>🎵 Music (50+ languages)</li>
-            <li>🎬 Video Production</li>
-            <li>🌐 Website & Domain</li>
-            <li>🎨 Logo & Brand</li>
-            <li>📦 Merchandise <span class="badge-soon">Soon</span></li>
-            <li>🎙️ Narration & Voice</li>
-            <li>📖 Story Bible <span class="badge-soon">Soon</span></li>
-            <li>📣 SNS Campaign</li>
+            <li>🎵 音楽（50言語以上）</li>
+            <li>🎬 映像制作</li>
+            <li>🌐 Webサイト・ドメイン</li>
+            <li>🎨 ロゴ・ブランドデザイン</li>
+            <li>📦 グッズ制作 <span class="badge-soon">準備中</span></li>
+            <li>🎙️ ナレーション・音声</li>
+            <li>📖 ストーリーバイブル <span class="badge-soon">準備中</span></li>
+            <li>📣 SNSキャンペーン</li>
           </ul>
 
-          <a href="https://www.dstudio.one/" target="_blank" rel="noopener noreferrer" class="btn-premium">✨ Explore dstudio</a>
+          <a href="https://www.dstudio.one/" target="_blank" rel="noopener noreferrer" class="btn-premium">✨ dstudioを見る</a>
         </div>
         
         <div class="tiktok-side">
           <div class="tiktok-embed-container">
-            <p style="font-size: 0.8rem; margin-bottom: 1rem; color: var(--neon-gold);">Latest Creations on TikTok</p>
-            <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@dstudio_kyoko" data-unique-id="dstudio_kyoko" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" rel="noopener noreferrer" title="@dstudio_kyoko" href="https://www.tiktok.com/@dstudio_kyoko?is_from_webapp=1&amp;sender_device=pc">@dstudio_kyoko</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script><p style="margin-top:1rem;"><a href="https://www.tiktok.com/@dstudio_kyoko?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener noreferrer" class="uji-link">View all creations on TikTok</a></p>
+            <p style="font-size: 0.8rem; margin-bottom: 1rem; color: var(--neon-gold);">TikTokで公開中の作品</p>
+            <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@dstudio_kyoko" data-unique-id="dstudio_kyoko" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" rel="noopener noreferrer" title="@dstudio_kyoko" href="https://www.tiktok.com/@dstudio_kyoko?is_from_webapp=1&amp;sender_device=pc">@dstudio_kyoko</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script><p style="margin-top:1rem;"><a href="https://www.tiktok.com/@dstudio_kyoko?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener noreferrer" class="uji-link">TikTokの作品一覧を見る</a></p>
           </div>
           <div style="font-size: 0.85rem; opacity: 0.8; text-align: left; padding-left: 1rem;">
-            <p>🇻🇳 Về Với Em — Folk EDM</p>
-            <p>🇵🇭 Tahanan Ko Ikaw — OPM Ballad</p>
-            <p>🇹🇭 ยังจำเธออยู่ — Thai K-Ballad</p>
-            <p>🇮🇩 Ayo Menari — Indonesian EDM</p>
+            <p>🇻🇳 Về Với Em — ベトナム・フォークEDM</p>
+            <p>🇵🇭 Tahanan Ko Ikaw — フィリピンOPMバラード</p>
+            <p>🇹🇭 ยังจำเธออยู่ — タイKバラード</p>
+            <p>🇮🇩 Ayo Menari — インドネシアEDM</p>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TRAVEL GUIDES -->
-  <section class="section" id="guides">
-    <div class="section-header">
-      <span class="section-eyebrow">Travel Guides</span>
-      <h2 class="section-title">Uji Decoded: Beyond the Tourist Trail</h2>
-    </div>
-    <div class="uji-grid">
-      <div class="uji-card">
-        <h3>The Floating Paradise</h3>
-        <p>Byodoin: The building on the 10-yen coin. Experience the reflection of the Western Paradise.</p>
-        <a href="guide_byodoin.html" class="uji-link">Read Guide</a>
-      </div>
-      <div class="uji-card">
-        <h3>Japan's Oldest Shrine</h3>
-        <p>Ujigami Shrine: A place of deep silence, ancient timber, and the guardian rabbits of Uji.</p>
-        <a href="guide_ujigami.html" class="uji-link">Discover More</a>
-      </div>
-      <div class="uji-card">
-        <h3>The River of 1,300 Years</h3>
-        <p>Experience the Cormorant Fishing (Ukai) revival and the soul of the Uji River.</p>
-        <a href="guide_river_ukai.html" class="uji-link">Watch Video</a>
-      </div>
-      <div class="uji-card">
-        <h3>Uji Tea Experience</h3>
-        <p>Why this cup is different. Learn where to find authentic matcha and gyokuro.</p>
-        <a href="guide_tea.html" class="uji-link">Taste Uji</a>
       </div>
     </div>
   </section>
@@ -325,19 +295,19 @@
   <!-- CREATIVE UNIVERSE -->
   <section class="section" id="universe">
     <div class="section-header">
-      <span class="section-eyebrow">Creative Universe</span>
-      <h2 class="section-title">Explore More</h2>
+      <span class="section-eyebrow">作品とショップ</span>
+      <h2 class="section-title">もっと知る。</h2>
     </div>
     <div class="universe-grid">
       <div class="universe-item">
         <h3>📖 Sleeve in the Wind</h3>
-        <p>Amazon KDP: <em>Sleeve in the Wind</em>, an English translation of the Manyoshu by Kyoko Murasaki (紫野今日子), featuring Uji's landscapes.</p>
-        <a href="https://www.amazon.co.jp/dp/B0H4DCZSNG" target="_blank" class="btn-premium" style="padding: 0.6rem 1.5rem; font-size: 0.8rem; background: var(--gold);">View on Amazon</a>
+        <p>Amazon KDP：<em>Sleeve in the Wind</em>。紫野今日子（Kyoko Murasaki）による万葉集英訳で、宇治の景色や余韻を織り込んだ一冊です。</p>
+        <a href="https://www.amazon.co.jp/dp/B0H4DCZSNG" target="_blank" rel="noopener noreferrer" class="btn-premium" style="padding: 0.6rem 1.5rem; font-size: 0.8rem; background: var(--gold);">Amazonで見る</a>
       </div>
       <div class="universe-item">
         <h3>🛍️ UJI ICONS</h3>
-        <p>Etsy Shop: Original art and digital assets inspired by Uji's traditions.</p>
-        <a href="https://ujiatelierkyoto.etsy.com" target="_blank" class="btn-premium" style="padding: 0.6rem 1.5rem; font-size: 0.8rem; background: var(--gold);">Visit Etsy Shop</a>
+        <p>Etsyショップ：宇治の伝統や景色から着想を得たオリジナルアートとデジタル作品です。</p>
+        <a href="https://ujiatelierkyoto.etsy.com" target="_blank" rel="noopener noreferrer" class="btn-premium" style="padding: 0.6rem 1.5rem; font-size: 0.8rem; background: var(--gold);">Etsyショップを見る</a>
       </div>
     </div>
   </section>
@@ -345,24 +315,25 @@
   <!-- BUSINESS SECTION -->
   <section class="section" id="business" style="background: rgba(255,255,255,0.02); border-radius: 24px;">
     <div class="section-header">
-      <span class="section-eyebrow">Business & DX</span>
-      <h2 class="section-title">Connectivity & Advisory</h2>
+      <span class="section-eyebrow">通信・DX支援</span>
+      <h2 class="section-title">つながる旅と、よりよい仕事へ。</h2>
     </div>
     <div style="text-align: center; max-width: 700px; margin: 0 auto;">
       <div style="background: rgba(201,168,118,0.1); padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
-        <h3>Japan Prepaid eSIM</h3>
-        <p style="margin: 1rem 0;">Stay connected from day one. Reliable data for your Kyoto journey.</p>
-        <a href="https://prepaid.dmobile.jp/regist/JP644132" target="_blank" class="uji-link">Get eSIM</a>
+        <h3>日本向けプリペイドeSIM</h3>
+        <p style="margin: 1rem 0;">到着した日から、京都の旅を快適な通信で支えます。</p>
+        <a href="https://prepaid.dmobile.jp/regist/JP644132" target="_blank" rel="noopener noreferrer" class="uji-link">eSIMを申し込む</a>
       </div>
       <p style="font-size: 0.9rem; opacity: 0.7;">
-        For AI workflow improvement or Google Maps visibility diagnostics, <a href="https://lit.link/kyokomurasaki" target="_blank" rel="noopener noreferrer" style="color: var(--gold);">start a conversation here</a>.
+        AI業務改善やGoogleマップでの見つかりやすさに関するご相談は、<a href="https://lit.link/kyokomurasaki" target="_blank" rel="noopener noreferrer" style="color: var(--gold);">こちらから</a>。
       </p>
     </div>
   </section>
 
   <footer>
-    <p><strong>Kyoko Murasaki (紫野今日子)</strong> · Uji City, Kyoto Prefecture, Japan</p>
+    <p><strong>紫野今日子（Kyoko Murasaki）</strong> · 京都府宇治市</p>
     <p>© 2026 DigiForest Japan · <a href="https://substack.com/@kyokoyamanaka" style="color: inherit;">Substack</a> · <a href="https://www.instagram.com/ukiyoedit_uji/" style="color: inherit;">Instagram</a></p>
+    <p style="margin-top: 0.75rem;">海外から宇治を訪れる方向けの案内は、<a href="portal.html#guides" style="color: inherit;">English Uji Guide</a> に掲載しています。</p>
   </footer>
 
 </body>
