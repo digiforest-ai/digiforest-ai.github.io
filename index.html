@@ -1,1 +1,332 @@
 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kyoko Murasaki — From Uji, Kyoto | DigiForest Portal</title>
+  <meta name="description" content="宇治を拠点に、AI・DX導入支援と地域の魅力を発信するライター活動を行う山中今日子（紫京子）のポータルサイトです。">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+    
+    :root {
+      --deep-purple: #2D1B3D;
+      --gold: #C9A876;
+      --cream: #F5F1E8;
+      --ink: #1C1814;
+      --mist: #F7F4EE;
+      --matcha: #4A6741;
+      --rich-black: #0A0806;
+      --neon-gold: #FFD700;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { 
+      background: var(--ink); 
+      color: var(--mist); 
+      font-family: 'DM Sans', sans-serif; 
+      line-height: 1.75; 
+      overflow-x: hidden;
+    }
+
+    /* --- HERO --- */
+    .hero {
+      position: relative;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: radial-gradient(circle at center, rgba(201,168,118,0.1) 0%, var(--ink) 70%);
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      opacity: 0.8;
+    }
+
+    /* --- SECTION SHARED --- */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-eyebrow {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 300;
+    }
+
+    /* --- DSTUDIO PREMIUM BLOCK --- */
+    .dstudio-block {
+      background: var(--rich-black);
+      border: 1px solid var(--neon-gold);
+      border-radius: 24px;
+      padding: 4rem;
+      margin: 4rem auto;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .dstudio-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 4px;
+      background: linear-gradient(90deg, transparent, var(--neon-gold), transparent);
+    }
+    .dstudio-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .dstudio-content h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      color: var(--neon-gold);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .dstudio-subtitle {
+      font-size: 1.2rem;
+      color: var(--mist);
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+    .dstudio-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .dstudio-list li {
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge-soon {
+      font-size: 0.6rem;
+      background: rgba(255,255,255,0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+    .tiktok-embed {
+      background: #111;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(255,215,0,0.2);
+    }
+    .btn-premium {
+      display: inline-block;
+      background: var(--neon-gold);
+      color: var(--rich-black);
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-premium:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    }
+
+    /* --- TRAVEL GUIDES --- */
+    .uji-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+    .uji-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,118,0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: 0.3s;
+    }
+    .uji-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+    .uji-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--gold); }
+    .uji-card p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 1.5rem; }
+    .uji-link { color: var(--gold); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid; }
+
+    /* --- CREATIVE UNIVERSE --- */
+    .universe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .universe-item {
+      background: var(--deep-purple);
+      padding: 3rem;
+      border-radius: 16px;
+      border: 1px solid rgba(201,168,118,0.3);
+    }
+    .universe-item h3 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 1rem; color: var(--gold); }
+
+    /* --- FOOTER --- */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      .dstudio-grid, .universe-grid { grid-template-columns: 1fr; }
+      .dstudio-block { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <span class="section-eyebrow">Kyoko Murasaki Portal</span>
+    <h1>DigiForest</h1>
+    <p>古都宇治から、AIと美意識を届ける。DXアドバイザリーとクリエイティブの融合。</p>
+  </header>
+
+  <!-- DSTUDIO PREMIUM SECTION -->
+  <section class="section" id="dstudio">
+    <div class="dstudio-block">
+      <div class="dstudio-grid">
+        <div class="dstudio-content">
+          <span class="section-eyebrow" style="color: var(--neon-gold);">Premium AI Studio</span>
+          <h2>One Platform.<br>Every Creative Need.</h2>
+          <p class="dstudio-subtitle">Music · Video · Logo · Website · Story · Narration</p>
+          <p style="margin-bottom: 2rem; opacity: 0.9;">dstudio is not just a music generator. It's a complete AI creative studio. From content creators to businesses — we make professional creation accessible to everyone.</p>
+          
+          <ul class="dstudio-list">
+            <li>🎵 Music (50+ languages)</li>
+            <li>🎬 Video Production</li>
+            <li>🌐 Website & Domain</li>
+            <li>🎨 Logo & Brand</li>
+            <li>📦 Merchandise <span class="badge-soon">Soon</span></li>
+            <li>🎙️ Narration & Voice</li>
+            <li>📖 Story Bible <span class="badge-soon">Soon</span></li>
+            <li>📣 SNS Campaign</li>
+          </ul>
+
+          <a href="https://lit.link/kyokomurasaki" class="btn-premium">✨ Explore dstudio</a>
+        </div>
+        
+        <div class="tiktok-side">
+          <div class="tiktok-embed">
+            <p style="font-size: 0.8rem; margin-bottom: 1rem; color: var(--neon-gold);">Latest Creations on TikTok</p>
+            <!-- TikTok Placeholder -->
+            <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@dstudio_kyoko" data-unique-id="dstudio_kyoko" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@dstudio_kyoko" href="https://www.tiktok.com/@dstudio_kyoko?refer=embed">@dstudio_kyoko</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+          </div>
+          <div style="margin-top: 1.5rem; font-size: 0.85rem; opacity: 0.8;">
+            <p>🇻🇳 Về Với Em — Folk EDM</p>
+            <p>🇵🇭 Tahanan Ko Ikaw — OPM Ballad</p>
+            <p>🇹🇭 ยังจำเธออยู่ — Thai K-Ballad</p>
+            <p>🇮🇩 Ayo Menari — Indonesian EDM</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAVEL GUIDES -->
+  <section class="section" id="guides">
+    <div class="section-header">
+      <span class="section-eyebrow">Travel Guides</span>
+      <h2 class="section-title">Uji Decoded: Beyond the Tourist Trail</h2>
+    </div>
+    <div class="uji-grid">
+      <div class="uji-card">
+        <h3>The Floating Paradise</h3>
+        <p>Byodoin: The building on the 10-yen coin. Experience the reflection of the Western Paradise.</p>
+        <a href="uji_travel_plan.html" class="uji-link">Read Guide</a>
+      </div>
+      <div class="uji-card">
+        <h3>Japan's Oldest Shrine</h3>
+        <p>Ujigami Shrine: A place of deep silence, ancient timber, and the guardian rabbits of Uji.</p>
+        <a href="literary_uji_ujigami.html" class="uji-link">Discover More</a>
+      </div>
+      <div class="uji-card">
+        <h3>The River of 1,300 Years</h3>
+        <p>Experience the Cormorant Fishing (Ukai) revival and the soul of the Uji River.</p>
+        <a href="https://www.youtube.com/@UjiJournal" target="_blank" class="uji-link">Watch Video</a>
+      </div>
+      <div class="uji-card">
+        <h3>Uji Tea Experience</h3>
+        <p>Why this cup is different. Learn where to find authentic matcha and gyokuro.</p>
+        <a href="uji_tea_section.html" class="uji-link">Taste Uji</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATIVE UNIVERSE -->
+  <section class="section" id="universe">
+    <div class="section-header">
+      <span class="section-eyebrow">Creative Universe</span>
+      <h2 class="section-title">Explore More</h2>
+    </div>
+    <div class="universe-grid">
+      <div class="universe-item">
+        <h3>📖 Sleeve in the Wind</h3>
+        <p>Amazon KDP: My English translation of the Manyoshu, featuring Uji's landscapes.</p>
+        <a href="https://www.amazon.co.jp/dp/B0H4DCZSNG" target="_blank" class="btn-premium" style="padding: 0.6rem 1.5rem; font-size: 0.8rem;">View on Amazon</a>
+      </div>
+      <div class="universe-item">
+        <h3>🛍️ UJI ICONS</h3>
+        <p>Etsy Shop: Original art and digital assets inspired by Uji's traditions.</p>
+        <a href="https://ujiatelierkyoto.etsy.com" target="_blank" class="btn-premium" style="padding: 0.6rem 1.5rem; font-size: 0.8rem;">Visit Etsy Shop</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESS SECTION -->
+  <section class="section" id="business" style="background: rgba(255,255,255,0.02); border-radius: 24px;">
+    <div class="section-header">
+      <span class="section-eyebrow">Business & DX</span>
+      <h2 class="section-title">Connectivity & Advisory</h2>
+    </div>
+    <div style="text-align: center; max-width: 700px; margin: 0 auto;">
+      <div style="background: rgba(201,168,118,0.1); padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+        <h3>Japan Prepaid eSIM</h3>
+        <p style="margin: 1rem 0;">Stay connected from day one. Reliable data for your Kyoto journey.</p>
+        <a href="https://prepaid.dmobile.jp/regist/JP644132" target="_blank" class="uji-link">Get eSIM</a>
+      </div>
+      <p style="font-size: 0.9rem; opacity: 0.7;">
+        AI業務改善診断 / Googleマップ集客診断のご相談は <a href="https://lit.link/kyokomurasaki" style="color: var(--gold);">こちら</a>
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Kyoko Murasaki</strong> · Uji City, Kyoto Prefecture, Japan</p>
+    <p>© 2026 DigiForest Japan · <a href="https://substack.com/@kyokoyamanaka" style="color: inherit;">Substack</a> · <a href="https://www.instagram.com/ukiyoedit_uji/" style="color: inherit;">Instagram</a></p>
+  </footer>
+
+</body>
+</html>
