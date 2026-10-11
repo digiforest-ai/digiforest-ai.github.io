@@ -229,7 +229,8 @@
       .dstudio-block { padding: 2rem; }
       nav { padding: 1rem 0.85rem; }
       nav a { font-size: 0.64rem; }
-      .nav-links { gap: 0.6rem; }
+      .nav-links { gap: 0.3rem 0.6rem; flex-wrap: wrap; justify-content: flex-end; }
+      .nav-links a { white-space: nowrap; }
       .lang-toggle { padding: 0.2rem 0.45rem; }
     }
   </style>
@@ -240,9 +241,9 @@
     <a href="/">← メインサイトへ</a>
     <div class="nav-links">
       <a href="portal.html" class="lang-toggle" lang="en">English</a>
+      <a href="#business">DXシリーズ</a>
       <a href="#dstudio">dstudio</a>
       <a href="#universe">作品</a>
-      <a href="#business">DX支援</a>
     </div>
   </nav>
 
@@ -251,6 +252,45 @@
     <h1>宇治から、その先へ。</h1>
     <p>京都・宇治から、文化・創作・テクノロジーの接点を届けます。<strong>紫野今日子</strong>（Kyoko Murasaki）の地域の物語、クリエイティブツール、旅と仕事を支えるデジタルサービスをまとめました。</p>
   </header>
+
+  <!-- DX SERIES -->
+  <section class="section" id="business" style="background: rgba(255,255,255,0.02); border-radius: 24px;">
+    <div class="section-header">
+      <span class="section-eyebrow">DXシリーズ</span>
+      <h2 class="section-title">お店のデジタル化を、ひとつずつ。</h2>
+    </div>
+    <div style="max-width: 760px; margin: 0 auto 3rem; text-align: center;">
+      <p>JTBC社（日本電気通信事業株式会社）のDXシリーズは、お店の見つかりやすさ、注文や会計、お店の「らしさ」の表現までを支えるサービス群です。DigiForestは取扱代理店として、サービスのご案内と導入のお手伝いをしています。</p>
+      <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 1rem;">ご契約は、お客様とJTBC社との直接契約となります。</p>
+    </div>
+    <div class="uji-grid">
+      <div class="uji-card">
+        <span class="section-eyebrow">業種を問わず</span>
+        <h3>Localyzer（ローカライザー）</h3>
+        <p>店名と地域から、MEO（Googleマップ）・SEO（検索）・AIO（ChatGPTなどのAI）の3つの面で、お店の見つかりやすさを分析します。分析のあとは、ホームページづくりや、口コミへの返信・投稿文づくりのお手伝いにもつながっています。</p>
+        <a href="https://www.localyzer.one/" target="_blank" rel="noopener noreferrer" class="uji-link">公式サイトを見る</a>
+      </div>
+      <div class="uji-card">
+        <span class="section-eyebrow">飲食店向け</span>
+        <h3>DX-TABLE</h3>
+        <p>写真からのメニューづくり、QRモバイルオーダー、厨房との連携、会計、メニューのAI英訳まで、飲食店の毎日の業務を支えます。</p>
+        <a href="https://dx-table.com/" target="_blank" rel="noopener noreferrer" class="uji-link">公式サイトを見る</a>
+      </div>
+      <div class="uji-card">
+        <span class="section-eyebrow">お店の「らしさ」を形に</span>
+        <h3>dstudio（ドリームスタジオ）</h3>
+        <p>お店のテーマソングやBGM・ナレーション、ロゴとグッズのイメージ、イベントのミュージックビデオ、ホームページづくりなど、お店の「らしさ」を形にします。</p>
+        <a href="https://dstudio.one/" target="_blank" rel="noopener noreferrer" class="uji-link">公式サイトを見る</a>
+      </div>
+    </div>
+    <div style="text-align: center; max-width: 700px; margin: 3rem auto 0;">
+      <div style="background: rgba(201,168,118,0.1); padding: 2rem; border-radius: 12px;">
+        <h3>ご相談・お問い合わせ</h3>
+        <p style="margin: 1rem 0;">どのサービスが合うか分からない段階でも大丈夫です。今のお店の状況をうかがい、優先したいことを一緒に整理します。</p>
+        <a href="/#contact" class="uji-link">お問い合わせページへ</a>
+      </div>
+    </div>
+  </section>
 
   <!-- DSTUDIO PREMIUM SECTION -->
   <section class="section" id="dstudio">
@@ -309,22 +349,6 @@
         <p>Etsyショップ：宇治の伝統や景色から着想を得たオリジナルアートとデジタル作品です。</p>
         <a href="https://ujiatelierkyoto.etsy.com" target="_blank" rel="noopener noreferrer" class="btn-premium" style="padding: 0.6rem 1.5rem; font-size: 0.8rem; background: var(--gold);">Etsyショップを見る</a>
       </div>
-    </div>
-  </section>
-
-  <!-- DX ADVISORY -->
-  <section class="section" id="business" style="background: rgba(255,255,255,0.02); border-radius: 24px;">
-    <div class="section-header">
-      <span class="section-eyebrow">DX支援</span>
-      <h2 class="section-title">見つかり方と、業務の課題を整理する。</h2>
-    </div>
-    <div style="text-align: center; max-width: 700px; margin: 0 auto;">
-      <div style="background: rgba(201,168,118,0.1); padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
-        <h3>無料初回診断</h3>
-        <p style="margin: 1rem 0;">Googleマップ・検索・AI検索での「見つかり方」と、日々の業務の課題を確認し、今の事業で優先するべき次の一手を一緒に整理します。</p>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSezwJmGiIuVKAVjF6Yc4sumhlbD1Fi1o1I6HDzuMkTHtGWxJg/viewform" target="_blank" rel="noopener noreferrer" class="uji-link">無料初回診断を相談する</a>
-      </div>
-      <p style="font-size: 0.9rem; opacity: 0.7;">すぐにツール導入を勧めるためではなく、現在地と優先順位を整理するための最初の対話です。</p>
     </div>
   </section>
 

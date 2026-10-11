@@ -229,7 +229,8 @@
       .dstudio-block { padding: 2rem; }
       nav { padding: 1rem 0.85rem; }
       nav a { font-size: 0.64rem; }
-      .nav-links { gap: 0.6rem; }
+      .nav-links { gap: 0.3rem 0.6rem; flex-wrap: wrap; justify-content: flex-end; }
+      .nav-links a { white-space: nowrap; }
       .lang-toggle { padding: 0.2rem 0.45rem; }
     }
   </style>
@@ -240,6 +241,7 @@
     <a href="/en">← Back to Main Site</a>
     <div class="nav-links">
       <a href="portal-ja.html" class="lang-toggle" lang="ja">日本語</a>
+      <a href="#business">DX Series</a>
       <a href="#dstudio">dstudio</a>
       <a href="#guides">Guides</a>
       <a href="#esim">eSIM</a>
@@ -252,6 +254,45 @@
     <h1>Uji & Beyond</h1>
     <p>From Uji, Kyoto—where culture, craft, and technology meet. Explore the work of <strong>Kyoko Murasaki</strong> (紫野今日子): local stories, creative tools, and practical digital support for connected travel.</p>
   </header>
+
+  <!-- DX SERIES -->
+  <section class="section" id="business" style="background: rgba(255,255,255,0.02); border-radius: 24px;">
+    <div class="section-header">
+      <span class="section-eyebrow">DX Series</span>
+      <h2 class="section-title">Digital Tools for Local Shops</h2>
+    </div>
+    <div style="max-width: 760px; margin: 0 auto 3rem; text-align: center;">
+      <p>The DX series by JTBC (日本電気通信事業株式会社) is a set of services that help local shops be found, run orders and checkout, and express their own character. DigiForest is a sales agent for JTBC, introducing the services and helping with setup.</p>
+      <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 1rem;">Contracts are made directly between the customer and JTBC.</p>
+    </div>
+    <div class="uji-grid">
+      <div class="uji-card">
+        <span class="section-eyebrow">For any local business</span>
+        <h3>Localyzer</h3>
+        <p>From a shop's name and area, Localyzer analyzes how easily the shop can be found from three angles: MEO (Google Maps), SEO (search), and AIO (AI assistants such as ChatGPT). It also leads on to support with building a website and drafting review replies and posts.</p>
+        <a href="https://www.localyzer.one/" target="_blank" rel="noopener noreferrer" class="uji-link">Official site</a>
+      </div>
+      <div class="uji-card">
+        <span class="section-eyebrow">For restaurants</span>
+        <h3>DX-TABLE</h3>
+        <p>Supports the daily work of restaurants: creating menus from photos, QR mobile ordering, kitchen integration, checkout, and AI English translation of menus.</p>
+        <a href="https://dx-table.com/" target="_blank" rel="noopener noreferrer" class="uji-link">Official site (Japanese)</a>
+      </div>
+      <div class="uji-card">
+        <span class="section-eyebrow">A shop's character, given form</span>
+        <h3>dstudio (Dream Studio)</h3>
+        <p>Gives form to a shop's character: theme songs, background music and narration, logo and merchandise concepts, music videos for events, website creation, and more.</p>
+        <a href="https://dstudio.one/" target="_blank" rel="noopener noreferrer" class="uji-link">Official site</a>
+      </div>
+    </div>
+    <div style="text-align: center; max-width: 700px; margin: 3rem auto 0;">
+      <div style="background: rgba(201,168,118,0.1); padding: 2rem; border-radius: 12px;">
+        <h3>Questions and Inquiries</h3>
+        <p style="margin: 1rem 0;">If you are not sure which service fits, we are happy to hear about your situation and help sort out what to prioritize.</p>
+        <a href="/en/#contact" class="uji-link">Go to the contact page</a>
+      </div>
+    </div>
+  </section>
 
   <!-- DSTUDIO PREMIUM SECTION -->
   <section class="section" id="dstudio">
