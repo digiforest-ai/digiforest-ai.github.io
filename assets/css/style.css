@@ -18,14 +18,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo, "Noto Sans JP", sans-serif;
   font-size: 16px;
   line-height: 1.9;
   -webkit-text-size-adjust: 100%;
 }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--matcha-d); }
-h1, h2, h3 { font-family: "Zen Maru Gothic", "Noto Sans JP", sans-serif; line-height: 1.45; word-break: auto-phrase; }
+h1, h2, h3 { font-family: "Zen Maru Gothic", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif; line-height: 1.45; word-break: auto-phrase; }
 .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 .nb { display: inline-block; }
 .sp-only { display: none; }
