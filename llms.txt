@@ -22,4 +22,5 @@
 - [日本語トップ](https://digiforest-ai.github.io/)
 - [English（海外の取扱パートナー向け）](https://digiforest-ai.github.io/en/)
 - [プライバシーポリシー](https://digiforest-ai.github.io/privacy/)
+- [スタンプ指示文メーカー（無料ツール）](https://digiforest-ai.github.io/stamp/)：お店のLINEスタンプの絵を画像AIで作るための指示文をつくる
 - [活動ポータル（創作活動・宇治案内）](https://digiforest-ai.github.io/portal-ja.html)

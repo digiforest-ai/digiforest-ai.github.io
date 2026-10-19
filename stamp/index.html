@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>スタンプ指示文メーカー｜DigiForest</title>
+<meta name="description" content="お店のLINEスタンプの絵を、画像AI（Gemini）で作るための指示文を無料でつくれるツール。キャラとひと言を入れるだけで、絵柄のそろった8枚分の指示文ができます。">
+<link rel="canonical" href="https://digiforest-ai.github.io/stamp/">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#4f7d33">
+<meta property="og:title" content="スタンプ指示文メーカー｜DigiForest">
+<meta property="og:description" content="お店のLINEスタンプの絵を、Geminiで作るための指示文を無料でつくれるツール。">
+<meta property="og:url" content="https://digiforest-ai.github.io/stamp/">
+<meta property="og:image" content="https://digiforest-ai.github.io/assets/img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><b>DigiForest</b><small>お店のデジタル相談・宇治発</small></a>
+    <div class="header-cta"><a class="btn small" href="/#contact">無料相談</a></div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head"><div class="wrap"><h1>スタンプ指示文メーカー</h1></div></div>
+  <section>
+    <div class="wrap sp">
+      <p class="sp-lead">お店のLINEスタンプの絵を、画像AI（Gemini）で作るための指示文をつくります。キャラとひと言を入れて「指示文をつくる」を押し、できた文をコピーしてGeminiに貼ってください。</p>
+
+      <div class="sp-card">
+        <h2><span class="sp-step">1</span>キャラクターを決める</h2>
+        <label for="what">何のキャラ？ <small>例：茶葉、パン、お団子、はさみ</small></label>
+        <input type="text" id="what" placeholder="茶葉">
+        <label for="body">体の形・顔の特徴 <small>（なくてもOK）例：卵型の体、丸い目</small></label>
+        <input type="text" id="body" placeholder="卵型の体、丸い目、ほっぺが赤い">
+        <label for="mark">目印になる色や小物 <small>例：藍色のはちまき、赤いエプロン</small></label>
+        <input type="text" id="mark" placeholder="藍色のはちまき">
+        <label for="mood">雰囲気</label>
+        <select id="mood">
+          <option value="かわいくて親しみやすい">かわいい・親しみやすい</option>
+          <option value="やさしく、ほっとする">やさしい・ほっとする</option>
+          <option value="元気で明るい">元気・明るい</option>
+          <option value="落ち着いていて上品な">落ち着いた・上品</option>
+        </select>
+        <label for="style">絵のタッチ</label>
+        <select id="style">
+          <option value="太めの黒い線、シンプルな色づかいのイラスト">太めの線・シンプル（スタンプ向き・おすすめ）</option>
+          <option value="やわらかい線、パステルカラーのイラスト">やわらかい線・パステル</option>
+          <option value="手描き風のゆるい線、少ない色のイラスト">手描き風・ゆるい</option>
+        </select>
+      </div>
+
+      <div class="sp-card">
+        <h2><span class="sp-step">2</span>ひと言とポーズ（8つ）</h2>
+        <p>お客さんとのLINEで本当に使う言葉を入れます。ポーズは空いていても大丈夫です（ひと言に合う表情で描いてもらいます）。</p>
+        <div class="sp-btns"><button class="sp-btn" type="button" id="fillShop">お店向けの例を入れる</button></div>
+        <div id="rows"></div>
+      </div>
+
+      <div class="sp-btns center">
+        <button class="sp-btn main" type="button" id="make">指示文をつくる</button>
+      </div>
+
+      <div class="sp-card sp-hidden" id="result">
+        <h2>できた指示文</h2>
+        <div class="sp-tip">
+          <b>使い方</b><br>
+          ① まず「見本」の文をGeminiに貼り、納得いく絵になるまで作り直します。<br>
+          ② 見本の絵を保存し、<b>2枚目からは毎回その絵を添付してから</b>文を貼ります。絵柄がそろいます。<br>
+          ③ 文字はGeminiに描かせません。あとで「LINEスタンプメーカー」アプリで入れます。
+        </div>
+        <div class="sp-btns"><a class="sp-btn" href="https://gemini.google.com/app" target="_blank" rel="noopener">Geminiを開く ↗</a></div>
+        <div id="outs"></div>
+      </div>
+
+      <p class="sp-note">入力した内容はこの端末の中だけに残ります（どこにも送られません）。</p>
+
+      <div class="sp-course">
+        <p>お店のLINEスタンプを、絵づくりから申請まで<b>一緒に仕上げる講座・出張研修</b>もしています。</p>
+        <a class="btn" href="/#contact">講座について相談する</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="f-logo">DigiForest</p>
+    <ul class="f-links">
+      <li><a href="/">トップページ</a></li>
+      <li><a href="/en/" lang="en">English</a></li>
+      <li><a href="/portal-ja.html">活動ポータル</a></li>
+      <li><a href="https://www.google.com/maps?cid=10510096984992144515" target="_blank" rel="noopener">Googleマップ</a></li>
+      <li><a href="https://www.instagram.com/digiforestai/" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+    <p>© 2026 DigiForest</p>
+  </div>
+</footer>
+
+<script>
+const SHOP = [
+  ["ご来店ありがとうございます", "両手をそろえて、深くお辞儀している"],
+  ["ご予約承りました", "メモ帳とペンを持って、にっこりうなずいている"],
+  ["本日営業しております", "両手を広げて、元気にお出迎えしている"],
+  ["本日は定休日です", "目を閉じて、すやすや眠っている"],
+  ["承知いたしました", "片手を胸に当てて、軽くお辞儀している"],
+  ["お待ちしております", "両手を前でそろえ、笑顔でまっすぐ立っている"],
+  ["またのお越しを", "笑顔で大きく手を振っている"],
+  ["おつかれさまです", "湯のみを両手で持って、ほっとした顔をしている"]
+];
+const KEY = "stampPromptMaker.v1";
+const $ = id => document.getElementById(id);
+
+function buildRows(){
+  const box = $("rows");
+  for(let i=0;i<8;i++){
+    const r = document.createElement("div");
+    r.className = "sp-row";
+    r.innerHTML = `<span class="sp-num">${i+1}つ目</span>
+      <input type="text" id="w${i}" placeholder="ひと言（例：${SHOP[i][0]}）" aria-label="${i+1}つ目のひと言">
+      <input type="text" id="p${i}" placeholder="ポーズ（例：${SHOP[i][1]}）" aria-label="${i+1}つ目のポーズ">`;
+    box.appendChild(r);
+  }
+}
+function fields(){ return ["what","body","mark","mood","style"]
+  .concat([...Array(8).keys()].flatMap(i=>["w"+i,"p"+i])); }
+function save(){
+  try{
+    const d = {}; fields().forEach(f=>d[f]=$(f).value);
+    localStorage.setItem(KEY, JSON.stringify(d));
+  }catch(e){}
+}
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(KEY)||"null"); if(!d) return;
+    fields().forEach(f=>{ if(d[f]!=null) $(f).value=d[f]; });
+  }catch(e){}
+}
+
+function chara(){
+  const what=$("what").value.trim()||"茶葉";
+  const body=$("body").value.trim(), mark=$("mark").value.trim();
+  let s=`${what}のキャラクター`;
+  const parts=[body,mark].filter(Boolean);
+  if(parts.length) s+=`（${parts.join("、")}）`;
+  return s;
+}
+function common(){
+  return `${$("style").value}。${$("mood").value}雰囲気。白い背景。文字や吹き出しは入れないでください。キャラクターは1人だけ、全身が入るように描いてください。`;
+}
+function poseFor(i){
+  const w=$("w"+i).value.trim(), p=$("p"+i).value.trim();
+  if(p) return p;
+  if(w) return `「${w}」と言っているような表情とポーズ`;
+  return "";
+}
+function make(){
+  const outs=$("outs"); outs.innerHTML="";
+  const list=[];
+  list.push(["見本（最初の1枚）",
+    `LINEスタンプ用のイラストを1枚描いてください。\n${chara()}。正面を向いて、にっこり笑って立っている。\n${common()}`]);
+  for(let i=0;i<8;i++){
+    const pose=poseFor(i); if(!pose) continue;
+    const w=$("w"+i).value.trim();
+    list.push([`${i+1}つ目${w?"：「"+w+"」":""}`,
+      `添付した絵とまったく同じキャラクターで、もう1枚描いてください。\n顔・体の形・色・${$("mark").value.trim()||"目印の小物"}は見本と同じにしてください。\nポーズ：${pose}。\n${common()}`]);
+  }
+  if(list.length<2){ alert("ひと言かポーズを1つ以上入れてください"); return; }
+  list.forEach(([title,text])=>{
+    const d=document.createElement("div"); d.className="sp-out";
+    d.innerHTML=`<h3></h3><pre></pre><button class="sp-btn copy" type="button">コピー</button>`;
+    d.querySelector("h3").textContent=title; d.querySelector("pre").textContent=text;
+    d.querySelector("button").addEventListener("click",e=>copy(text,e.currentTarget));
+    outs.appendChild(d);
+  });
+  $("result").classList.remove("sp-hidden");
+  $("result").scrollIntoView({behavior:"smooth"});
+  save();
+}
+async function copy(text,btn){
+  let ok=false;
+  try{ await navigator.clipboard.writeText(text); ok=true; }catch(e){
+    const t=document.createElement("textarea"); t.value=text; document.body.appendChild(t);
+    t.select(); try{ ok=document.execCommand("copy"); }catch(_){} t.remove();
+  }
+  btn.textContent= ok ? "コピーしました" : "長押しでコピーしてください";
+  btn.classList.add("done");
+  setTimeout(()=>{ btn.textContent="コピー"; btn.classList.remove("done"); },1800);
+}
+
+buildRows(); load();
+$("fillShop").addEventListener("click",()=>{
+  SHOP.forEach(([w,p],i)=>{ $("w"+i).value=w; $("p"+i).value=p; }); save();
+});
+$("make").addEventListener("click",make);
+document.addEventListener("input",save);
+document.addEventListener("change",save);
+</script>
+</body>
+</html>
