@@ -86,6 +86,7 @@ section { padding: 88px 0; }
 
 /* ---------- cards ---------- */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (min-width: 761px) { .cards.four { grid-template-columns: repeat(2, 1fr); } }
 .card { background: #fff; border: 2px solid var(--line); border-radius: 28px; padding: 30px 28px; }
 .card .icon { width: 60px; height: 60px; border-radius: 18px; background: var(--soft); display: grid; place-items: center; font-size: 28px; margin-bottom: 16px; }
 .card h3 { font-size: 21px; margin-bottom: 10px; }
