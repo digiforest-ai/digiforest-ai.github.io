@@ -122,6 +122,14 @@ const WORKS = [
     ]
   },
   {
+    title: "SNS投稿をAIで作る体験",
+    tag: "公開中",
+    desc: "4つの質問に答えると、団体の投稿の下書きと「AIへの頼み方」が出る体験ページです。",
+    ai: "答えをもとに投稿の下書きと頼み方の文を作る",
+    me: "4つの質問と、体験の流れを決める",
+    url: "/taiken/", emoji: "📱", label: "体験ページ", cream: true, imgs: []
+  },
+  {
     title: "鵜飼のかけ声",
     desc: "ボタンでかけ声をかけると、鵜が魚…ではなく、いろいろなものを持ってくる遊びです。",
     ai: "画面と動きのしくみを作る",
@@ -157,6 +165,37 @@ const WORKS = [
     ai: "曲を作る",
     me: "物語からテーマを選び、曲の方向を決める",
     url: "", emoji: "🎵", label: "音楽", imgs: []
+  },
+  {
+    title: "宇治茶キャッチ",
+    desc: "宇治茶をテーマにした、遊べるゲームです。",
+    ai: "画面と動きのしくみを作る",
+    me: "宇治茶をテーマに、遊び方を考える",
+    url: "", emoji: "🍃", label: "遊べるページ", cream: true, imgs: []
+  },
+  {
+    title: "うじっ葉さんの手帳",
+    tag: "試作",
+    desc: "話すたびに呼び名や話したことを覚えて、次に来たとき「おかえり」と迎えてくれる、育つ話し相手です。",
+    ai: "画面と、話したことを覚えるしくみを作る",
+    me: "何を覚えるか・どう迎えるかを決める",
+    url: "", emoji: "📔", label: "AIとの会話", imgs: []
+  },
+  {
+    title: "運用室",
+    tag: "自分用の道具",
+    desc: "SNS投稿の予定・チェック・メモを1画面にまとめた、自分用の運用ボードです。講座では、受講生が自分のお店版を作る題材にもなります。",
+    ai: "画面と動きのしくみを作る",
+    me: "1画面に何をまとめるかを決める",
+    url: "", emoji: "🗂️", label: "運用ボード", cream: true, imgs: []
+  },
+  {
+    title: "ゲームの型メニュー",
+    tag: "講座資料",
+    desc: "講座で「どんな遊べるページを作るか」を選ぶための、A4の型一覧です（操作して遊ぶ／話し相手／笑える反応／診断）。",
+    ai: "一覧の形に整える",
+    me: "どんな型を並べるかを決める",
+    url: "", emoji: "📋", label: "講座資料", imgs: []
   }
 ];
 
@@ -173,7 +212,7 @@ const WORKS = [
       : `<span class="btn wait" aria-disabled="true">準備中</span>`;
     const sub = w.sub ? `<a class="sub" href="${esc(w.sub.url)}"${ext(w.sub.url)}>${esc(w.sub.text)}</a>` : "";
     return `<li class="work">${pic}<div class="work-body">
-      ${w.tag ? `<span class="work-tag${w.tag === "販売中" ? " on" : ""}">${esc(w.tag)}</span>` : ""}
+      ${w.tag ? `<span class="work-tag${(w.tag === "販売中" || w.tag === "公開中") ? " on" : ""}">${esc(w.tag)}</span>` : ""}
       <h2>${esc(w.title)}</h2>
       <p class="desc">${esc(w.desc)}</p>
       <ul class="roles"><li><b>AIがしたこと</b>${esc(w.ai)}</li><li class="me"><b>わたしがしたこと</b>${esc(w.me)}</li></ul>
