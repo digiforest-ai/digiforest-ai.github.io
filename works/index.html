@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>つくったもの棚｜DigiForest</title>
+<meta name="description" content="DigiForestがAIと一緒につくった作品の棚です。LINEスタンプ、遊べるページ、お店の見本、AIとの会話、曲などを並べています。お店・団体版のご相談も承ります。">
+<link rel="canonical" href="https://digiforest-ai.github.io/works/">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#4f7d33">
+<meta property="og:title" content="つくったもの棚｜DigiForest">
+<meta property="og:description" content="AIと一緒につくった作品の棚。お店・団体版も作れます。">
+<meta property="og:url" content="https://digiforest-ai.github.io/works/">
+<meta property="og:image" content="https://digiforest-ai.github.io/assets/img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+/* つくったもの棚（このページだけのスタイル） */
+.works { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; list-style: none; }
+.work { background: #fff; border: 2px solid var(--line); border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; }
+.work-pic { aspect-ratio: 4 / 3; background: var(--soft); display: grid; place-items: center; position: relative; }
+.work-pic.cream { background: var(--cream); }
+.work-pic .emoji { font-size: 64px; line-height: 1; }
+.work-pic .pic-label { position: absolute; left: 14px; bottom: 12px; font-size: 12px; font-weight: 700; color: var(--matcha-d); background: #fff; border-radius: 999px; padding: 2px 10px; }
+.work-pic.stamps { grid-template-columns: 1fr 1fr; gap: 6px; padding: 14px; place-items: stretch; }
+.work-pic.stamps img { width: 100%; height: 100%; object-fit: contain; background: #fff; border-radius: 12px; }
+.work-body { padding: 22px 22px 24px; display: flex; flex-direction: column; flex: 1; }
+.work-tag { align-self: flex-start; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; background: var(--soft); color: var(--matcha-d); }
+.work-tag.on { background: var(--orange); color: #fff; }
+.work h2 { font-size: 20px; margin-bottom: 6px; }
+.work .desc { color: var(--sub); font-size: 15px; margin-bottom: 12px; }
+.roles { list-style: none; font-size: 14px; border-top: 1px dashed var(--line); padding-top: 10px; margin-bottom: 16px; flex: 1; }
+.roles li { padding: 4px 0; line-height: 1.6; }
+.roles b { display: block; font-size: 12px; color: var(--matcha-d); }
+.roles li.me b { color: var(--orange-d); }
+.work-btns { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.work-btns .btn { padding: 11px 24px; font-size: 15px; }
+.btn.wait { background: #eceee9; color: var(--sub); box-shadow: none; cursor: default; }
+.btn.wait:hover { transform: none; }
+.work-btns .sub { font-size: 14px; font-weight: 700; }
+.shelf-lead { text-align: center; color: var(--sub); max-width: 40em; margin: 0 auto; }
+.order { text-align: center; background: var(--cream); border-radius: 28px; padding: 36px 24px; }
+.order h2 { font-size: clamp(22px, 3vw, 28px); font-weight: 900; margin-bottom: 8px; }
+.order p { color: var(--sub); margin-bottom: 20px; }
+@media (max-width: 960px) { .works { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 760px) { .works { grid-template-columns: 1fr; } .work-btns .btn { flex: 1 1 100%; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><b>DigiForest</b><small>お店のデジタル相談・宇治発</small></a>
+    <div class="header-cta"><a class="btn small" href="/#contact">無料相談</a></div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="page-head">
+    <div class="wrap">
+      <h1>つくったもの棚</h1>
+      <p class="sp-lead">AIと一緒につくったものを並べています。<span class="nb">「うちでも、こんなのを作れたら」</span>と思ったら、気軽に声をかけてください。</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <ul class="works" id="works"></ul>
+      <noscript><p class="shelf-lead">作品の一覧を表示するには、JavaScriptをオンにしてください。</p></noscript>
+    </div>
+  </section>
+
+  <section class="bg-soft">
+    <div class="wrap">
+      <div class="order">
+        <h2>お店・団体版も作れます</h2>
+        <p>スタンプ、遊べるページ、会話のきっかけづくりなど、<span class="nb">お店や団体に合わせた形でご相談を承ります。</span></p>
+        <a class="btn" href="/#contact">相談してみる</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="f-logo">DigiForest</p>
+    <ul class="f-links">
+      <li><a href="/">トップページ</a></li>
+      <li><a href="/en/" lang="en">English</a></li>
+      <li><a href="/portal-ja.html">活動ポータル</a></li>
+      <li><a href="https://www.google.com/maps?cid=10510096984992144515" target="_blank" rel="noopener">Googleマップ</a></li>
+      <li><a href="https://www.instagram.com/digiforestai/" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+    <p>© 2026 DigiForest</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   作品リスト ― ここだけ書きかえればOK
+   url  : 「体験する」のリンク先。"" のままだと「準備中」表示になります。
+   imgs : 画像のパス（なければ [] のまま。絵文字の枠が出ます）
+   ============================================================ */
+const WORKS = [
+  {
+    title: "LINEスタンプ「うじっ葉さん」",
+    tag: "販売中",
+    desc: "宇治の茶葉キャラが、ていねいな敬語であいさつする動くスタンプです。",
+    ai: "キャラクターの絵を描く",
+    me: "キャラと敬語のひと言を考え、仕上げて販売へ",
+    url: "/stamp/",
+    btn: "絵の指示文づくりを体験する",
+    sub: { text: "LINE STOREで見る ↗", url: "https://line.me/S/sticker/37256251" },
+    imgs: [
+      ["/assets/img/stamp/ujippa-02.webp", "ありがとうございます"],
+      ["/assets/img/stamp/ujippa-04.webp", "資料をお送りしました"],
+      ["/assets/img/stamp/ujippa-05.webp", "少々お待ちください"],
+      ["/assets/img/stamp/ujippa-07.webp", "お疲れさまです"]
+    ]
+  },
+  {
+    title: "鵜飼のかけ声",
+    desc: "ボタンでかけ声をかけると、鵜が魚…ではなく、いろいろなものを持ってくる遊びです。",
+    ai: "画面と動きのしくみを作る",
+    me: "「何を持ってくるか」の遊びを考える",
+    url: "", emoji: "🐦", label: "遊べるページ", imgs: []
+  },
+  {
+    title: "ヘアサロン ひとやすみ",
+    tag: "業種の見本",
+    desc: "架空の美容室。店長がワゴンから意外なものを出す、お客さんとの会話のきっかけの見本です。",
+    ai: "お店の画面とやりとりを作る",
+    me: "ワゴンの仕掛けと、会話のきっかけという使い道を考える",
+    url: "", emoji: "💇", label: "お店の見本", cream: true, imgs: []
+  },
+  {
+    title: "うじっ葉さんと七日間",
+    tag: "試作",
+    desc: "茶葉キャラと話していくと、7日後に「あなたのお茶」のラベルができるAI会話です。",
+    ai: "キャラになりきって会話し、ラベルの言葉を考える",
+    me: "7日間の流れとキャラの話し方を決める",
+    url: "", emoji: "🍵", label: "AIとの会話", imgs: []
+  },
+  {
+    title: "宇治十帖の月",
+    desc: "宇治が舞台の場面を選ぶと、昼の宇治が暮れて、その夜の月が出ます。",
+    ai: "空が暮れて月が出るしくみを作る",
+    me: "宇治十帖から場面を選び、見せ方を決める",
+    url: "", emoji: "🌙", label: "見て楽しむページ", cream: true, imgs: []
+  },
+  {
+    title: "宇治十帖の曲",
+    desc: "浮舟・蜻蛉をテーマに、AIで作曲した曲です。",
+    ai: "曲を作る",
+    me: "物語からテーマを選び、曲の方向を決める",
+    url: "", emoji: "🎵", label: "音楽", imgs: []
+  }
+];
+
+(function () {
+  const box = document.getElementById("works");
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ext = u => /^https?:/.test(u) ? ' target="_blank" rel="noopener"' : "";
+  box.innerHTML = WORKS.map(w => {
+    const pic = w.imgs.length
+      ? `<div class="work-pic stamps">${w.imgs.map(([src, alt]) => `<img src="${esc(src)}" alt="${esc(alt)}" width="240" height="208" loading="lazy">`).join("")}</div>`
+      : `<div class="work-pic${w.cream ? " cream" : ""}" aria-hidden="true"><span class="emoji">${w.emoji || "✨"}</span>${w.label ? `<span class="pic-label">${esc(w.label)}</span>` : ""}</div>`;
+    const main = w.url
+      ? `<a class="btn" href="${esc(w.url)}"${ext(w.url)}>${esc(w.btn || "体験する")}</a>`
+      : `<span class="btn wait" aria-disabled="true">準備中</span>`;
+    const sub = w.sub ? `<a class="sub" href="${esc(w.sub.url)}"${ext(w.sub.url)}>${esc(w.sub.text)}</a>` : "";
+    return `<li class="work">${pic}<div class="work-body">
+      ${w.tag ? `<span class="work-tag${w.tag === "販売中" ? " on" : ""}">${esc(w.tag)}</span>` : ""}
+      <h2>${esc(w.title)}</h2>
+      <p class="desc">${esc(w.desc)}</p>
+      <ul class="roles"><li><b>AIがしたこと</b>${esc(w.ai)}</li><li class="me"><b>わたしがしたこと</b>${esc(w.me)}</li></ul>
+      <div class="work-btns">${main}${sub}</div>
+    </div></li>`;
+  }).join("");
+})();
+</script>
+</body>
+</html>
