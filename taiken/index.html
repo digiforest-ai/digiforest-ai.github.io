@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNS投稿をAIで作る体験｜DigiForest</title>
+<meta name="description" content="4つの質問に答えるだけで、団体のSNS投稿の下書きと、ChatGPTやClaudeに貼り付けて使える「AIへの頼み方」ができる体験ページです。">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#4f7d33">
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  /* この体験ページだけで使うスタイル（共通CSSの色・ボタンを土台にしています） */
+  body { font-size: 17px; background: var(--cream); }
+  .tk { max-width: 560px; margin: 0 auto; padding: 20px 16px 40px; }
+  .tk-head { text-align: center; padding: 8px 0 4px; }
+  .tk-head .badge { margin-bottom: 10px; font-size: 13px; }
+  .tk-head h1 { font-size: 26px; font-weight: 900; line-height: 1.4; }
+  .tk-head p { color: var(--sub); font-size: 15px; margin-top: 6px; }
+  .tk-panel { background: #fff; border-radius: var(--radius); padding: 22px 18px; margin-top: 18px; box-shadow: 0 6px 18px rgba(60, 80, 40, .08); }
+  .tk-prog { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tk-prog i { flex: 1; height: 6px; border-radius: 3px; background: var(--line); }
+  .tk-prog i.on { background: var(--matcha); }
+  .tk-num { font-size: 14px; font-weight: 700; color: var(--orange-d); }
+  .tk-q { font-size: 21px; font-weight: 900; margin: 2px 0 16px; }
+  .tk-choices { display: grid; gap: 10px; }
+  .tk-choice {
+    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 58px; text-align: left;
+    font: inherit; font-size: 17px; font-weight: 700; color: var(--ink); cursor: pointer;
+    background: var(--soft); border: 2px solid transparent; border-radius: 16px; padding: 12px 16px;
+  }
+  .tk-choice .e { font-size: 24px; line-height: 1; }
+  .tk-choice.sel { border-color: var(--matcha); background: #e6f0dc; }
+  .tk-choice:active { transform: scale(.98); }
+  .tk input[type=text] { width: 100%; font: inherit; font-size: 17px; padding: 14px; border: 2px solid var(--line); border-radius: 14px; color: var(--ink); background: #fff; }
+  .tk input[type=text]:focus { outline: none; border-color: var(--matcha); }
+  .tk-hint { font-size: 14px; color: var(--sub); margin-top: 8px; }
+  .tk-nav { display: flex; gap: 10px; margin-top: 18px; }
+  .tk-btn {
+    flex: 1; min-height: 54px; border: 0; border-radius: 999px; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer;
+    background: var(--orange); color: #fff; box-shadow: 0 4px 0 var(--orange-d);
+  }
+  .tk-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--orange-d); }
+  .tk-btn.green { background: var(--matcha); box-shadow: 0 4px 0 var(--matcha-d); }
+  .tk-btn.ghost { flex: 0 0 auto; padding: 0 20px; background: #fff; color: var(--sub); border: 2px solid var(--line); box-shadow: none; }
+  .tk-card { background: #fff; border-radius: var(--radius); padding: 20px 18px; margin-top: 18px; border: 2px solid var(--line); }
+  .tk-card.ai { border-color: var(--matcha); }
+  .tk-card h2 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+  .tk-card .lbl { display: inline-block; background: var(--orange); color: #fff; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 1px 12px; margin-bottom: 6px; }
+  .tk-card.ai .lbl { background: var(--matcha); }
+  .tk-card .desc { font-size: 14px; color: var(--sub); margin-bottom: 10px; }
+  .tk-text { white-space: pre-wrap; word-break: break-word; background: var(--cream); border-radius: 14px; padding: 14px; font-size: 16px; line-height: 1.85; }
+  .tk-card.ai .tk-text { background: var(--soft); font-size: 15px; }
+  .tk-copy { width: 100%; margin-top: 12px; }
+  .tk-tone { font-size: 14px; color: var(--matcha-d); font-weight: 700; margin-bottom: 8px; }
+  .tk-steps { list-style: none; counter-reset: s; margin-top: 14px; font-size: 15px; }
+  .tk-steps li { position: relative; padding: 6px 0 6px 36px; }
+  .tk-steps li::before { counter-increment: s; content: counter(s); position: absolute; left: 0; top: 7px; width: 26px; height: 26px; border-radius: 50%; background: var(--matcha); color: #fff; font-size: 14px; font-weight: 700; display: grid; place-items: center; line-height: 1; }
+  .tk-try { background: var(--cream); border-radius: 14px; padding: 14px; margin-top: 12px; font-size: 15px; }
+  .tk-try b { color: var(--orange-d); }
+  .tk-again { display: grid; gap: 10px; margin-top: 22px; }
+  .tk-foot { text-align: center; font-size: 13px; color: var(--sub); padding: 24px 16px 32px; }
+  .tk-foot a { font-weight: 700; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main class="tk">
+  <div class="tk-head">
+    <span class="badge">AIミニ体験</span>
+    <h1>団体のSNS投稿を<br>AIで作ってみよう</h1>
+    <p>4つの質問に答えると、投稿の下書きと<br>「AIへの頼み方」ができます。</p>
+  </div>
+
+  <!-- 質問 -->
+  <section class="tk-panel" id="quiz" aria-live="polite" style="padding:22px 18px">
+    <div class="tk-prog" id="prog"><i></i><i></i><i></i><i></i></div>
+    <p class="tk-num" id="qnum"></p>
+    <h2 class="tk-q" id="qtext"></h2>
+    <div class="tk-choices" id="choices"></div>
+    <div id="freebox" hidden>
+      <label for="name" class="tk-hint" style="display:block;margin:0 0 8px">例：みどりの森の会、春のお茶会（空欄でもOK）</label>
+      <input type="text" id="name" maxlength="30" placeholder="団体名や催しの名前" autocomplete="off">
+    </div>
+    <div class="tk-nav">
+      <button class="tk-btn ghost" type="button" id="back">← 戻る</button>
+      <button class="tk-btn" type="button" id="make" hidden>カードをつくる</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <div id="result" hidden>
+    <article class="tk-card">
+      <span class="lbl">カード1</span>
+      <h2>投稿の下書き</h2>
+      <p class="desc">【　】のところは、自分の言葉に書きかえてください。</p>
+      <p class="tk-tone" id="tone"></p>
+      <div class="tk-text" id="draft"></div>
+      <button class="tk-btn green tk-copy" type="button" data-copy="draft">下書きをコピー</button>
+    </article>
+
+    <article class="tk-card ai">
+      <span class="lbl">カード2</span>
+      <h2>AIへの頼み方</h2>
+      <p class="desc">これをChatGPTやClaudeに貼り付けると、AIがあなたの団体に合わせた投稿文を考えてくれます。</p>
+      <div class="tk-text" id="prompt"></div>
+      <button class="tk-btn green tk-copy" type="button" data-copy="prompt">頼み方をコピー</button>
+      <ol class="tk-steps">
+        <li>上のボタンでコピー</li>
+        <li>ChatGPTかClaudeのアプリを開く</li>
+        <li>入力欄を長押しして「ペースト」→ 送信</li>
+        <li>AIの質問に答えて、出てきた文を自分の言葉で直す</li>
+      </ol>
+      <div class="tk-try"><b>もう一歩：</b>AIの返事に「もっと短く」「絵文字なしで」「〇〇さん向けに書きかえて」と送ってみましょう。何度でも直してもらえます。</div>
+    </article>
+
+    <div class="tk-again">
+      <button class="tk-btn" type="button" id="variant">別の伝え方で</button>
+      <button class="tk-btn ghost" type="button" id="restart" style="flex:1">もう一度（最初から）</button>
+    </div>
+  </div>
+</main>
+
+<footer class="tk-foot">
+  <p>DigiForest（山中今日子）｜<a href="/">トップページへ</a></p>
+  <p>このページは入力内容をどこにも送信しません。</p>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+
+  // ---- 質問 ----
+  const QUESTIONS = [
+    { key: "act", q: "どんな活動をしていますか？", opts: [
+      { v: "ibasho", e: "☕", t: "居場所・相談" },
+      { v: "wa",     e: "🍵", t: "和文化・教室" },
+      { v: "kenko",  e: "🌿", t: "健康・運動" },
+      { v: "marche", e: "🎪", t: "マルシェ・イベント" },
+      { v: "other",  e: "✨", t: "その他" } ] },
+    { key: "pur", q: "今回、伝えたいことは？", opts: [
+      { v: "kokuchi", e: "📣", t: "次の催しの告知" },
+      { v: "yousu",   e: "📷", t: "活動の様子" },
+      { v: "new",     e: "🤝", t: "新しく来てほしい人への案内" },
+      { v: "thanks",  e: "💐", t: "お礼・報告" } ] },
+    { key: "aud", q: "だれに届けたいですか？", opts: [
+      { v: "kinjo",    e: "🏠", t: "近所の人" },
+      { v: "kosodate", e: "👶", t: "子育て中の人" },
+      { v: "shumi",    e: "🎨", t: "同じ趣味の人" },
+      { v: "hajime",   e: "🌱", t: "これから始めたい人" } ] },
+    { key: "name", q: "団体名や催しの名前は？", free: true }
+  ];
+
+  // ---- 文の型（AIは使わず、ここにある文を組み合わせます） ----
+  const TONES = ["やわらかめ", "元気に", "ひとことで短く"];
+
+  const ACT = {
+    ibasho: { label: "居場所・相談", time: "お茶を飲みながら、ゆっくりおしゃべりできる時間", scene: "お茶を飲みながら、いろいろな話に花が咲きました。", tags: ["#居場所づくり", "#地域の集まり", "#おしゃべり"] },
+    wa:     { label: "和文化・教室", time: "季節を感じながら、和の文化にふれる時間", scene: "季節のしつらえの中で、ていねいに手を動かしました。", tags: ["#和文化", "#教室", "#季節を楽しむ"] },
+    kenko:  { label: "健康・運動", time: "体を動かして、気持ちよくすごす時間", scene: "みんなで体を動かして、すっきりした気分になりました。", tags: ["#健康づくり", "#体を動かそう", "#からだにやさしい"] },
+    marche: { label: "マルシェ・イベント", time: "手づくりの品やおいしいものが並ぶ、にぎやかな一日", scene: "たくさんの品が並び、会場がにぎやかになりました。", tags: ["#マルシェ", "#手づくり", "#地域イベント"] },
+    other:  { label: "その他の活動", time: "みんなで集まって、楽しくすごす時間", scene: "みんなで集まって、楽しい時間をすごしました。", tags: ["#地域の活動", "#仲間づくり", "#まちの集まり"] }
+  };
+
+  const AUD = {
+    kinjo:    { label: "近所の人",
+      open: ["ご近所のみなさん、こんにちは。", "近くにお住まいのみなさーん！", "ご近所のみなさんへ。"],
+      call: ["お散歩ついでに、のぞいてみてくださいね。", "ぜひ気軽に遊びに来てください！", "お近くの方、ぜひ。"] },
+    kosodate: { label: "子育て中の人",
+      open: ["毎日の子育て、おつかれさまです。", "子育て中のみなさん、こんにちは！", "子育て中の方へ。"],
+      call: ["ほっとひと息つく時間になればうれしいです。", "息ぬきに、ぜひのぞいてみてください！", "ひと息つきに来ませんか。"] },
+    shumi:    { label: "同じ趣味の人",
+      open: ["好きなことの話ができる仲間を探している方へ。", "同じ楽しみを持つみなさん、こんにちは！", "同じ趣味の方へ。"],
+      call: ["好きなことの話、いっしょにしませんか。", "いっしょに楽しみましょう！", "語り合いましょう。"] },
+    hajime:   { label: "これから始めたい人",
+      open: ["「ちょっとやってみたいな」と思っている方へ。", "何か新しいこと、始めてみませんか？", "これから始めたい方へ。"],
+      call: ["はじめの一歩を、いっしょにふみ出せたらうれしいです。", "まずは気軽にのぞいてみてください！", "まずは一度、どうぞ。"] }
+  };
+
+  const INFO = "📅 日時：【日にち・時間】\n📍 場所：【場所】\n💰 参加費：【金額 または 無料】\n✉️ 申し込み：【連絡先・方法】";
+
+  const PUR = {
+    kokuchi: { label: "次の催しの告知",
+      body: [
+        a => `次の催しのお知らせです。\n${a.time}を、いっしょにすごしませんか。\n\n${INFO}`,
+        a => `次の催しが決まりました！\n${a.time}を、みんなで楽しみましょう。\n\n${INFO}`,
+        a => `【日にち】に開催します。\n📍【場所】／✉️【申し込み方法】`
+      ],
+      ai: "日時・場所・参加費・申し込み方法が、ひと目でわかるようにしてください。" },
+    yousu: { label: "活動の様子",
+      body: [
+        a => `先日の活動の様子をお届けします。\n${a.scene}\n\n【その日にあった、うれしかったこと】`,
+        a => `活動の様子です📷\n${a.scene}\n\n【その日いちばん盛り上がったこと】`,
+        a => `先日の活動より。\n【写真にひとこと】`
+      ],
+      ai: "写真に添える文として、その場の空気が伝わるように書いてください。" },
+    new: { label: "新しく来てほしい人への案内",
+      body: [
+        a => `わたしたちは、${a.time}をつくっている団体です。\n\n【いつ・どこで集まっているか】\n【どんな人が来ているか】\n\n見学やお問い合わせは【連絡方法】からどうぞ。`,
+        a => `新しい仲間を募集中です！\n${a.time}を、いっしょにつくりませんか。\n\n【いつ・どこで集まっているか】\n✉️ お問い合わせ：【連絡方法】`,
+        a => `仲間を募集しています。\n✉️【連絡方法】`
+      ],
+      ai: "はじめての人が不安に思いそうなこと（どんな雰囲気か、何を持っていけばいいか など）にも、ひとこと触れてください。" },
+    thanks: { label: "お礼・報告",
+      body: [
+        a => `先日の【催しの名前】に来てくださったみなさん、ありがとうございました。\n${a.scene}\n\n【参加した人からの、うれしかったひとこと】\n次の予定は、決まりしだいお知らせします。`,
+        a => `【催しの名前】、ありがとうございました！\n${a.scene}\n\n次回もお楽しみに！`,
+        a => `【催しの名前】、ありがとうございました。\n次回もどうぞよろしくお願いします。`
+      ],
+      ai: "来てくれた人への感謝が伝わり、次も来たくなるように書いてください。" }
+  };
+
+  const AUD_AI = {
+    kinjo: "近所に住んでいて、活動のことをまだよく知らない人",
+    kosodate: "子育て中で、忙しい毎日を送っている人",
+    shumi: "同じ趣味を持っていて、仲間を探している人",
+    hajime: "興味はあるけれど、はじめの一歩をためらっている人"
+  };
+
+  // ---- 状態 ----
+  const ans = { act: null, pur: null, aud: null, name: "" };
+  let step = 0, tone = 0;
+
+  function renderQuestion() {
+    const Q = QUESTIONS[step];
+    [...$("prog").children].forEach((el, i) => el.classList.toggle("on", i <= step));
+    $("qnum").textContent = `質問 ${step + 1} / ${QUESTIONS.length}`;
+    $("qtext").textContent = Q.q;
+    const box = $("choices");
+    box.innerHTML = "";
+    $("freebox").hidden = !Q.free;
+    $("make").hidden = !Q.free;
+    $("back").style.visibility = step === 0 ? "hidden" : "visible";
+    if (Q.free) { $("name").value = ans.name; return; }
+    Q.opts.forEach(o => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "tk-choice" + (ans[Q.key] === o.v ? " sel" : "");
+      b.innerHTML = `<span class="e" aria-hidden="true">${o.e}</span><span></span>`;
+      b.lastChild.textContent = o.t;
+      b.addEventListener("click", () => {
+        ans[Q.key] = o.v;
+        b.classList.add("sel");
+        setTimeout(() => { step++; renderQuestion(); }, 160);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function buildDraft() {
+    const a = ACT[ans.act], u = AUD[ans.aud], p = PUR[ans.pur];
+    const head = ans.name ? `【${ans.name}】\n` : "【団体名・催しの名前】\n";
+    const tags = tone === 2 ? a.tags.slice(0, 2) : a.tags;
+    return `${head}${u.open[tone]}\n\n${p.body[tone](a)}\n\n${u.call[tone]}\n\n${tags.join(" ")}`;
+  }
+
+  function buildPrompt() {
+    const a = ACT[ans.act], p = PUR[ans.pur], u = AUD[ans.aud];
+    const name = ans.name || "（まだ決めていません。仮に「わたしたちの会」としてください）";
+    const len = tone === 2 ? "100字くらいで短く" : "200〜300字くらい";
+    const style = ["やさしく、やわらかい言葉", "明るく、元気が伝わる言葉", "短く、要点だけが伝わる言葉"][tone];
+    return [
+      "あなたは、地域の小さな団体のSNS投稿を手伝うアシスタントです。",
+      "次の内容で、InstagramやLINEに載せる投稿文を作ってください。",
+      "",
+      `■ 団体・催しの名前：${name}`,
+      `■ 活動の種類：${a.label}`,
+      `■ 今回伝えたいこと：${p.label}`,
+      `■ 届けたい相手：${u.label}（${AUD_AI[ans.aud]}）`,
+      `■ 伝え方：${style}`,
+      "",
+      "【お願い】",
+      `・届けたい相手が読んで「行ってみようかな」と思えるように、${style}で書いてください。`,
+      `・${p.ai}`,
+      `・長さは${len}。絵文字は少しだけ。最後にハッシュタグを3〜5個。`,
+      "・日時・場所・人数・実績など、私が伝えていないことは作らずに【　】で空けておいてください。",
+      "・雰囲気のちがう案を2つ出してください。",
+      "・書く前に、もっと良い文にするために私に聞きたいことがあれば、3つまで質問してください。"
+    ].join("\n");
+  }
+
+  function showResult() {
+    $("tone").textContent = `伝え方：${TONES[tone]}（${tone + 1} / ${TONES.length}）`;
+    $("draft").textContent = buildDraft();
+    $("prompt").textContent = buildPrompt();
+  }
+
+  $("back").addEventListener("click", () => {
+    if (step === QUESTIONS.length - 1) ans.name = $("name").value.trim();
+    if (step > 0) { step--; renderQuestion(); }
+  });
+
+  $("make").addEventListener("click", () => {
+    ans.name = $("name").value.trim();
+    tone = 0;
+    $("quiz").hidden = true;
+    $("result").hidden = false;
+    showResult();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  $("name").addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing) $("make").click(); });
+
+  $("variant").addEventListener("click", () => {
+    tone = (tone + 1) % TONES.length;
+    showResult();
+    $("draft").closest(".tk-card").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  $("restart").addEventListener("click", () => {
+    Object.assign(ans, { act: null, pur: null, aud: null, name: "" });
+    step = 0; tone = 0;
+    $("result").hidden = true;
+    $("quiz").hidden = false;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  document.querySelectorAll("[data-copy]").forEach(btn => {
+    const orig = btn.textContent;
+    btn.addEventListener("click", async () => {
+      const text = $(btn.dataset.copy).textContent;
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+        const t = document.createElement("textarea");
+        t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+        document.body.appendChild(t); t.select();
+        try { ok = document.execCommand("copy"); } catch (_) {}
+        t.remove();
+      }
+      btn.textContent = ok ? "コピーしました ✓" : "うまくいかない時は、文を長押ししてコピー";
+      btn.classList.toggle("green", !ok);
+      setTimeout(() => { btn.textContent = orig; btn.classList.add("green"); }, 2000);
+    });
+  });
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>
