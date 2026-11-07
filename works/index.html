@@ -151,10 +151,10 @@ const WORKS = [
   {
     title: "うじっ葉さんと七日間",
     tag: "試作",
-    desc: "茶葉キャラと話していくと、7日後に「あなたのお茶」のラベルができるAI会話です。",
+    desc: "茶葉キャラと話していくと、7日後に「あなたのお茶」のラベルができるAI会話です。AIを使うためこのページでは遊べず、講座で体験していただけます。",
     ai: "キャラになりきって会話し、ラベルの言葉を考える",
     me: "7日間の流れとキャラの話し方を決める",
-    url: "", emoji: "🍵", label: "AIとの会話", imgs: []
+    noBtn: true, sub: { text: "講座について相談する →", url: "/#contact" }, url: "", emoji: "🍵", label: "AIとの会話", imgs: []
   },
   {
     title: "宇治十帖の月",
@@ -243,7 +243,7 @@ const WORKS = [
       : w.imgs.length
       ? `<div class="work-pic stamps">${w.imgs.map(([src, alt]) => `<img src="${esc(src)}" alt="${esc(alt)}" width="240" height="208" loading="lazy">`).join("")}</div>`
       : `<div class="work-pic${w.cream ? " cream" : ""}" aria-hidden="true"><span class="emoji">${w.emoji || "✨"}</span>${w.label ? `<span class="pic-label">${esc(w.label)}</span>` : ""}</div>`;
-    const main = w.url
+    const main = w.noBtn ? "" : w.url
       ? `<a class="btn" href="${esc(w.url)}"${ext(w.url)}>${esc(w.btn || "体験する")}</a>`
       : `<span class="btn wait" aria-disabled="true">準備中</span>`;
     const sub = w.sub ? `<a class="sub" href="${esc(w.sub.url)}"${ext(w.sub.url)}>${esc(w.sub.text)}</a>` : "";
