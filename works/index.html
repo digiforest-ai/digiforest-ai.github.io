@@ -27,6 +27,10 @@
 .work-pic .pic-label { position: absolute; left: 14px; bottom: 12px; font-size: 12px; font-weight: 700; color: var(--matcha-d); background: #fff; border-radius: 999px; padding: 2px 10px; }
 .work-pic.stamps { grid-template-columns: 1fr 1fr; gap: 6px; padding: 14px; place-items: stretch; }
 .work-pic.stamps img { width: 100%; height: 100%; object-fit: contain; background: #fff; border-radius: 12px; }
+.work-pic.video { background: #111; }
+.work-pic.video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; }
+.work-pic.scenes { grid-template-rows: 1fr 1fr; gap: 2px; place-items: stretch; background: #fff; overflow: hidden; }
+.work-pic.scenes img { width: 100%; height: 100%; min-height: 0; object-fit: cover; display: block; }
 .work-body { padding: 22px 22px 24px; display: flex; flex-direction: column; flex: 1; }
 .work-tag { align-self: flex-start; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; background: var(--soft); color: var(--matcha-d); }
 .work-tag.on { background: var(--orange); color: #fff; }
@@ -161,10 +165,38 @@ const WORKS = [
   },
   {
     title: "宇治十帖の曲",
-    desc: "浮舟・蜻蛉をテーマに、AIで作曲した曲です。",
-    ai: "曲を作る",
-    me: "物語からテーマを選び、曲の方向を決める",
-    url: "", emoji: "🎵", label: "音楽", imgs: []
+    tag: "公開中",
+    desc: "源氏物語「宇治十帖」の「浮舟」「蜻蛉」をテーマにした曲とMVです。このまま再生できます。",
+    ai: "歌詞の下書き・曲・絵を作り、動画づくりを手伝う",
+    me: "物語からテーマを選び、方向を決めて仕上げる",
+    video: { id: "ZedO1XsL6Ww", title: "浮舟 / Ukifune〜宇治十帖より〜" },
+    url: "https://youtu.be/ZedO1XsL6Ww", btn: "YouTubeで見る ↗",
+    sub: { text: "「蜻蛉」を見る ↗", url: "https://www.youtube.com/watch?v=tNNew_bkOFg" },
+    imgs: []
+  },
+  {
+    title: "宇治十帖の短編動画",
+    tag: "公開中",
+    desc: "「橋姫」「東屋」の場面を、絵巻のような約30秒の動画にしました。",
+    ai: "絵と動画を作る",
+    me: "帖を選び、原作と見比べて直しを頼む",
+    scenes: [
+      ["/assets/img/works/hashihime.jpg", "橋姫の場面。琵琶と箏を合奏する姉妹と、その音に耳を傾ける薫"],
+      ["/assets/img/works/azumaya.jpg", "東屋の場面。雨の夜の小さな家にいる浮舟と、外に着いた牛車"]
+    ],
+    url: "https://www.instagram.com/digiforestai/reel/De9XnrsjKMp/", btn: "橋姫を見る ↗",
+    sub: { text: "東屋を見る ↗", url: "https://www.instagram.com/digiforestai/reel/DfApdcrDrPC/" },
+    imgs: []
+  },
+  {
+    title: "ピアノ×AIの絵",
+    tag: "公開中",
+    desc: "バルトーク《15のハンガリー農民の歌》を自分で弾いて、AIの絵と合わせた動画です。",
+    ai: "絵を作り、演奏と合わせて動画にまとめる",
+    me: "曲を選び、ピアノを弾いて録音する",
+    video: { id: "19LqtMIKnqI", title: "バルトーク《15のハンガリー農民の歌》より 第5曲｜ピアノ×AIの絵" },
+    url: "https://www.youtube.com/playlist?list=PLE-CHt5zMsW8", btn: "3本まとめて見る ↗",
+    imgs: []
   },
   {
     title: "宇治茶キャッチ",
@@ -204,7 +236,11 @@ const WORKS = [
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const ext = u => /^https?:/.test(u) ? ' target="_blank" rel="noopener"' : "";
   box.innerHTML = WORKS.map(w => {
-    const pic = w.imgs.length
+    const pic = w.video
+      ? `<div class="work-pic video"><iframe src="https://www.youtube-nocookie.com/embed/${esc(w.video.id)}" title="${esc(w.video.title)}" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
+      : w.scenes
+      ? `<div class="work-pic scenes">${w.scenes.map(([src, alt]) => `<img src="${esc(src)}" alt="${esc(alt)}" width="640" height="360" loading="lazy">`).join("")}</div>`
+      : w.imgs.length
       ? `<div class="work-pic stamps">${w.imgs.map(([src, alt]) => `<img src="${esc(src)}" alt="${esc(alt)}" width="240" height="208" loading="lazy">`).join("")}</div>`
       : `<div class="work-pic${w.cream ? " cream" : ""}" aria-hidden="true"><span class="emoji">${w.emoji || "✨"}</span>${w.label ? `<span class="pic-label">${esc(w.label)}</span>` : ""}</div>`;
     const main = w.url
