@@ -45,6 +45,8 @@
 .btn.wait { background: #eceee9; color: var(--sub); box-shadow: none; cursor: default; }
 .btn.wait:hover { transform: none; }
 .work-btns .sub { font-size: 14px; font-weight: 700; }
+.work-pr { font-size: 14px; font-weight: 700; border-top: 1px dashed var(--line); margin-top: 16px; padding-top: 12px; }
+.work-pr small { display: block; font-size: 12px; font-weight: 400; color: var(--sub); line-height: 1.6; margin-top: 4px; }
 .shelf-lead { text-align: center; color: var(--sub); max-width: 40em; margin: 0 auto; }
 .order { text-align: center; background: var(--cream); border-radius: 28px; padding: 36px 24px; }
 .order h2 { font-size: clamp(22px, 3vw, 28px); font-weight: 900; margin-bottom: 8px; }
@@ -172,6 +174,7 @@ const WORKS = [
     video: { id: "ZedO1XsL6Ww", title: "浮舟 / Ukifune〜宇治十帖より〜" },
     url: "https://youtu.be/ZedO1XsL6Ww", btn: "YouTubeで見る ↗",
     sub: { text: "「蜻蛉」を見る ↗", url: "https://www.youtube.com/watch?v=tNNew_bkOFg" },
+    pr: { text: "曲づくりに使ったAIスタジオ", link: "dstudio ↗", url: "https://www.dstudio.one/?ref=19230068" },
     imgs: []
   },
   {
@@ -247,12 +250,13 @@ const WORKS = [
       ? `<a class="btn" href="${esc(w.url)}"${ext(w.url)}>${esc(w.btn || "体験する")}</a>`
       : `<span class="btn wait" aria-disabled="true">準備中</span>`;
     const sub = w.sub ? `<a class="sub" href="${esc(w.sub.url)}"${ext(w.sub.url)}>${esc(w.sub.text)}</a>` : "";
+    const pr = w.pr ? `<p class="work-pr">${esc(w.pr.text)}：<a href="${esc(w.pr.url)}" target="_blank" rel="noopener sponsored">${esc(w.pr.link)}</a><small><b>PR</b> 紹介リンクです。DigiForestはdstudioを含むDXシリーズの販売代理店で、ご登録により報酬を受け取ることがあります。</small></p>` : "";
     return `<li class="work">${pic}<div class="work-body">
       ${w.tag ? `<span class="work-tag${(w.tag === "販売中" || w.tag === "公開中") ? " on" : ""}">${esc(w.tag)}</span>` : ""}
       <h2>${esc(w.title)}</h2>
       <p class="desc">${esc(w.desc)}</p>
       <ul class="roles"><li><b>AIがしたこと</b>${esc(w.ai)}</li><li class="me"><b>わたしがしたこと</b>${esc(w.me)}</li></ul>
-      <div class="work-btns">${main}${sub}</div>
+      <div class="work-btns">${main}${sub}</div>${pr}
     </div></li>`;
   }).join("");
 })();
