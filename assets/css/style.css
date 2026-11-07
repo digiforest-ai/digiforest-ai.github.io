@@ -235,3 +235,6 @@ section { padding: 88px 0; }
   .price-table th { border-bottom: 0; padding-bottom: 0; }
   .cta-row .btn { flex: 1 1 100%; }
 }
+.works-peek { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; background: #fff; border: 2px dashed var(--line); border-radius: 24px; padding: 18px 24px; }
+.works-peek p { color: var(--sub); font-size: 15px; }
+.works-peek b { color: var(--ink); }
