@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>[hidden]{display:none !important}</style>
+<title>鵜飼いのかけ声</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+/* Layout: thin header, the night-river stage on top, then the catch tag and a grid of call buttons below. One deliberate dark look (night on the Uji River). */
+:root {
+  --night: #0b1128;
+  --ink: #060a18;
+  --panel: rgba(16, 24, 54, .82);
+  --fire: #ff9a3c;
+  --ember: #ffd27a;
+  --paper: #f3ead8;
+  --mist: #9fb3cf;
+  --line: rgba(243, 234, 216, .2);
+  --display: "Yuji Syuku", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --body: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html { height: 100%; background: var(--night); }
+body {
+  height: 100%; background: var(--night); color: var(--paper);
+  font-family: var(--body); overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.app {
+  min-height: 100%; box-sizing: border-box; max-width: 1000px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 10px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* header */
+.top { display: flex; align-items: center; gap: 10px; }
+.top h1 { margin: 0; flex: 1; min-width: 0; font-family: var(--display); font-weight: 400; font-size: 22px; letter-spacing: .08em; color: var(--paper); text-shadow: 0 0 14px rgba(255, 154, 60, .45); }
+.pill {
+  font: inherit; font-size: 12px; color: var(--paper); background: transparent;
+  border: 1px solid rgba(243, 234, 216, .28); border-radius: 999px; padding: 6px 12px;
+  cursor: pointer; white-space: nowrap;
+}
+.pill b { color: var(--ember); font-variant-numeric: tabular-nums; }
+.pill[aria-pressed="false"] { color: var(--mist); }
+
+/* stage */
+.stage {
+  position: relative; flex: 1; min-height: 240px;
+  border-radius: 18px; overflow: hidden; background: var(--ink);
+  box-shadow: 0 0 0 1px rgba(255, 190, 120, .16), 0 18px 50px rgba(0, 0, 0, .5), 0 0 90px rgba(255, 140, 60, .08);
+}
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* the catch: a small wooden tag */
+.catch {
+  display: flex; gap: 14px; align-items: stretch;
+  padding: 14px 16px; border-radius: 14px; background: var(--panel);
+  border: 1px solid rgba(255, 190, 120, .22); min-height: 92px; box-sizing: border-box;
+}
+.hint { margin: auto 0; font-size: 14px; line-height: 1.75; color: var(--paper); }
+.hint small { display: block; color: var(--mist); font-size: 12px; }
+.tag {
+  flex: 0 0 auto; width: 54px; border-radius: 6px 6px 10px 10px;
+  background: linear-gradient(180deg, #6b4a2c, #4a321e); color: var(--paper);
+  display: grid; place-items: center; position: relative;
+  box-shadow: inset 0 0 0 1px rgba(255, 220, 170, .18);
+}
+.tag::before { content: ""; position: absolute; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--ink); }
+.tag span { writing-mode: vertical-rl; font-family: var(--display); font-size: 17px; letter-spacing: .2em; padding-top: 12px; }
+.what { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.what .lbl { font-size: 11px; letter-spacing: .12em; color: var(--mist); }
+.what .name { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(21px, 4.6vw, 28px); line-height: 1.3; color: var(--ember); text-wrap: balance; }
+.what .row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.stars { font-size: 13px; letter-spacing: .1em; color: var(--ember); }
+.new { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--fire); color: var(--ink); font-weight: 700; }
+.say { margin: 2px 0 0; font-size: 14px; line-height: 1.7; }
+.say b { font-weight: 500; font-size: 12px; color: var(--mist); margin-right: 6px; }
+.catch.pop .name { animation: rise .5s ease-out; }
+@keyframes rise { from { opacity: .2; transform: translateY(6px); } }
+
+/* call buttons */
+.calls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.call {
+  font: inherit; font-size: 14px; font-weight: 700; color: var(--paper);
+  background: rgba(16, 24, 54, .6); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px 8px; min-height: 48px; cursor: pointer; line-height: 1.35;
+  transition: border-color .15s ease, background .15s ease, transform .1s ease;
+}
+.call:hover:not(:disabled) { border-color: var(--ember); background: rgba(255, 154, 60, .12); }
+.call:active:not(:disabled) { transform: translateY(1px); }
+.call:disabled { opacity: .45; cursor: default; }
+.call.omakase { border-color: rgba(255, 210, 122, .5); color: var(--ember); }
+.call.shuffle { background: transparent; border-style: dashed; color: var(--mist); font-weight: 500; }
+.call:focus-visible, .pill:focus-visible, .x:focus-visible, .reset:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+
+/* ledger */
+.ledger {
+  position: fixed; inset: 0; z-index: 5; display: grid; place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: rgba(4, 7, 18, .78); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+.book {
+  width: 100%; max-width: 640px; max-height: 100%; overflow: auto; box-sizing: border-box;
+  padding: 20px; border-radius: 16px; background: var(--night); border: 1px solid rgba(255, 190, 120, .24);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.book header { display: flex; align-items: center; gap: 10px; }
+.book h2 { margin: 0; flex: 1; font-family: var(--display); font-weight: 400; font-size: 24px; letter-spacing: .08em; }
+.book h2 small { font-family: var(--body); font-size: 13px; color: var(--mist); margin-left: 8px; font-variant-numeric: tabular-nums; }
+.x { font: inherit; font-size: 13px; color: var(--paper); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.group h3 { margin: 0 0 6px; font-size: 12px; letter-spacing: .1em; color: var(--mist); font-weight: 500; }
+.group ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.group li { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); }
+.group li.got { border-color: rgba(255, 210, 122, .45); }
+.group li.rare { color: var(--ember); }
+.group li.no { color: var(--mist); border-style: dashed; }
+.reset { align-self: flex-start; font: inherit; font-size: 12px; color: var(--mist); background: transparent; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .calls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .top h1 { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) { .catch.pop .name { animation: none; } }
+</style>
+
+<div class="app">
+  <div class="top">
+    <h1>鵜飼いのかけ声</h1>
+    <button class="pill" id="bookBtn" type="button">獲物帳 <b id="count">0</b> / <span id="total">0</span></button>
+    <button class="pill" id="sound" type="button" aria-pressed="true">音 あり</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <canvas id="river" aria-label="夜の宇治川。舟の上の鵜匠と、川にもぐる鵜"></canvas>
+  </div>
+
+  <section class="catch" id="catch" aria-live="polite">
+    <p class="hint">下のかけ声をえらぶと、鵜が川にもぐります。<br>ただし、この鵜は鮎をとってくるとはかぎりません。<small>かけ声は全部で<span id="nCalls">36</span>。「ほかのかけ声」で入れかわります。何を持ってきたかは「獲物帳」にたまっていきます。</small></p>
+  </section>
+
+  <div class="calls" id="calls"></div>
+</div>
+
+<div class="ledger" id="ledger" hidden>
+  <div class="book" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+    <header>
+      <h2 id="bookTitle">獲物帳<small id="bookCount"></small></h2>
+      <button class="x" id="closeBook" type="button">とじる</button>
+    </header>
+    <div id="bookList" style="display:flex;flex-direction:column;gap:14px"></div>
+    <button class="reset" id="reset" type="button">記録を消す</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ---------- content ----------
+  // r: 1 = よくある, 2 = ときどき, 3 = めったにない
+  const CALLS = [
+    { id: 'amai', label: '甘いものを頼む！', items: [
+      ['茶団子の串', '団子は途中で鵜が食べたようです。串だけ、りっぱに残っています。', 1],
+      ['抹茶パフェのさくらんぼ', 'いちばん上だけ持ってくるあたり、わかっていますね。', 2],
+      ['宇治金時（ほぼ水）', '川にもぐった時点で、こうなる運命でした。', 1],
+      ['干し柿ひと連', 'どこの軒先から来たのでしょう。明日、返しに行きます。', 2] ] },
+    { id: 'genki', label: '元気が出るものを！', items: [
+      ['鳴りっぱなしの目覚まし時計', '持ち主は今ごろ、寝坊しています。', 1],
+      ['太鼓のばち 1本', 'もう1本は、明日のお楽しみ。', 1],
+      ['「がんばれ鵜」のうちわ', '自分の応援うちわを拾ってくるとは。', 2],
+      ['栄養ドリンクの空きびん', '中身は、もう誰かの元気になったあとでした。', 1] ] },
+    { id: 'uji', label: '宇治らしいものを！', items: [
+      ['茶筅', '水にぬれても平気。さすが竹です。', 1],
+      ['茶摘みのかご', '茶畑はずっと上のほうですが…。泳いできたのでしょうか。', 2],
+      ['平等院の10円玉', 'お賽銭には戻せません。お財布へどうぞ。', 1],
+      ['源氏物語「浮舟」の巻', '宇治十帖の一巻です。川に縁のある話ばかりで。', 3] ] },
+    { id: 'nakushi', label: 'なくしもの、探してきて！', items: [
+      ['片方だけの下駄', 'もう片方は、先月べつの鵜が持ってきました。', 1],
+      ['屋形船のお客さんの帽子', '風の強い夜でしたから。あとで返しておきます。', 1],
+      ['うじっ葉さんのキーホルダー付きの鍵', '落とし主はすぐ見つかりそうです。', 2],
+      ['老眼鏡', 'これで新聞が読めます。だれのでしょう。', 1] ] },
+    { id: 'suzushi', label: '涼しくなるものを！', items: [
+      ['風鈴', '水の中でも、ちゃんと鳴っていたそうです。', 1],
+      ['花火大会のうちわ', '去年の日付です。一年、川で涼んでいました。', 1],
+      ['冷やし抹茶のグラス（中身なし）', 'グラスがひんやり。気持ちだけ涼しくなります。', 2],
+      ['河童のお皿', '……見なかったことにしましょう。そっと返しておいで。', 3] ] },
+    { id: 'miyage', label: 'おみやげになるものを！', items: [
+      ['宇治茶の茶缶（未開封）', '上等な玉露です。鵜にはまだ早い。', 2],
+      ['抹茶ソフトのコーン', 'ソフトのほうは、川にとけました。', 1],
+      ['宇治橋の絵はがき', '差出人は鵜、宛先はあなた。いつ書いたのでしょう。', 2],
+      ['茶団子の包み紙', 'きれいにたたんであります。中身のゆくえは聞かないでおきます。', 1] ] },
+    { id: 'mukashi', label: 'むかしのものを！', items: [
+      ['平安貴族の扇', 'ほのかにお香の匂い。千年ぶりの里帰りです。', 2],
+      ['茶壺のふた', 'ずいずいずっころばし。ふただけ、とっぴんしゃん。', 2],
+      ['蹴鞠の鞠', 'まだよく弾みます。だれが蹴りこんだのやら。', 1],
+      ['古いお金', '本物なら大ごとです。そっと川へ戻します。', 1] ] },
+    { id: 'ocha', label: 'お茶に合うものを！', items: [
+      ['羊羹ひと切れ', 'きっちり四角いまま。川の中でも崩れない、えらい羊羹です。', 1],
+      ['湯のみ', '茶渋がいい味を出しています。だれかの愛用品でしょう。', 1],
+      ['急須のふた', '本体はどこへ。ふたが見つからない話はよく聞きますが、逆は初めてです。', 1],
+      ['茶柱', '立っています。川の中でも、まっすぐに。いいことがありそうです。', 3] ] },
+    { id: 'hikaru', label: '光るものを！', items: [
+      ['ペンライト', '推しの色に光っています。だれを応援していたのでしょう。', 1],
+      ['金色の折り鶴', '願いごとの続きは、たぶん川の中です。', 2],
+      ['かがり火の燃えさし', 'あ、それはうちの舟のです。', 1],
+      ['鳳凰のはね', '平等院の屋根から一枚。光っていて、ほんのり温かい。', 3] ] },
+    { id: 'engi', label: '縁起のいいものを！', items: [
+      ['招き猫', 'お金を招くほうの手です。ぬれても手はおろしません。', 1],
+      ['片目のだるま', '願いが半分かなったところのようです。', 1],
+      ['四つ葉のクローバー', '川の中で見つけるとは。運を使いきっていないか心配です。', 2],
+      ['七福神の宝船', '小さな船ですが、乗っている顔ぶれが豪華です。', 3] ] },
+    { id: 'oto', label: '音が鳴るものを！', items: [
+      ['鈴', 'ちりん、と鳴りました。猫の首輪から外れたものでしょうか。', 1],
+      ['でんでん太鼓', '振ると、川の水が飛びます。', 1],
+      ['ホイッスル', '鵜をよぶ笛…ではなく、ただのホイッスルです。', 1],
+      ['拍子木', '火の用心。かがり火の舟には、ありがたいお守りです。', 2] ] },
+    { id: 'fuwa', label: 'ふわふわのものを！', items: [
+      ['綿あめ（しぼんでいる）', 'ふわふわは、川に入る前まででした。', 1],
+      ['鵜の羽毛', '自分の羽です。ちょっとずるい。', 1],
+      ['毛糸の帽子', '茶畑のおばあちゃんが編んだもの、だそうです。', 2],
+      ['雲のかけら', 'どうやって取ってきたのかは、鵜も覚えていないそうです。', 3] ] },
+    { id: 'omoi', label: '重たいものを！', items: [
+      ['抹茶の石臼', 'よく持ち上がりました。今夜は早めに休ませます。', 2],
+      ['漬物石', 'つけものは入っていません。石だけです。', 1],
+      ['鉄アレイ', '鵜も体を鍛えているのでしょうか。', 1],
+      ['茶葉がぎっしりの茶箱', '重たいはずです。ふたのすき間から、いい香り。', 2] ] },
+    { id: 'kisetsu', label: '季節のものを！', items: [
+      ['桜の花びら', '川を流れてきた一枚。春の忘れものです。', 1],
+      ['蛍', 'そっと放してあげましょう。光りながら帰っていきました。', 2],
+      ['紅葉の葉', '上流の山から、ひと足早い秋です。', 1],
+      ['小さな雪だるま', 'いったいどこから。とけないうちに、冷たいお茶でもどうぞ。', 3] ] },
+    { id: 'kobutsu', label: '鵜匠さんの好物を！', items: [
+      ['鮎の塩焼き', '……それは、仕事の成果をそのまま焼いたものでは。', 2],
+      ['冷えたビール', '仕事中なので、あとでいただきます。', 1],
+      ['にしんそば', '京都の味です。どんぶりごと、よく運べました。', 2],
+      ['宇治の新茶', 'わかっている鵜です。今年いちばんの香り。', 1] ] },
+    { id: 'kawaii', label: 'かわいいものを！', items: [
+      ['子ガモ', 'お母さんのところへ返してきなさい。', 2],
+      ['おままごとの茶碗', '片手にちょうどいい大きさです。', 1],
+      ['小さなカメ', '甲羅に苔。宇治川の古株です。', 1],
+      ['うじっ葉さんのシール', 'ぬれても、ていねいにおじぎをしています。', 2] ] },
+    { id: 'natsukashi', label: 'なつかしいものを！', items: [
+      ['ビー玉', 'ラムネのびんから出てきた一粒。きれいなままです。', 1],
+      ['カセットテープ', 'ラベルに「夏のベスト」。中身は聞けそうにありません。', 2],
+      ['黒電話の受話器', 'もしもし。……川の音しか聞こえません。', 2],
+      ['先割れスプーン', 'スプーンなのかフォークなのか。給食を思い出します。', 1] ] },
+    { id: 'hightech', label: 'ハイテクなものを！', items: [
+      ['防水のスマホ', '無事です。画面に「鵜 何食べる」の検索履歴。', 2],
+      ['自撮り棒', '屋形船で記念撮影の最中に落ちたようです。', 1],
+      ['ロボット掃除機', '川底まできれいにしようとしていたようです。', 2],
+      ['AIスピーカー', '「すみません、よくわかりません」と言っています。こちらもです。', 3] ] },
+    { id: 'negai', label: '願いがかなうものを！', items: [
+      ['七夕の短冊', '「字がうまくなりますように」。にじんで読めなくなりかけています。', 1],
+      ['絵馬', '「合格祈願」。きっと大丈夫です。', 1],
+      ['流れ星のかけら', '願いごとを三回言う前に、拾ってきてしまいました。', 2],
+      ['打ち出の小槌', 'ひと振りすると、鵜がひとまわり大きくなった気がします。', 3] ] },
+    { id: 'tenki', label: 'あしたの天気を！', items: [
+      ['長靴（片方）', 'あしたは雨のようです。もう片方も探しておきます。', 1],
+      ['てるてる坊主', '晴れてほしいようです。本人はずいぶんぬれていますが。', 1],
+      ['麦わら帽子', '晴れ、それも暑い日ですね。', 1],
+      ['虹のかけら', '雨のあとに晴れる、ということでしょう。欲ばりな答えです。', 3] ] },
+    { id: 'yashoku', label: '夜食になるものを！', items: [
+      ['梅のおにぎり', '海苔はしっとり。ほんのり川の味がします。', 1],
+      ['カップ麺のふた', 'ふただけです。三分待っても何も起きません。', 1],
+      ['抹茶だいふく', '粉はとれてしまいましたが、中身は無事です。', 2],
+      ['お茶漬けの素', 'お茶ならたっぷりある町です。ちょうどいい。', 1] ] },
+    { id: 'chiisai', label: 'ちいさいものを！', items: [
+      ['米つぶに書いたお経', '読めません。でも、ありがたい気がします。', 2],
+      ['茶葉ひとつまみ', 'ひとつまみでも、宇治の茶葉です。', 1],
+      ['シャツのボタン', '上から二番目のボタンです。だれかの思い出かもしれません。', 1],
+      ['アリ', '泳いでいたところを助けたようです。いいことをしました。', 1] ] },
+    { id: 'ookii', label: '大きいものを！', items: [
+      ['屋形船のちょうちん', '舟からはずれたものです。まだ明かりがつきそうです。', 1],
+      ['大きなしゃもじ', '宮島のおみやげが、どうして宇治川に。', 2],
+      ['鮎の形の看板', 'お店の屋根から落ちたものでしょうか。重さでふらふらです。', 2],
+      ['宇治川の主（大ナマズ）', '目が合いました。そっと川へお帰りいただきました。', 3] ] },
+    { id: 'akai', label: '赤いものを！', items: [
+      ['金魚', '夏祭りの金魚すくいから、ここまで泳いできたようです。', 1],
+      ['野点の赤い傘', 'お茶会は無事でしょうか。', 2],
+      ['りんご飴', 'かじったあとがあります。犯人は鵜です。', 1],
+      ['紅白まんじゅうの紅', '白いほうは、もうだれかのおなかの中です。', 1] ] },
+    { id: 'midori', label: 'みどりのものを！', items: [
+      ['抹茶ロールケーキ', 'みどりの渦がきれいです。ほぼ無傷です。', 2],
+      ['カエル', 'みどりで、元気で、よくしゃべります。', 1],
+      ['苔玉', '水には強いので平気そうです。', 1],
+      ['信号の青ランプ', '進め、という意味でしょうか。今夜はもう少し働きます。', 3] ] },
+    { id: 'marui', label: '丸いものを！', items: [
+      ['手まり', '京都の手まり。糸の模様がきれいなままです。', 1],
+      ['茶団子 3つ', '串がないので、丸いまま。前にとってきた串と合わせると、ちょうどいい。', 2],
+      ['おせんべい', 'しけって、やわらかくなっています。', 1],
+      ['地球儀', '世界をくわえてきました。宇治はこのあたりです。', 3] ] },
+    { id: 'nioi', label: 'いいにおいのものを！', items: [
+      ['匂い袋', '京都らしい、やさしい香りです。', 2],
+      ['ほうじたてのほうじ茶', 'どこかのお茶屋さんの前を通ってきたようです。', 2],
+      ['石けん', '川の中で泡立っていました。鵜がきれいになりました。', 1],
+      ['金木犀の枝', '秋の香りです。どこの庭から来たのでしょう。', 1] ] },
+    { id: 'kowai', label: 'こわいものを！', items: [
+      ['般若のお面', '夜の川で見ると、本気でこわいです。', 2],
+      ['古い武者の兜', '宇治川は、むかし合戦の場でもありました。そっとお返しします。', 3],
+      ['請求書', 'いちばんこわいものを持ってきました。', 1],
+      ['体重計', '鵜は、のりたがりません。', 1] ] },
+    { id: 'warai', label: '笑えるものを！', items: [
+      ['鼻めがね', '鵜匠がかけたら、舟の上が笑いに包まれました。', 1],
+      ['ブーブークッション', '……ぷう。', 1],
+      ['ひょっとこのお面', '口のとがり方が、鵜とそっくりです。', 2],
+      ['落語の扇子', '一席うかがいたいところですが、仕事中です。', 2] ] },
+    { id: 'hotto', label: 'ほっとするものを！', items: [
+      ['こたつの天板', 'こたつ本体は見つかりませんでした。気持ちだけあたたかい。', 2],
+      ['湯たんぽ', 'まだ、ほんのり温かい。ふしぎです。', 1],
+      ['「おつかれさま」の手紙', '宛名がないので、ありがたく受け取ります。', 2],
+      ['番茶のやかん', 'ほっとするといえば、これです。', 1] ] },
+    { id: 'oshare', label: 'おしゃれなものを！', items: [
+      ['サングラス', '夜なのにかけています。鵜が。', 1],
+      ['蝶ネクタイ', '首結いの上にどうぞ。', 1],
+      ['かんざし', '平安の姫か、きのうの観光客か。どちらにしても素敵です。', 2],
+      ['抹茶色のスニーカー', '片方だけですが、色がいい。', 2] ] },
+    { id: 'shigoto', label: '仕事に役立つものを！', items: [
+      ['名刺入れ', '中に一枚。「宇治川 鵜飼 担当 鵜」。', 1],
+      ['そろばん', '玉が一つ足りません。計算が合わない日もあります。', 1],
+      ['付せんの束', '全部に「あとでやる」と書いてあります。', 1],
+      ['ノートパソコン', '防水ではないようです。データの控えは大事、という教訓です。', 3] ] },
+    { id: 'koi', label: '恋のものを！', items: [
+      ['ラブレター', 'にじんで宛名が読めません。届かなかった思いです。', 2],
+      ['香をたきしめた文', '千年前の恋文です。宇治の川霧の歌が書いてあります。', 3],
+      ['ハートの風船', 'しぼんでいますが、形はハートのままです。', 1],
+      ['おみくじ「恋愛：待て」', '待て、とのことです。鵜も待ちます。', 1] ] },
+    { id: 'ukobutsu', label: '鵜の好物を！', items: [
+      ['ごほうびの小魚', 'あげるつもりが、自分でとってきました。', 1],
+      ['ふかふかのわら', '今夜はよく眠れそうです。', 1],
+      ['休みの日のカレンダー', '赤い日に丸がついています。鵜も休みたい。', 2],
+      ['なでてもらう権利', '形はありませんが、たしかに受け取りました。なでておきます。', 3] ] },
+    { id: 'takara', label: 'だれかの宝物を！', items: [
+      ['びんの王冠', '子どものころに集めたもの。ひとつでも宝物です。', 1],
+      ['古い家族写真', '宇治橋の前で笑う家族。持ち主が見つかるといいのですが。', 2],
+      ['指輪', '大事なものです。交番に届けます。', 2],
+      ['宝の地図', '×印は、ちょうどこの川の上でした。', 3] ] },
+    { id: 'omakase', label: 'おまかせで！', mixAll: true, items: [
+      ['鮎', '……本来の仕事をしてしまいました。', 1],
+      ['鵜のぬいぐるみ', '自分を連れてきました。', 2],
+      ['金の鮎', '今夜いちばんの大当たり。鵜匠も声が出ません。', 3],
+      ['水にうつった月', 'つかめないはずのものを、つかんできました。', 3],
+      ['びしょぬれのうじっ葉さん', '「茶葉はぬれると香りが立つのでございます」とのことです。', 3] ] }
+  ];
+  const ALL = [];
+  for (const c of CALLS) c.items = c.items.map(([name, line, r], i) => {
+    const it = { id: `${c.id}${i}`, name, line, r, call: c };
+    ALL.push(it); return it;
+  });
+
+  // ---------- record (this browser only) ----------
+  const KEY = 'ukai-kakegoe-found';
+  let found = new Set();
+  try { found = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify([...found])); } catch (e) {} };
+
+  // ---------- picking a catch ----------
+  let lastId = '';
+  function pickCatch(call) {
+    const pool = call.mixAll ? ALL : call.items;
+    const ws = pool.map(it => {
+      let w = [0, 6, 3, 1][it.r];
+      if (!found.has(it.id)) w *= 2;
+      if (call.mixAll && it.call === call) w *= 2;
+      return it.id === lastId ? 0 : w;
+    });
+    let t = Math.random() * ws.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < pool.length; i++) if ((t -= ws[i]) <= 0) return pool[i];
+    return pool[0];
+  }
+  // A call resolves to { name, line, r }. Later, a free-text call can resolve here through AI.
+  async function getCatch(call) { return pickCatch(call); }
+
+  // ---------- DOM ----------
+  const $ = id => document.getElementById(id);
+  const callsEl = $('calls'), catchEl = $('catch');
+  $('total').textContent = ALL.length;
+  $('nCalls').textContent = CALLS.length;
+  // Six calls at a time, plus おまかせ and a button that swaps in a fresh six.
+  const SHOWN = 6;
+  const REGULAR = CALLS.filter(c => !c.mixAll), OMAKASE = CALLS.find(c => c.mixAll);
+  let shown = [];
+  function dealCalls() {
+    const rest = REGULAR.filter(c => !shown.includes(c));
+    const pool = rest.length >= SHOWN ? rest : REGULAR;
+    shown = [...pool].sort(() => Math.random() - .5).slice(0, SHOWN);
+    callsEl.innerHTML = '';
+    for (const c of [...shown, OMAKASE]) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'call' + (c.mixAll ? ' omakase' : '');
+      b.textContent = `「${c.label}」`;
+      b.addEventListener('click', () => callOut(c));
+      callsEl.appendChild(b);
+    }
+    const s = document.createElement('button');
+    s.type = 'button'; s.className = 'call shuffle';
+    s.textContent = 'ほかのかけ声 ↻';
+    s.addEventListener('click', dealCalls);
+    callsEl.appendChild(s);
+  }
+  dealCalls();
+  const setBusy = v => { for (const b of callsEl.children) b.disabled = v; };
+  const updateCount = () => { $('count').textContent = found.size; };
+  updateCount();
+
+  function showCatch(item, isNew) {
+    const stars = '★'.repeat(item.r) + '☆'.repeat(3 - item.r);
+    catchEl.innerHTML = '';
+    const tag = document.createElement('div'); tag.className = 'tag';
+    tag.innerHTML = '<span>獲物</span>';
+    const w = document.createElement('div'); w.className = 'what';
+    w.innerHTML = `<span class="lbl"></span><p class="name"></p><div class="row"><span class="stars" aria-label="めずらしさ ${item.r}"></span></div><p class="say"><b>鵜匠</b><span></span></p>`;
+    w.querySelector('.lbl').textContent = `「${item.call.label}」 鵜がくわえてきたのは…`;
+    w.querySelector('.name').textContent = item.name;
+    w.querySelector('.stars').textContent = stars;
+    if (isNew) { const n = document.createElement('span'); n.className = 'new'; n.textContent = 'はじめて'; w.querySelector('.row').appendChild(n); }
+    w.querySelector('.say span').textContent = item.line;
+    catchEl.append(tag, w);
+    catchEl.classList.remove('pop'); void catchEl.offsetWidth; catchEl.classList.add('pop');
+  }
+
+  // ledger
+  function renderBook() {
+    $('bookCount').textContent = `${found.size} / ${ALL.length}`;
+    const list = $('bookList'); list.innerHTML = '';
+    for (const c of CALLS) {
+      const g = document.createElement('div'); g.className = 'group';
+      const h = document.createElement('h3'); h.textContent = `「${c.label}」`;
+      const ul = document.createElement('ul');
+      for (const it of c.items) {
+        const li = document.createElement('li');
+        if (found.has(it.id)) { li.className = 'got' + (it.r === 3 ? ' rare' : ''); li.textContent = it.name; }
+        else { li.className = 'no'; li.textContent = it.r === 3 ? '？？？（めずらしい）' : '？？？'; }
+        ul.appendChild(li);
+      }
+      g.append(h, ul); list.appendChild(g);
+    }
+    $('reset').textContent = '記録を消す'; resetArmed = false;
+  }
+  let resetArmed = false;
+  $('bookBtn').addEventListener('click', () => { renderBook(); $('ledger').hidden = false; $('closeBook').focus(); });
+  $('closeBook').addEventListener('click', () => { $('ledger').hidden = true; $('bookBtn').focus(); });
+  $('ledger').addEventListener('click', e => { if (e.target.id === 'ledger') $('ledger').hidden = true; });
+  addEventListener('keydown', e => { if (e.key === 'Escape') $('ledger').hidden = true; });
+  $('reset').addEventListener('click', () => {
+    if (!resetArmed) { resetArmed = true; $('reset').textContent = 'もう一度押すと、獲物帳が空になります'; return; }
+    found = new Set(); save(); updateCount(); renderBook();
+  });
+
+  // ---------- sound ----------
+  let ac = null, soundOn = true;
+  function ensureAudio() {
+    if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+    try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ac = null; }
+  }
+  function tone(f1, f2, dur, type = 'sine', vol = .12, delay = 0) {
+    if (!ac || !soundOn) return;
+    const t = ac.currentTime + delay;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f1, t);
+    o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + .012);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(ac.destination);
+    o.start(t); o.stop(t + dur + .03);
+  }
+  const sfx = {
+    call: () => { tone(330, 392, .18, 'triangle', .07); tone(392, 330, .22, 'triangle', .06, .2); },
+    dive: () => { tone(500, 120, .35, 'sine', .1); },
+    up: () => { tone(180, 520, .3, 'sine', .08); },
+    reveal: r => { const n = [587, 740, 880, 1175]; for (let i = 0; i < r + 1; i++) tone(n[i], n[i] * 1.01, .4, 'sine', .08, i * .09); }
+  };
+  $('sound').addEventListener('click', e => {
+    soundOn = !soundOn;
+    e.currentTarget.textContent = soundOn ? '音 あり' : '音 なし';
+    e.currentTarget.setAttribute('aria-pressed', String(soundOn));
+    if (soundOn) ensureAudio();
+  });
+
+  // ---------- scene ----------
+  const cvs = $('river'), ctx = cvs.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const AYU = { back: '#5d7a5a', mid: '#a9b9a4', belly: '#eef2ea', tail: '#6f8a6a', spot: '#f2cf4a' };
+
+  let W = 1, H = 1, S = 1, surf = 1, clock = 0;
+  const stars = [...Array(70)].map(() => ({ x: Math.random(), y: Math.random(), r: rand(.4, 1.6), p: rand(0, 6) }));
+  const pebbles = [...Array(50)].map(() => ({ x: Math.random(), o: Math.random(), r: rand(.5, 1.1), c: Math.random() }));
+  const weeds = [...Array(16)].map(() => ({ x: Math.random(), h: rand(.5, 1), p: rand(0, 6) }));
+  const flies = [...Array(12)].map(() => ({ x: Math.random(), y: Math.random(), p: rand(0, 6), s: rand(.5, 1) }));
+  let fishes = [], parts = [], texts = [], sparkT = 0;
+  const boat = { x: 200, tx: 0, ty: 0, hx: 0, hy: 0 };
+  const bird = { x: 0, y: 0, vx: 0, vy: 0, face: -1, tilt: 0, tx: 0, ty: 0, hx: 0, hy: 0, nx: 0, ny: 0, spd: 0, bubT: 0,
+    mode: 'idle', searchT: 0, wanderT: 0, carry: null, onHome: null };
+
+  function resize() {
+    const r = cvs.getBoundingClientRect();
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    cvs.width = Math.round(W * dpr); cvs.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S = clamp(Math.min(W, H * 1.25) / 820, .6, 1.15);
+    surf = H * .34;
+    if (!bird.x) { const h = home(); bird.x = h.x; bird.y = h.y; }
+    bird.x = clamp(bird.x, 0, W); bird.y = clamp(bird.y, surf, H);
+  }
+  function boatX() { return clamp(W * .34 + Math.sin(clock * .12) * W * .05, 100 * S, W - 210 * S); }
+  function home() { return { x: boatX() + 168 * S, y: surf + 10 * S }; }
+  new ResizeObserver(resize).observe($('stage'));
+  resize();
+
+  function spawnFish(anywhere) {
+    const dir = Math.random() < .5 ? 1 : -1, cruise = rand(45, 70) * S;
+    fishes.push({ dir, cruise, x: anywhere ? rand(0, W) : (dir > 0 ? -40 : W + 40),
+      y: surf + 50 * S + Math.random() * Math.max(10, H - surf - 100 * S), vx: dir * cruise, vy: 0, phase: rand(0, 6) });
+  }
+  for (let i = 0; i < 6; i++) spawnFish(true);
+
+  // ---------- a call ----------
+  async function callOut(call) {
+    if (bird.mode !== 'idle') return;
+    ensureAudio(); setBusy(true); sfx.call();
+    bird.carry = undefined; // the bird keeps searching until the catch is decided
+    texts.push({ x: boatX() + 20 * S, y: surf - 96 * S, s: `「${call.label}」`, life: 2.2, col: '#f3ead8', size: 15 });
+    const pending = getCatch(call);
+    setTimeout(() => {
+      bird.mode = 'dive'; sfx.dive();
+      bird.tx = rand(W * .15, W * .85); bird.ty = H - 46 * S;
+      parts.push({ k: 'rip', x: bird.x, y: surf + 2 * S, life: 1.2, max: 1.2, r: 6 * S });
+      splash(bird.x, surf);
+    }, reduce ? 150 : 700);
+    let item;
+    try { item = await pending; } catch (e) { item = null; }
+    bird.carry = item;
+    bird.onHome = () => {
+      if (!item) { setBusy(false); return; }
+      const isNew = !found.has(item.id);
+      if (item.id) { found.add(item.id); save(); updateCount(); lastId = item.id; }
+      sfx.reveal(item.r);
+      burst(bird.hx, bird.hy, item.r === 3 ? '255,214,120' : '255,190,110', 10 + item.r * 8);
+      texts.push({ x: bird.x, y: surf - 40 * S, s: item.name, life: 1.8, col: '#ffd27a', size: 15 });
+      showCatch(item, isNew);
+      bird.carry = null;
+      setBusy(false);
+    };
+  }
+
+  function splash(x, y) {
+    for (let i = 0; i < 12; i++) parts.push({ k: 'glint', x, y, vx: rand(-80, 80) * S, vy: -rand(40, 140) * S, life: rand(.4, .8), max: .8, r: rand(1, 2.2) * S, col: '200,225,255' });
+  }
+  function burst(x, y, col, n) {
+    for (let i = 0; i < n; i++) {
+      const an = rand(0, Math.PI * 2), sp = rand(40, 140) * S;
+      parts.push({ k: 'glint', x, y, vx: Math.cos(an) * sp, vy: Math.sin(an) * sp, life: rand(.4, .9), max: .9, r: rand(1, 2.4) * S, col });
+    }
+  }
+
+  // ---------- update ----------
+  const lightCenter = () => ({ x: boat.tx, y: surf + 24 * S });
+  function lightAt(x, y) { const c = lightCenter(); return clamp(1 - Math.hypot(x - c.x, y - c.y) / (Math.max(W, H) * .5), 0, 1); }
+  function birdPoint(px, py) {
+    const c = Math.cos(bird.tilt), s = Math.sin(bird.tilt);
+    return { x: bird.x + (px * c - py * s) * S * bird.face, y: bird.y + (px * s + py * c) * S };
+  }
+
+  function update(dt) {
+    boat.x = boatX();
+    boat.tx = boat.x + 116 * S; boat.ty = surf - 44 * S;
+    boat.hx = boat.x + 32 * S; boat.hy = surf - 40 * S;
+
+    // cormorant
+    const b = bird, slow = reduce ? 1.6 : 1;
+    if (b.mode === 'idle') { const h = home(); b.tx = h.x; b.ty = h.y + Math.sin(clock * 1.6) * 2 * S; }
+    else if (b.mode === 'rise') { const h = home(); b.tx = h.x; b.ty = h.y; }
+    else if (b.mode === 'search') {
+      b.searchT -= dt; b.wanderT -= dt;
+      if (b.wanderT <= 0) {
+        b.wanderT = .35;
+        b.tx = clamp(b.x + rand(-60, 60) * S, 30 * S, W - 30 * S); b.ty = clamp(H - rand(30, 70) * S, surf + 40 * S, H - 24 * S);
+        for (let i = 0; i < 4; i++) parts.push({ k: 'bub', x: b.x + rand(-10, 10) * S, y: H - 18 * S, vx: rand(-10, 10) * S, vy: -rand(10, 30) * S, life: .9, max: .9, r: rand(1.5, 3.5) * S });
+      }
+      if (b.searchT <= 0 && b.carry !== undefined) { b.mode = 'rise'; sfx.up(); }
+    }
+    const maxSp = (b.mode === 'search' ? 110 : b.mode === 'idle' ? 140 : 300) * S * slow;
+    const dx = b.tx - b.x, dy = b.ty - b.y, dist = Math.hypot(dx, dy);
+    let dvx = 0, dvy = 0;
+    const sp = Math.min(maxSp, dist * 5);
+    if (dist > 1) { dvx = dx / dist * sp; dvy = dy / dist * sp; }
+    const a = Math.min(1, dt * 6);
+    b.vx += (dvx - b.vx) * a; b.vy += (dvy - b.vy) * a;
+    b.x = clamp(b.x + b.vx * dt, 24 * S, W - 24 * S);
+    b.y = clamp(b.y + b.vy * dt, surf + 8 * S, H - 20 * S);
+    b.spd = Math.hypot(b.vx, b.vy);
+    if (b.mode === 'idle' && b.spd < 30 * S) b.face = -1;
+    else if (b.vx > 15) b.face = 1; else if (b.vx < -15) b.face = -1;
+    b.tilt += (clamp(b.vy / (300 * S), -1, 1) * .7 - b.tilt) * Math.min(1, dt * 6);
+    const head = birdPoint(48, -15); b.hx = head.x; b.hy = head.y;
+    const neck = birdPoint(16, -6); b.nx = neck.x; b.ny = neck.y;
+    if (b.mode === 'dive' && dist < 14 * S) { b.mode = 'search'; b.searchT = reduce ? .5 : 1.1; b.wanderT = 0; }
+    if (b.mode === 'rise' && dist < 16 * S) {
+      b.mode = 'idle';
+      parts.push({ k: 'rip', x: b.x, y: surf + 2 * S, life: 1.2, max: 1.2, r: 6 * S });
+      splash(b.x, surf);
+      const fn = b.onHome; b.onHome = null; if (fn) fn();
+    }
+    b.bubT -= dt;
+    if (b.spd > 60 * S && b.y > surf + 20 * S && b.bubT <= 0) {
+      b.bubT = .08;
+      const tail = birdPoint(-30, 0);
+      parts.push({ k: 'bub', x: tail.x, y: tail.y, vx: rand(-10, 10) * S, vy: -rand(20, 45) * S, life: 1.3, max: 1.3, r: rand(1, 3) * S });
+    }
+
+    // ambient ayu
+    const lc = lightCenter();
+    for (const f of fishes) {
+      f.phase += dt * (6 + Math.abs(f.vx) / (20 * S));
+      const fx = f.x - b.hx, fy = f.y - b.hy, d = Math.hypot(fx, fy) || 1, fear = 110 * S;
+      if (d < fear && b.mode !== 'idle') { const k = (1 - d / fear) * 520 * S * dt; f.vx += fx / d * k; f.vy += fy / d * k; }
+      const lx = lc.x - f.x, ly = lc.y + 30 * S - f.y, ld = Math.hypot(lx, ly) || 1;
+      if (ld < 320 * S && ld > 30 * S) { f.vx += lx / ld * 20 * S * dt; f.vy += ly / ld * 18 * S * dt; }
+      f.dir = f.vx >= 0 ? 1 : -1;
+      f.vx += (f.dir * f.cruise - f.vx) * .9 * dt;
+      f.vy += Math.sin(f.phase * .35) * 8 * S * dt; f.vy *= 1 - 1.6 * dt;
+      f.x += f.vx * dt; f.y += f.vy * dt;
+      if (f.y < surf + 24 * S) { f.y = surf + 24 * S; f.vy = Math.abs(f.vy); }
+      if (f.y > H - 28 * S) { f.y = H - 28 * S; f.vy = -Math.abs(f.vy); }
+    }
+    fishes = fishes.filter(f => f.x > -90 && f.x < W + 90);
+    while (fishes.length < 6) spawnFish(false);
+
+    // torch sparks and particles
+    sparkT -= dt;
+    if (sparkT <= 0) {
+      sparkT = reduce ? .25 : .06;
+      const falling = Math.random() < .25;
+      parts.push({ k: 'spark', x: boat.tx + rand(-6, 6) * S, y: boat.ty - 14 * S, vx: rand(-20, 20) * S, vy: falling ? rand(10, 40) * S : -rand(40, 110) * S,
+        g: falling ? 140 * S : -10 * S, life: rand(.8, 1.8), max: 1.8, r: rand(.8, 1.8) * S });
+    }
+    for (const p of parts) {
+      p.life -= dt;
+      if (p.k === 'spark') {
+        p.vy += p.g * dt; p.x += (p.vx + Math.sin(clock * 6 + p.max * 9) * 12 * S) * dt; p.y += p.vy * dt;
+        if (p.y > surf) { p.life = 0; parts.push({ k: 'rip', x: p.x, y: surf + 2 * S, life: .9, max: .9, r: 3 * S }); }
+      } else if (p.k === 'bub') {
+        p.x += (p.vx + Math.sin(clock * 5 + p.max * 7) * 8 * S) * dt; p.y += p.vy * dt;
+        if (p.y < surf + 4 * S) p.life = 0;
+      } else if (p.k === 'glint') {
+        p.vy += 160 * S * dt * (p.y < surf ? 1 : 0); p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 1 - 3 * dt; p.vy *= 1 - 2 * dt;
+      }
+    }
+    parts = parts.filter(p => p.life > 0);
+    for (const t of texts) { t.life -= dt * .6; t.y -= 18 * S * dt; }
+    texts = texts.filter(t => t.life > 0);
+  }
+
+  // ---------- drawing ----------
+  function drawSky() {
+    let g = ctx.createLinearGradient(0, 0, 0, surf);
+    g.addColorStop(0, '#060a1d'); g.addColorStop(.65, '#141d46'); g.addColorStop(1, '#2a2957');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, surf + 1);
+    for (const s of stars) {
+      const al = .35 + .65 * Math.abs(Math.sin(clock * .7 + s.p));
+      ctx.fillStyle = `rgba(255,248,230,${al * .8})`;
+      ctx.fillRect(s.x * W, s.y * surf * .7, s.r, s.r);
+    }
+    const mx = W * .12, my = surf * .28, mr = Math.max(12, 24 * S);
+    g = ctx.createRadialGradient(mx, my, mr * .8, mx, my, mr * 4.5);
+    g.addColorStop(0, 'rgba(240,230,200,.22)'); g.addColorStop(1, 'rgba(240,230,200,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(mx, my, mr * 4.5, 0, 7); ctx.fill();
+    ctx.fillStyle = '#f4ecd2'; ctx.beginPath(); ctx.arc(mx, my, mr, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(200,190,160,.35)';
+    ctx.beginPath(); ctx.arc(mx - mr * .3, my - mr * .2, mr * .22, 0, 7); ctx.arc(mx + mr * .35, my + mr * .3, mr * .15, 0, 7); ctx.fill();
+    ctx.fillStyle = '#161c40';
+    ctx.beginPath(); ctx.moveTo(0, surf);
+    for (let x = 0; x <= W + 12; x += 12) ctx.lineTo(x, surf * .56 + Math.sin(x * .006 + 1.3) * surf * .12 + Math.sin(x * .017) * surf * .04);
+    ctx.lineTo(W, surf); ctx.fill();
+    ctx.fillStyle = '#0d1230';
+    ctx.beginPath(); ctx.moveTo(0, surf);
+    for (let x = 0; x <= W + 12; x += 12) ctx.lineTo(x, surf * .8 + Math.sin(x * .009 + 4) * surf * .08 + Math.sin(x * .03) * surf * .02);
+    ctx.lineTo(W, surf); ctx.fill();
+    drawBridge();
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const fl = .85 + Math.sin(clock * 11) * .08 + Math.sin(clock * 17) * .05;
+    g = ctx.createRadialGradient(boat.tx, boat.ty, 4, boat.tx, boat.ty, 190 * S);
+    g.addColorStop(0, `rgba(255,150,60,${.32 * fl})`); g.addColorStop(1, 'rgba(255,120,40,0)');
+    ctx.fillStyle = g; ctx.fillRect(boat.tx - 190 * S, boat.ty - 190 * S, 380 * S, 380 * S);
+    ctx.restore();
+  }
+  function drawBridge() {
+    const x0 = W * .62, x1 = W + 10, y0 = surf - 16 * S;
+    ctx.fillStyle = '#090d24';
+    ctx.fillRect(x0, y0, x1 - x0, 4 * S);
+    ctx.fillRect(x0, y0 - 9 * S, x1 - x0, 1.6 * S);
+    let i = 0;
+    for (let x = x0; x < x1; x += 20 * S, i++) {
+      ctx.fillRect(x, y0 - 11 * S, 1.8 * S, 11 * S);
+      ctx.beginPath(); ctx.arc(x + .9 * S, y0 - 12 * S, 1.6 * S, 0, 7); ctx.fill();
+      if (i % 3 === 0) ctx.fillRect(x - .5 * S, y0 + 4 * S, 3 * S, 13 * S);
+    }
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    i = 0;
+    for (let x = x0 + 30 * S; x < x1; x += 100 * S, i++) {
+      const al = .55 + Math.sin(clock * 2 + i) * .1;
+      const g = ctx.createRadialGradient(x, y0 - 5 * S, 0, x, y0 - 5 * S, 8 * S);
+      g.addColorStop(0, `rgba(255,200,120,${al})`); g.addColorStop(1, 'rgba(255,160,80,0)');
+      ctx.fillStyle = g; ctx.fillRect(x - 8 * S, y0 - 13 * S, 16 * S, 16 * S);
+    }
+    ctx.restore();
+  }
+  function drawWater() {
+    let g = ctx.createLinearGradient(0, surf, 0, H);
+    g.addColorStop(0, '#12385a'); g.addColorStop(.35, '#0a2139'); g.addColorStop(1, '#050f1e');
+    ctx.fillStyle = g; ctx.fillRect(0, surf, W, H - surf);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const mx = W * .12;
+    for (let i = 0; i < 6; i++) {
+      const w = (18 - i * 2) * S * (1 + .3 * Math.sin(clock * 2 + i));
+      ctx.fillStyle = `rgba(240,230,200,${.14 - i * .018})`;
+      ctx.beginPath(); ctx.ellipse(mx + Math.sin(clock * 1.5 + i) * 3 * S, surf + 5 * S + i * 8 * S, w, 1.4 * S, 0, 0, 7); ctx.fill();
+    }
+    const c = lightCenter(), R = Math.max(W, H) * .5;
+    const fl = .9 + Math.sin(clock * 9) * .06 + Math.sin(clock * 23) * .04;
+    g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, R);
+    g.addColorStop(0, `rgba(255,150,60,${.32 * fl})`); g.addColorStop(.45, `rgba(255,110,40,${.1 * fl})`); g.addColorStop(1, 'rgba(255,110,40,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, surf, W, H - surf);
+    for (let i = -2; i <= 2; i++) {
+      const sw = Math.sin(clock * .6 + i) * 20 * S, bx = c.x + i * 34 * S;
+      const sg = ctx.createLinearGradient(0, surf, 0, surf + R * .9);
+      sg.addColorStop(0, 'rgba(255,190,110,.07)'); sg.addColorStop(1, 'rgba(255,190,110,0)');
+      ctx.fillStyle = sg;
+      ctx.beginPath(); ctx.moveTo(bx - 8 * S, surf); ctx.lineTo(bx + 8 * S, surf);
+      ctx.lineTo(bx + i * 60 * S + sw + 30 * S, surf + R * .9); ctx.lineTo(bx + i * 60 * S + sw - 30 * S, surf + R * .9); ctx.fill();
+    }
+    for (let i = 0; i < 9; i++) {
+      const w = (34 - i * 3) * S * (.8 + .4 * Math.sin(clock * 6 + i * 1.7));
+      ctx.fillStyle = `rgba(255,180,90,${.5 - i * .05})`;
+      ctx.beginPath(); ctx.ellipse(boat.tx + Math.sin(clock * 3 + i) * 4 * S, surf + 3 * S + i * 6 * S, w, 1.6 * S, 0, 0, 7); ctx.fill();
+    }
+    ctx.restore();
+    ctx.fillStyle = '#040b16';
+    ctx.beginPath(); ctx.moveTo(0, H);
+    for (let x = 0; x <= W + 16; x += 16) ctx.lineTo(x, H - 12 * S - Math.sin(x * .02) * 5 * S);
+    ctx.lineTo(W, H); ctx.fill();
+    for (const p of pebbles) {
+      const x = p.x * W, y = H - 5 * S - p.o * 12 * S, v = 30 + p.c * 30 + lightAt(x, y) * 60;
+      ctx.fillStyle = `rgb(${v * .9 | 0},${v | 0},${v * 1.15 | 0})`;
+      ctx.beginPath(); ctx.ellipse(x, y, p.r * 8 * S, p.r * 4.5 * S, 0, 0, 7); ctx.fill();
+    }
+    ctx.lineCap = 'round';
+    for (const w of weeds) {
+      const x = w.x * W, h = w.h * 110 * S, sw = Math.sin(clock * 1.2 + w.p) * 14 * S;
+      ctx.strokeStyle = `rgba(40,${90 + lightAt(x, H - h) * 60 | 0},70,.75)`; ctx.lineWidth = 3 * S;
+      ctx.beginPath(); ctx.moveTo(x, H); ctx.quadraticCurveTo(x - sw * .5, H - h * .5, x + sw, H - h); ctx.stroke();
+    }
+  }
+  function drawFish(f) {
+    const s = S;
+    ctx.save();
+    ctx.translate(f.x, f.y); ctx.scale(f.dir * s, s);
+    ctx.globalAlpha = .32 + .68 * lightAt(f.x, f.y);
+    const w = Math.sin(f.phase) * .3;
+    ctx.fillStyle = AYU.tail;
+    ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(-22, -7 + w * 8); ctx.lineTo(-18.5, 0); ctx.lineTo(-22, 7 + w * 8); ctx.closePath(); ctx.fill();
+    const g = ctx.createLinearGradient(0, -7, 0, 7);
+    g.addColorStop(0, AYU.back); g.addColorStop(.55, AYU.mid); g.addColorStop(1, AYU.belly);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, 15, 6.2, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = AYU.back; ctx.beginPath(); ctx.moveTo(-4, -5.5); ctx.quadraticCurveTo(1, -11.5, 5, -5.5); ctx.fill();
+    ctx.fillStyle = AYU.spot; ctx.beginPath(); ctx.ellipse(4, .6, 2.6, 1.7, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(10, -1.5, 2.1, 0, 7); ctx.fill();
+    ctx.fillStyle = '#10131f'; ctx.beginPath(); ctx.arc(10.5, -1.5, 1.2, 0, 7); ctx.fill();
+    ctx.restore();
+  }
+  function drawRope() {
+    const mx = (boat.hx + bird.nx) / 2, my = Math.max(boat.hy, bird.ny) + 30 * S;
+    ctx.save(); ctx.strokeStyle = 'rgba(231,207,152,.55)'; ctx.lineWidth = 1.3 * S;
+    ctx.beginPath(); ctx.moveTo(boat.hx, boat.hy); ctx.quadraticCurveTo(mx, my, bird.nx, bird.ny); ctx.stroke();
+    ctx.restore();
+  }
+  function drawBird() {
+    const b = bird;
+    ctx.save();
+    ctx.translate(b.x, b.y); ctx.scale(b.face * S, S); ctx.rotate(b.tilt);
+    const pad = Math.sin(clock * 14) * 4 * Math.min(1, b.spd / (80 * S) + .3);
+    ctx.fillStyle = '#2d2b36';
+    ctx.beginPath(); ctx.ellipse(-16 - pad * .6, 11, 6, 2.4, pad * .1, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-12 + pad * .6, 12, 5, 2.2, -pad * .1, 0, 7); ctx.fill();
+    ctx.fillStyle = '#151826';
+    ctx.beginPath(); ctx.moveTo(-20, -3); ctx.lineTo(-37, -7); ctx.lineTo(-35, 2); ctx.lineTo(-20, 5); ctx.fill();
+    let g = ctx.createLinearGradient(0, -14, 0, 14);
+    g.addColorStop(0, '#2c3656'); g.addColorStop(1, '#0e111e');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(-2, 0, 24, 13, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#1a2035'; ctx.beginPath(); ctx.ellipse(-6, -2, 15, 8, -.15, 0, 7); ctx.fill();
+    ctx.strokeStyle = 'rgba(130,160,200,.35)'; ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(-12 + i * 6, -1, 4, .2, Math.PI - .2); ctx.stroke(); }
+    ctx.strokeStyle = '#1e2439'; ctx.lineWidth = 9; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(12, -4); ctx.quadraticCurveTo(24, -6, 30, -16); ctx.stroke();
+    ctx.strokeStyle = '#d9b56a'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(15, -10); ctx.lineTo(18, -1); ctx.stroke();
+    ctx.fillStyle = '#1e2439'; ctx.beginPath(); ctx.arc(32, -17, 8.5, 0, 7); ctx.fill();
+    ctx.fillStyle = '#e9c35b'; ctx.beginPath(); ctx.ellipse(36, -13, 4, 3, .2, 0, 7); ctx.fill();
+    ctx.fillStyle = '#d9a84a';
+    ctx.beginPath(); ctx.moveTo(38, -18.5); ctx.lineTo(53, -16); ctx.quadraticCurveTo(57, -14.5, 53, -12.5); ctx.lineTo(38, -13); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(33.5, -19, 3.4, 0, 7); ctx.fill();
+    ctx.fillStyle = '#1fb07f'; ctx.beginPath(); ctx.arc(34, -19, 2.3, 0, 7); ctx.fill();
+    ctx.fillStyle = '#081018'; ctx.beginPath(); ctx.arc(34.3, -19, 1.2, 0, 7); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(33.3, -20.2, .8, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(255,140,150,.4)'; ctx.beginPath(); ctx.ellipse(30, -13, 2.6, 1.5, 0, 0, 7); ctx.fill();
+    // the mystery bundle in its beak
+    if (b.mode === 'rise' && b.carry) {
+      const rare = b.carry.r === 3;
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      const gg = ctx.createRadialGradient(56, -14, 0, 56, -14, rare ? 26 : 16);
+      gg.addColorStop(0, rare ? `rgba(255,214,120,${.7 + .2 * Math.sin(clock * 8)})` : 'rgba(255,190,120,.45)');
+      gg.addColorStop(1, 'rgba(255,170,80,0)');
+      ctx.fillStyle = gg; ctx.fillRect(30, -40, 52, 52);
+      ctx.restore();
+      ctx.fillStyle = rare ? '#ffe7a8' : '#c9b48c';
+      ctx.beginPath(); ctx.ellipse(57, -13, 6, 5, .3, 0, 7); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function drawFire(x, y) {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const f1 = Math.sin(clock * 13) * 2.5, f2 = Math.sin(clock * 19 + 1) * 2;
+    const layers = [['rgba(255,110,40,.75)', 11, 32 + f1], ['rgba(255,170,70,.85)', 8, 24 + f2], ['rgba(255,240,190,.9)', 4.5, 14 + f1 * .5]];
+    for (const [col, w, h] of layers) {
+      ctx.fillStyle = col;
+      ctx.beginPath(); ctx.moveTo(x - w * S, y);
+      ctx.quadraticCurveTo(x - w * 1.1 * S, y - h * .5 * S, x + (f2 * .8) * S, y - h * S);
+      ctx.quadraticCurveTo(x + w * 1.1 * S, y - h * .5 * S, x + w * S, y);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function drawBoat() {
+    const y = surf + Math.sin(clock * 1.3) * 1.5 * S;
+    ctx.save(); ctx.translate(boat.x, y); ctx.scale(S, S);
+    ctx.strokeStyle = '#3a2618'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(66, -10); ctx.lineTo(118, -60); ctx.stroke();
+    ctx.strokeStyle = '#2a1e18'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(116, -58); ctx.lineTo(116, -48); ctx.stroke();
+    ctx.fillStyle = '#2a1b14';
+    ctx.beginPath(); ctx.moveTo(-92, -10); ctx.lineTo(80, -10); ctx.quadraticCurveTo(100, -12, 108, -24);
+    ctx.lineTo(96, 6); ctx.lineTo(-84, 6); ctx.quadraticCurveTo(-94, 0, -92, -10); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,150,70,.55)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(-92, -10); ctx.lineTo(80, -10); ctx.quadraticCurveTo(100, -12, 108, -24); ctx.stroke();
+    ctx.fillStyle = '#4a3b22';
+    ctx.beginPath(); ctx.moveTo(12, -10); ctx.lineTo(28, -10); ctx.lineTo(25, -30); ctx.lineTo(15, -30); ctx.fill();
+    ctx.strokeStyle = 'rgba(20,14,8,.6)'; ctx.lineWidth = 1;
+    for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.moveTo(15 + i * 2.4, -28); ctx.lineTo(13 + i * 3.2, -11); ctx.stroke(); }
+    ctx.fillStyle = '#1b1a26';
+    ctx.beginPath(); ctx.moveTo(14, -30); ctx.lineTo(26, -30); ctx.lineTo(24, -50); ctx.lineTo(16, -50); ctx.fill();
+    // arm raised while calling out
+    const calling = texts.some(t => t.s.startsWith('「') && t.life > 1.2);
+    ctx.strokeStyle = '#1b1a26'; ctx.lineWidth = 3.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(23, -46);
+    calling ? ctx.lineTo(30, -60) : ctx.lineTo(32, -40);
+    ctx.stroke();
+    ctx.fillStyle = '#e2c7a4'; ctx.beginPath(); ctx.arc(20, -55, 5.5, 0, 7); ctx.fill();
+    ctx.fillStyle = '#12111a';
+    ctx.beginPath(); ctx.moveTo(14, -57); ctx.lineTo(25, -58); ctx.lineTo(13, -72); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,160,80,.6)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(26, -30); ctx.lineTo(24, -50); ctx.stroke();
+    ctx.strokeStyle = '#1a1210'; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.arc(116, -44, 9, .1, Math.PI - .1); ctx.stroke();
+    for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(116 + i * 4, -44); ctx.lineTo(116 + i * 3, -36); ctx.stroke(); }
+    ctx.restore();
+    drawFire(boat.tx, boat.ty + 2 * S);
+  }
+  function drawSurfaceLine() {
+    ctx.strokeStyle = 'rgba(190,210,240,.22)'; ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (let x = 0; x <= W + 10; x += 10) { const y = surf + Math.sin(x * .03 + clock * 2) * 1.5 * S; x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke();
+  }
+  function drawParts() {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for (const p of parts) {
+      const al = clamp(p.life / p.max, 0, 1);
+      if (p.k === 'spark') { ctx.fillStyle = `rgba(255,${150 + al * 80 | 0},80,${al})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill(); }
+      else if (p.k === 'glint') { ctx.fillStyle = `rgba(${p.col},${al})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill(); }
+    }
+    ctx.restore();
+    for (const p of parts) {
+      const al = clamp(p.life / p.max, 0, 1);
+      if (p.k === 'bub') { ctx.strokeStyle = `rgba(200,225,255,${al * .6})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.stroke(); }
+      else if (p.k === 'rip') { const r = p.r + (1 - al) * 22 * S; ctx.strokeStyle = `rgba(255,200,140,${al * .5})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(p.x, p.y, r, r * .25, 0, 0, 7); ctx.stroke(); }
+    }
+  }
+  function drawFireflies() {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for (const f of flies) {
+      const x = f.x * W + Math.sin(clock * .3 * f.s + f.p) * 30 * S;
+      const y = surf * (.58 + f.y * .36) + Math.cos(clock * .4 + f.p) * 10 * S;
+      const al = Math.max(0, Math.sin(clock * 1.4 * f.s + f.p));
+      if (al < .02) continue;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 7 * S);
+      g.addColorStop(0, `rgba(200,250,170,${al * .9})`); g.addColorStop(1, 'rgba(160,240,140,0)');
+      ctx.fillStyle = g; ctx.fillRect(x - 7 * S, y - 7 * S, 14 * S, 14 * S);
+    }
+    ctx.restore();
+  }
+  function drawTexts() {
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (const t of texts) {
+      ctx.globalAlpha = clamp(t.life * 1.6, 0, 1);
+      const size = Math.round(t.size * Math.max(S, .8) + 2);
+      ctx.font = `700 ${size}px "Zen Maru Gothic", sans-serif`;
+      ctx.shadowColor = 'rgba(255,140,50,.8)'; ctx.shadowBlur = 10; ctx.fillStyle = t.col;
+      const half = Math.min(ctx.measureText(t.s).width / 2 + 8, W / 2);
+      ctx.fillText(t.s, clamp(t.x, half, W - half), t.y);
+    }
+    ctx.restore();
+  }
+  function drawVignette() {
+    const g = ctx.createRadialGradient(W / 2, H * .55, Math.min(W, H) * .35, W / 2, H * .55, Math.max(W, H) * .8);
+    g.addColorStop(0, 'rgba(3,5,14,0)'); g.addColorStop(1, 'rgba(3,5,14,.6)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+  function draw() {
+    drawSky(); drawWater();
+    for (const f of fishes) drawFish(f);
+    drawRope(); drawBird(); drawSurfaceLine(); drawBoat();
+    drawParts(); drawFireflies(); drawTexts(); drawVignette();
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000);
+    last = now; clock += dt;
+    update(dt); draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>

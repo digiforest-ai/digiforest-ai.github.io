@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>[hidden]{display:none !important}</style>
+<title>ヘアサロン ひとやすみ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: header, the salon scene (mirror, chair, stylist, wagon), then the karte card and request buttons. One deliberate daytime look: a small, bright salon. */
+:root {
+  --wall: #eef0ea;
+  --paper: #fbfbf8;
+  --ink: #2b3330;
+  --muted: #66716b;
+  --sage: #8fa58f;
+  --mustard: #d39a2f;
+  --line: rgba(43, 51, 48, .16);
+  --display: "Kiwi Maru", "Hiragino Maru Gothic ProN", "Yu Mincho", serif;
+  --body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  color-scheme: light;
+}
+html { height: 100%; background: var(--wall); }
+body { height: 100%; background: var(--wall); color: var(--ink); font-family: var(--body); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+.app {
+  min-height: 100%; box-sizing: border-box; max-width: 1000px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 10px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.top { display: flex; align-items: center; gap: 10px; }
+.top h1 { margin: 0; flex: 1; min-width: 0; font-family: var(--display); font-weight: 500; font-size: 21px; letter-spacing: .06em; }
+.top h1 small { font-family: var(--body); font-size: 11px; font-weight: 400; color: var(--muted); margin-left: 8px; letter-spacing: .04em; }
+.pill { font: inherit; font-size: 12px; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
+.pill b { color: var(--mustard); font-variant-numeric: tabular-nums; }
+.pill[aria-pressed="false"] { color: var(--muted); }
+
+.stage { position: relative; flex: 1; min-height: 250px; border-radius: 18px; overflow: hidden; background: var(--wall); box-shadow: 0 0 0 1px var(--line), 0 10px 30px rgba(43, 51, 48, .08); }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* the karte */
+.catch { display: flex; gap: 14px; padding: 14px 16px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line); min-height: 92px; box-sizing: border-box; }
+.hint { margin: auto 0; font-size: 14px; line-height: 1.75; }
+.hint small { display: block; color: var(--muted); font-size: 12px; }
+.tag { flex: 0 0 auto; width: 50px; border-radius: 8px; background: var(--sage); color: var(--paper); display: grid; place-items: center; }
+.tag span { writing-mode: vertical-rl; font-family: var(--display); font-size: 16px; letter-spacing: .25em; }
+.what { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.what .lbl { font-size: 11px; letter-spacing: .08em; color: var(--muted); }
+.what .name { margin: 0; font-family: var(--display); font-weight: 500; font-size: clamp(20px, 4.4vw, 27px); line-height: 1.3; text-wrap: balance; }
+.what .row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.stars { font-size: 13px; letter-spacing: .1em; color: var(--mustard); }
+.new { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--mustard); color: var(--paper); font-weight: 700; }
+.say { margin: 2px 0 0; font-size: 14px; line-height: 1.7; }
+.say b { font-weight: 500; font-size: 12px; color: var(--muted); margin-right: 6px; }
+.catch.pop .name { animation: rise .45s ease-out; }
+@keyframes rise { from { opacity: .2; transform: translateY(6px); } }
+
+.calls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.call { font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 8px; min-height: 48px; cursor: pointer; line-height: 1.35; transition: border-color .15s ease, background .15s ease, transform .1s ease; }
+.call:hover:not(:disabled) { border-color: var(--mustard); background: #fff7e6; }
+.call:active:not(:disabled) { transform: translateY(1px); }
+.call:disabled { opacity: .45; cursor: default; }
+.call.omakase { border-color: var(--mustard); color: #9a6a10; }
+.call.shuffle { background: transparent; border-style: dashed; color: var(--muted); font-weight: 500; }
+.call:focus-visible, .pill:focus-visible, .x:focus-visible, .reset:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.ledger { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: rgba(43, 51, 48, .45); }
+.book { width: 100%; max-width: 640px; max-height: 100%; overflow: auto; box-sizing: border-box; padding: 20px; border-radius: 16px; background: var(--paper); display: flex; flex-direction: column; gap: 14px; }
+.book header { display: flex; align-items: center; gap: 10px; }
+.book h2 { margin: 0; flex: 1; font-family: var(--display); font-weight: 500; font-size: 22px; }
+.book h2 small { font-family: var(--body); font-size: 13px; color: var(--muted); margin-left: 8px; font-variant-numeric: tabular-nums; }
+.x { font: inherit; font-size: 13px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.group h3 { margin: 0 0 6px; font-size: 12px; color: var(--muted); font-weight: 500; }
+.group ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.group li { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); }
+.group li.got { background: #f3f6f1; }
+.group li.rare { border-color: var(--mustard); color: #9a6a10; }
+.group li.no { color: var(--muted); border-style: dashed; }
+.reset { align-self: flex-start; font: inherit; font-size: 12px; color: var(--muted); background: transparent; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; }
+
+@media (max-width: 640px) { .calls { grid-template-columns: repeat(2, minmax(0, 1fr)); } .top h1 small { display: none; } }
+@media (prefers-reduced-motion: reduce) { .catch.pop .name { animation: none; } }
+</style>
+
+<div class="app">
+  <div class="top">
+    <h1>ヘアサロン ひとやすみ<small>架空のお店です</small></h1>
+    <button class="pill" id="bookBtn" type="button">中身帳 <b id="count">0</b> / <span id="total">0</span></button>
+    <button class="pill" id="sound" type="button" aria-pressed="true">音 あり</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <canvas id="salon" aria-label="小さな美容室。鏡の前の席と、店長と、引き出しのついたワゴン"></canvas>
+  </div>
+
+  <section class="catch" id="catch" aria-live="polite">
+    <p class="hint">下からお願いをえらぶと、店長がワゴンの引き出しから何かを出してきます。<br>ただし、出てくるのが道具とはかぎりません。<small>お願いは全部で<span id="nCalls">20</span>。「ほかのお願い」で入れかわります。出てきたものは「中身帳」にたまります。</small></p>
+  </section>
+
+  <div class="calls" id="calls"></div>
+</div>
+
+<div class="ledger" id="ledger" hidden>
+  <div class="book" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+    <header>
+      <h2 id="bookTitle">ワゴンの中身帳<small id="bookCount"></small></h2>
+      <button class="x" id="closeBook" type="button">とじる</button>
+    </header>
+    <div id="bookList" style="display:flex;flex-direction:column;gap:14px"></div>
+    <button class="reset" id="reset" type="button">記録を消す</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ---------- content ----------
+  // r: 1 = よくある, 2 = ときどき, 3 = めったにない
+  const CALLS = [
+    { id: 'itsumo', label: 'いつもの感じで！', items: [
+      ['前回のカルテ', 'ちゃんと書いてあります。「いつもの感じで」と。', 1],
+      ['3年前の雑誌', 'いつもここにあります。表紙の人も、いつもの感じです。', 1],
+      ['名前入りのマグカップ', 'お客さま専用です。今日もお茶をいれますね。', 1],
+      ['天気の話のメモ', 'まずは天気の話から。これがないと始まりません。', 2] ] },
+    { id: 'haru', label: '春っぽく！', items: [
+      ['桜もち', '髪より先に、おやつが春になりました。', 1],
+      ['春の新色カラー見本', 'さくら、わかば、はるがすみ。名前だけで春です。', 2],
+      ['花粉症の目薬', '春の現実です。', 1],
+      ['つくし', '店の前の土手で。季節を感じていただければ。', 2] ] },
+    { id: 'karuku', label: '軽くしたい！', items: [
+      ['店長の財布', '月末なので、とても軽い。', 1],
+      ['羽根ぼうき', '軽いです。これで肩の毛を払っておきます。', 1],
+      ['お悩み相談ノート', 'お話を聞くと、気持ちが軽くなるそうです。', 2],
+      ['風船', '軽すぎて、天井まで行ってしまいました。', 1] ] },
+    { id: 'kayui', label: 'かゆいところを！', items: [
+      ['孫の手', '「ございませんか」と聞く前に、用意しておきました。', 1],
+      ['かゆみ止め', '蚊に刺されたのは店長です。', 1],
+      ['「かゆいところは…」練習ノート', '新人のころ、100回書きました。', 2],
+      ['「ございません」の札', '言いにくい方は、指さすだけで大丈夫です。', 2] ] },
+    { id: 'zasshi', label: '雑誌をください！', items: [
+      ['3年前の旅行雑誌', '行った気分になれます。もう閉店したお店も載っています。', 1],
+      ['付せんだらけの料理雑誌', '店長の晩ごはん候補です。', 1],
+      ['途中のクロスワード', '前のお客さまが、あと一マスで帰られました。', 2],
+      ['店長が載った地元情報誌', '小さく載っています。三回めくったところです。', 3] ] },
+    { id: 'seken', label: '世間話を！', items: [
+      ['天気予報の切り抜き', 'あしたは晴れ。これで5分は話がもちます。', 1],
+      ['新しいパン屋さんのチラシ', 'できたばかりだそうです。もう三回行きました。', 1],
+      ['「今日はお休みですか？」カード', '美容師の基本のひと言です。カードにしてあります。', 2],
+      ['宇治の観光マップ', '観光の方によく聞かれるので、置いてあります。', 1] ] },
+    { id: 'relax', label: 'リラックスしたい！', items: [
+      ['ラベンダーのアロマ', 'いい香りです。店長が先に眠くなりました。', 1],
+      ['ホットタオル', 'ほかほかです。これは本当に気持ちいいやつです。', 1],
+      ['せせらぎのCD', '宇治川で録音したそうです。鵜の声も入っています。', 2],
+      ['猫のぬいぐるみ', 'ひざの上にどうぞ。', 1] ] },
+    { id: 'kekkon', label: '結婚式に行くので！', items: [
+      ['ご祝儀袋', '髪より先に、こちらの準備はお済みですか。', 1],
+      ['ヘアピン20本', '何本あっても足りないのが、アップヘアです。', 1],
+      ['ブーケの花一輪', 'ブーケトスの練習用です。', 2],
+      ['スピーチの原稿', '店長が昔読んだものです。ご参考に。', 2] ] },
+    { id: 'neguse', label: '寝ぐせを直したい！', items: [
+      ['霧吹き', 'まずはこれです。基本中の基本。', 1],
+      ['枕', '原因を持ってきました。', 1],
+      ['目覚まし時計', '根本からの解決をおすすめします。', 1],
+      ['スタッフの寝ぐせ写真集', '全員の朝の姿です。門外不出。', 3] ] },
+    { id: 'shizuka', label: '静かに過ごしたい！', items: [
+      ['今日のおすすめ文庫本', '読書中の方には、話しかけません。', 1],
+      ['「おやすみ中」の札', 'ひざに置いておくと、静かにしております。', 1],
+      ['筆談ボード', 'どうしても、の時だけここに書きます。', 2],
+      ['静かな三十分の券', '静けさも、うちのメニューです。', 2] ] },
+    { id: 'isogi', label: '急いでます！', items: [
+      ['砂時計', '三分です。店長、本気を出します。', 1],
+      ['バスの時刻表', '次のバスは15時12分です。間に合わせます。', 1],
+      ['ストップウォッチ', '新記録をねらいます。', 1],
+      ['風量が強いドライヤー', '台風なみです。前髪にご注意ください。', 2] ] },
+    { id: 'ame', label: '雨でもまとまる髪に！', items: [
+      ['傘', 'まとまる前に、まずぬれないことです。', 1],
+      ['てるてる坊主', '根本から解決したい気持ちです。', 1],
+      ['湿度計', '今日は78%。髪もがんばっています。', 1],
+      ['長靴', '帰り道まで考えておきました。', 2] ] },
+    { id: 'hae', label: '写真映えしたい！', items: [
+      ['自撮りライト', 'お店の照明に負けない明るさです。', 1],
+      ['撮影用の花かんむり', '主役はお客さまです。', 2],
+      ['「本日の一枚」ボード', '撮ってもいいですか、と聞く練習中です。', 2],
+      ['抹茶ラテ', '宇治らしい小物も一緒にどうぞ。', 1] ] },
+    { id: 'kodomo', label: '子どもも一緒に！', items: [
+      ['車の形の子ども椅子', '乗りたくて泣く子と、降りたくなくて泣く子がいます。', 1],
+      ['シャボン玉', '待ち時間の切り札です。', 1],
+      ['アメの入ったびん', '終わったら、ひとつどうぞ。', 1],
+      ['ヒーローの変身ベルト', '店長の私物です。', 2] ] },
+    { id: 'maegami', label: '前髪だけ！', items: [
+      ['定規', '「1センチだけ」は、きっちり1センチです。', 1],
+      ['いちごのヘアクリップ', '横に留めておくと、気分が変わります。', 1],
+      ['前髪カットの回数券', '前髪だけの方、多いんです。', 2],
+      ['店長の前髪失敗談ノート', '若いころ、自分で切ったときの話です。', 3] ] },
+    { id: 'event', label: '季節のイベント！', items: [
+      ['サンタの帽子', '12月はスタッフ全員これです。', 1],
+      ['節分の豆', '鬼は外。くせ毛も外。', 1],
+      ['ハロウィンのかぼちゃ', '受付に置くと、子どもが喜びます。', 1],
+      ['七夕の短冊', '「予約がいっぱいになりますように」。店長の字です。', 2] ] },
+    { id: 'newmenu', label: '新しいメニューを！', items: [
+      ['ヘッドスパの試供品', 'まずはお試しでどうぞ。', 1],
+      ['手書きのメニュー案', '「抹茶トリートメント」。まだ検討中です。', 2],
+      ['予約用のタブレット', 'ネットで予約を受けられるようにしました。たぶん。', 2],
+      ['AIが考えたキャッチコピー', '「髪にも、ひとやすみを。」採用です。', 3] ] },
+    { id: 'osusume', label: '店長のおすすめを！', items: [
+      ['シャンプーのサンプル', 'これは本当に良いです。宣伝ではなく。', 1],
+      ['近所のおいしいお店リスト', '髪の次は、おなかを満たしてください。', 1],
+      ['店長おすすめの文庫本', '読み終わったら、感想を聞かせてください。', 1],
+      ['推しのうちわ', '推しの話をすると長くなります。', 2] ] },
+    { id: 'miyage', label: 'おみやげを！', items: [
+      ['宇治茶のティーバッグ', 'ひとやすみの続きに、どうぞ。', 1],
+      ['次回の予約カード', 'いちばん大事なおみやげです。', 1],
+      ['あと1つのスタンプカード', '次で一杯になります。', 2],
+      ['茶団子', '店長のおやつを、おすそわけ。', 1] ] },
+    { id: 'perm', label: 'パーマをかけたい！', items: [
+      ['ロットの山', '数えたら128本。今日は使いきる勢いです。', 1],
+      ['焼きそば', 'くるくるの参考資料です。お昼ではありません。', 2],
+      ['バネ', '弾み具合の見本です。', 1],
+      ['昭和のパーマの写真', '店長の母です。今見ても気合いが違います。', 3] ] },
+    { id: 'color', label: 'カラーを明るく！', items: [
+      ['懐中電灯', '明るく、と言われたので。', 1],
+      ['ひまわり', 'この明るさを目標にします。', 1],
+      ['100色の色見本', '全部見ると30分かかります。', 2],
+      ['店長のサングラス', '明るすぎて、店長がかけました。', 2] ] },
+    { id: 'imechen', label: 'イメチェンしたい！', items: [
+      ['変装用のめがね', 'まずは小物から。', 1],
+      ['引っ越しのチラシ', 'そこまで変えなくても大丈夫です。', 1],
+      ['お店の模様替えの図面', 'お客さまより先に、店長が変わりたいようです。', 2],
+      ['「新しい自分」のくす玉', '割るのは、仕上がってからにしましょう。', 3] ] },
+    { id: 'shampoo', label: 'シャンプーを！', items: [
+      ['泡だて器', '泡立ちには、こだわっております。', 1],
+      ['アヒルのおもちゃ', 'シャンプー台の見張り番です。', 1],
+      ['顔にかけるガーゼ', 'これがあると、天井と目が合いません。', 1],
+      ['指の筋トレ器', 'マッサージの力は、ここで鍛えています。', 2] ] },
+    { id: 'kata', label: '肩がこってます！', items: [
+      ['ツボの本', '肩井というツボです。少し押してみますね。', 1],
+      ['湿布 2枚', '1枚は店長の分です。', 1],
+      ['マッサージ用のボール', 'ごろごろ、どうぞ。', 1],
+      ['入浴剤', '今夜はこれで、ゆっくりつかってください。', 2] ] },
+    { id: 'oshaberi', label: 'おしゃべりしたい！', items: [
+      ['話題くじ', '引いたお題で話します。「最近うれしかったこと」。', 1],
+      ['ペットの写真アルバム', '話し出すと、カットより長くなります。', 1],
+      ['夏祭りのポスター', '今年も焼きそば係です。', 1],
+      ['「聞き上手」の本', '読みました。でも、つい話してしまいます。', 2] ] },
+    { id: 'nobasu', label: '髪を伸ばしたい！', items: [
+      ['カレンダー', '伸びるのは月に1センチほど。気長にいきましょう。', 1],
+      ['じょうろ', '……水をやっても伸びません。', 1],
+      ['半年後の予約カード', 'ここまでがまんです。', 2],
+      ['伸びる魔法の杖', 'おもちゃです。でも、気持ちは伸びます。', 3] ] },
+    { id: 'bassari', label: 'ばっさり切って！', items: [
+      ['庭木用の大きなはさみ', 'それは使いません。', 1],
+      ['勇気のお守り', 'ばっさりの前に、ひとつどうぞ。', 2],
+      ['ヘアドネーションの案内', '切った髪を寄付する方法もあります。', 2],
+      ['ビフォーアフターのボード', '記念に、切る前も撮っておきましょう。', 1] ] },
+    { id: 'ryoko', label: '旅行に行くので！', items: [
+      ['ミニサイズのシャンプー', '機内に持ちこめる大きさです。', 1],
+      ['つばの広い帽子', '旅先の風はあなどれません。', 1],
+      ['旅のしおり', '店長も行きたくて、つい作ってしまいました。', 2],
+      ['おみやげリクエストのメモ', '書いてあるのは「その土地のお茶」。宇治の店らしい。', 2] ] },
+    { id: 'mensetsu', label: '面接があるので！', items: [
+      ['黒いヘアゴム', 'まとめるなら、これがいちばんです。', 1],
+      ['携帯用のくし', '会場に入る前に、さっと。', 1],
+      ['合格祈願のお守り', '店長の手作りです。', 1],
+      ['「長所は？」の練習カード', '待ち時間に、一緒に練習しましょう。', 2] ] },
+    { id: 'ninki', label: '人気のメニューを！', items: [
+      ['「一番人気」の札', 'カット＋ヘッドスパ。迷ったらこれです。', 1],
+      ['予約帳', '土曜の午前は、埋まりやすいです。', 2],
+      ['「また来ます」のはがき', 'お客さまからいただきました。額に入れて飾っています。', 2],
+      ['店長の得意顔の写真', 'このメニューを思いついた日の顔です。', 3] ] },
+    { id: 'ocha', label: 'お茶をください！', items: [
+      ['宇治の煎茶', '本日は煎茶です。ひとやすみ、どうぞ。', 1],
+      ['冷たい麦茶', '夏はこれがいちばん人気です。', 1],
+      ['抹茶と茶筅', '店長がたてます。腕前はまだ修行中です。', 2],
+      ['茶柱', '立ちました。今日の仕上がりは、きっといい。', 3] ] },
+    { id: 'styling', label: 'スタイリング剤を！', items: [
+      ['ヘアワックス', '……ふつうに出てきました。少しだけ手に取ります。', 1],
+      ['床用ワックス', 'それは、床がピカピカになるほうです。', 1],
+      ['ハードスプレー', '台風でも崩れません。', 1],
+      ['手描きの使い方メモ', '店長の絵です。わかりやすいと評判です。', 2] ] },
+    { id: 'neko', label: '猫に会いたい！', items: [
+      ['猫じゃらし', 'これを振ると、どこからか来ます。', 1],
+      ['猫のおやつ', '看板猫の好物です。', 1],
+      ['抜け毛のかたまり', '……ブラッシングの成果です。', 2],
+      ['肉球のスタンプ', 'スタンプカードに、看板猫が押してくれました。', 3] ] },
+    { id: 'omakase', label: 'おまかせで！', mixAll: true, items: [
+      ['ハサミ', '……ふつうに仕事の道具を出してしまいました。', 1],
+      ['まかないのおにぎり', 'お昼、まだでした。', 2],
+      ['金のハサミ', '開店記念にいただいたものです。もったいなくて使えません。', 3],
+      ['店長の若いころの写真', '髪型が、とても時代です。', 3],
+      ['看板猫', 'ワゴンの中で寝ていました。', 3] ] }
+  ];
+  const ALL = [];
+  for (const c of CALLS) c.items = c.items.map(([name, line, r], i) => {
+    const it = { id: `${c.id}${i}`, name, line, r, call: c };
+    ALL.push(it); return it;
+  });
+
+  const KEY = 'hitoyasumi-found';
+  let found = new Set();
+  try { found = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify([...found])); } catch (e) {} };
+
+  let lastId = '';
+  function pickCatch(call) {
+    const pool = call.mixAll ? ALL : call.items;
+    const ws = pool.map(it => {
+      let w = [0, 6, 3, 1][it.r];
+      if (!found.has(it.id)) w *= 2;
+      if (call.mixAll && it.call === call) w *= 2;
+      return it.id === lastId ? 0 : w;
+    });
+    let t = Math.random() * ws.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < pool.length; i++) if ((t -= ws[i]) <= 0) return pool[i];
+    return pool[0];
+  }
+  // A request resolves to { name, line, r }. Later, a free-text request can resolve here through AI.
+  async function getCatch(call) { return pickCatch(call); }
+
+  // ---------- DOM ----------
+  const $ = id => document.getElementById(id);
+  const callsEl = $('calls'), catchEl = $('catch');
+  $('total').textContent = ALL.length;
+  $('nCalls').textContent = CALLS.length;
+
+  const SHOWN = 6;
+  const REGULAR = CALLS.filter(c => !c.mixAll), OMAKASE = CALLS.find(c => c.mixAll);
+  let shown = [];
+  function dealCalls() {
+    const rest = REGULAR.filter(c => !shown.includes(c));
+    const pool = rest.length >= SHOWN ? rest : REGULAR;
+    shown = [...pool].sort(() => Math.random() - .5).slice(0, SHOWN);
+    callsEl.innerHTML = '';
+    for (const c of [...shown, OMAKASE]) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'call' + (c.mixAll ? ' omakase' : '');
+      b.textContent = `「${c.label}」`;
+      b.addEventListener('click', () => request(c));
+      callsEl.appendChild(b);
+    }
+    const s = document.createElement('button');
+    s.type = 'button'; s.className = 'call shuffle';
+    s.textContent = 'ほかのお願い ↻';
+    s.addEventListener('click', dealCalls);
+    callsEl.appendChild(s);
+  }
+  dealCalls();
+  const setBusy = v => { for (const b of callsEl.children) b.disabled = v; };
+  const updateCount = () => { $('count').textContent = found.size; };
+  updateCount();
+
+  function showCatch(item, isNew) {
+    catchEl.innerHTML = '';
+    const tag = document.createElement('div'); tag.className = 'tag'; tag.innerHTML = '<span>カルテ</span>';
+    const w = document.createElement('div'); w.className = 'what';
+    w.innerHTML = `<span class="lbl"></span><p class="name"></p><div class="row"><span class="stars"></span></div><p class="say"><b>店長</b><span></span></p>`;
+    w.querySelector('.lbl').textContent = `「${item.call.label}」 店長が出してきたのは…`;
+    w.querySelector('.name').textContent = item.name;
+    w.querySelector('.stars').textContent = '★'.repeat(item.r) + '☆'.repeat(3 - item.r);
+    w.querySelector('.stars').setAttribute('aria-label', `めずらしさ ${item.r}`);
+    if (isNew) { const n = document.createElement('span'); n.className = 'new'; n.textContent = 'はじめて'; w.querySelector('.row').appendChild(n); }
+    w.querySelector('.say span').textContent = item.line;
+    catchEl.append(tag, w);
+    catchEl.classList.remove('pop'); void catchEl.offsetWidth; catchEl.classList.add('pop');
+  }
+
+  let resetArmed = false;
+  function renderBook() {
+    $('bookCount').textContent = `${found.size} / ${ALL.length}`;
+    const list = $('bookList'); list.innerHTML = '';
+    for (const c of CALLS) {
+      const g = document.createElement('div'); g.className = 'group';
+      const h = document.createElement('h3'); h.textContent = `「${c.label}」`;
+      const ul = document.createElement('ul');
+      for (const it of c.items) {
+        const li = document.createElement('li');
+        if (found.has(it.id)) { li.className = 'got' + (it.r === 3 ? ' rare' : ''); li.textContent = it.name; }
+        else { li.className = 'no'; li.textContent = it.r === 3 ? '？？？（めずらしい）' : '？？？'; }
+        ul.appendChild(li);
+      }
+      g.append(h, ul); list.appendChild(g);
+    }
+    $('reset').textContent = '記録を消す'; resetArmed = false;
+  }
+  $('bookBtn').addEventListener('click', () => { renderBook(); $('ledger').hidden = false; $('closeBook').focus(); });
+  $('closeBook').addEventListener('click', () => { $('ledger').hidden = true; $('bookBtn').focus(); });
+  $('ledger').addEventListener('click', e => { if (e.target.id === 'ledger') $('ledger').hidden = true; });
+  addEventListener('keydown', e => { if (e.key === 'Escape') $('ledger').hidden = true; });
+  $('reset').addEventListener('click', () => {
+    if (!resetArmed) { resetArmed = true; $('reset').textContent = 'もう一度押すと、中身帳が空になります'; return; }
+    found = new Set(); save(); updateCount(); renderBook();
+  });
+
+  // ---------- sound ----------
+  let ac = null, soundOn = true;
+  function ensureAudio() {
+    if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+    try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ac = null; }
+  }
+  function tone(f1, f2, dur, type = 'sine', vol = .1, delay = 0) {
+    if (!ac || !soundOn) return;
+    const t = ac.currentTime + delay;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f1, t);
+    o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + .012);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(ac.destination);
+    o.start(t); o.stop(t + dur + .03);
+  }
+  const sfx = {
+    ask: () => { tone(660, 700, .12, 'sine', .06); tone(880, 920, .14, 'sine', .05, .12); },
+    drawer: () => { tone(160, 110, .08, 'square', .03); tone(140, 100, .08, 'square', .03, .1); },
+    rummage: () => tone(rand(300, 700), rand(300, 700), .05, 'triangle', .03),
+    reveal: r => { const n = [784, 988, 1175, 1568]; for (let i = 0; i < r + 1; i++) tone(n[i], n[i] * 1.01, .35, 'sine', .07, i * .08); }
+  };
+  $('sound').addEventListener('click', e => {
+    soundOn = !soundOn;
+    e.currentTarget.textContent = soundOn ? '音 あり' : '音 なし';
+    e.currentTarget.setAttribute('aria-pressed', String(soundOn));
+    if (soundOn) ensureAudio();
+  });
+
+  // ---------- scene ----------
+  const cvs = $('salon'), ctx = cvs.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const rand = (a, b) => a + Math.random() * (b - a);
+
+  let W = 1, H = 1, S = 1, floor = 1, chairX = 0, wagonX = 0, clock = 0;
+  const st = { x: 0, face: -1, mode: 'idle', t: 0, carry: null, onBack: null, walk: 0 };
+  let drawer = { i: 1, open: 0 }, bubble = null, parts = [], rumT = 0;
+  const homeX = () => chairX + 92 * S, wagonSide = () => wagonX - 64 * S;
+
+  function resize() {
+    const r = cvs.getBoundingClientRect();
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    cvs.width = Math.round(W * dpr); cvs.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S = clamp(Math.min(W * 1.05, H * 1.45) / 760, .5, 1.15);
+    floor = H - 26 * S;
+    chairX = clamp(W * .36, 70 * S, W - 270 * S);
+    wagonX = Math.min(W - 52 * S, chairX + 270 * S);
+    if (st.mode === 'idle') st.x = homeX();
+  }
+  new ResizeObserver(resize).observe($('stage'));
+  resize();
+
+  async function request(call) {
+    if (st.mode !== 'idle') return;
+    ensureAudio(); setBusy(true); sfx.ask();
+    bubble = { s: `「${call.label}」`, life: reduce ? 1.6 : 2.4 };
+    st.carry = undefined;
+    drawer.i = Math.floor(Math.random() * 3);
+    const pending = getCatch(call);
+    setTimeout(() => { st.mode = 'toWagon'; }, reduce ? 200 : 650);
+    let item;
+    try { item = await pending; } catch (e) { item = null; }
+    st.carry = item;
+    st.onBack = () => {
+      if (!item) { setBusy(false); return; }
+      const isNew = !found.has(item.id);
+      found.add(item.id); save(); updateCount(); lastId = item.id;
+      sfx.reveal(item.r);
+      burst(st.x - 8 * S, floor - 178 * S, item.r === 3 ? '#d39a2f' : '#8fa58f', 10 + item.r * 8);
+      showCatch(item, isNew);
+      st.carry = null; setBusy(false);
+    };
+  }
+
+  function burst(x, y, col, n) {
+    for (let i = 0; i < n; i++) {
+      const an = rand(0, Math.PI * 2), sp = rand(50, 150) * S;
+      parts.push({ k: 'dot', x, y, vx: Math.cos(an) * sp, vy: Math.sin(an) * sp - 40 * S, life: rand(.5, .9), max: .9, r: rand(1.5, 3) * S, col });
+    }
+  }
+  const TOSS = ['#e7b9a6', '#8fa58f', '#d39a2f', '#9fb6c9', '#ffffff', '#c7b7d8'];
+
+  function update(dt) {
+    const speed = 190 * S * (reduce ? 1.8 : 1);
+    if (st.mode === 'toWagon') {
+      st.face = 1; st.x += speed * dt; st.walk += dt * 10;
+      if (st.x >= wagonSide()) { st.x = wagonSide(); st.mode = 'rummage'; st.t = reduce ? .4 : 1.1; sfx.drawer(); }
+    } else if (st.mode === 'rummage') {
+      st.t -= dt; drawer.open = Math.min(1, drawer.open + dt * 4);
+      rumT -= dt;
+      if (rumT <= 0 && drawer.open > .8) {
+        rumT = .14; sfx.rummage();
+        const y = floor - (112 - drawer.i * 34) * S + 12 * S;
+        parts.push({ k: 'bit', x: wagonX - 46 * S, y, vx: -rand(10, 90) * S, vy: -rand(90, 190) * S, life: 1, max: 1, r: rand(3, 6) * S, col: TOSS[Math.random() * TOSS.length | 0], rot: rand(0, 6) });
+      }
+      if (st.t <= 0 && st.carry !== undefined) { st.mode = 'back'; sfx.drawer(); }
+    } else if (st.mode === 'back') {
+      st.face = -1; st.x -= speed * dt; st.walk += dt * 10;
+      drawer.open = Math.max(0, drawer.open - dt * 4);
+      if (st.x <= homeX()) {
+        st.x = homeX(); st.mode = 'idle';
+        const fn = st.onBack; st.onBack = null; if (fn) fn();
+      }
+    } else {
+      st.face = -1; st.walk = 0; drawer.open = Math.max(0, drawer.open - dt * 4);
+      st.x += (homeX() - st.x) * Math.min(1, dt * 6);
+    }
+    if (bubble) { bubble.life -= dt; if (bubble.life <= 0) bubble = null; }
+    for (const p of parts) {
+      p.life -= dt; p.vy += 420 * S * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+      if (p.k === 'bit') { p.rot += dt * 8; if (p.y > floor - 2 * S) { p.y = floor - 2 * S; p.vy *= -.3; p.vx *= .6; } }
+    }
+    parts = parts.filter(p => p.life > 0);
+  }
+
+  // ---------- drawing ----------
+  function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+
+  function drawRoom() {
+    let g = ctx.createLinearGradient(0, 0, 0, floor);
+    g.addColorStop(0, '#f3f5ef'); g.addColorStop(1, '#e3e8df');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, floor);
+    // window light falling across the wall
+    const wx = W - 150 * S;
+    ctx.fillStyle = 'rgba(255,248,225,.55)';
+    ctx.beginPath(); ctx.moveTo(wx, 30 * S); ctx.lineTo(wx + 110 * S, 30 * S); ctx.lineTo(wx - 60 * S, floor); ctx.lineTo(wx - 200 * S, floor); ctx.fill();
+    // wainscot
+    ctx.fillStyle = '#d9dfd4'; ctx.fillRect(0, floor - 60 * S, W, 60 * S);
+    ctx.fillStyle = 'rgba(43,51,48,.08)'; ctx.fillRect(0, floor - 60 * S, W, 2 * S);
+    // floor boards
+    g = ctx.createLinearGradient(0, floor, 0, H);
+    g.addColorStop(0, '#c9a77f'); g.addColorStop(1, '#b38f67');
+    ctx.fillStyle = g; ctx.fillRect(0, floor, W, H - floor);
+    ctx.strokeStyle = 'rgba(90,60,30,.18)'; ctx.lineWidth = 1;
+    for (let x = -((clock * 0) % 1); x < W; x += 70 * S) { ctx.beginPath(); ctx.moveTo(x, floor); ctx.lineTo(x - 30 * S, H); ctx.stroke(); }
+    // shop sign
+    const sx = Math.max(14 * S, chairX - 200 * S), sy = 24 * S;
+    if (chairX - 200 * S > 0) {
+      ctx.fillStyle = '#fbfbf8'; rr(sx, sy, 132 * S, 50 * S, 8 * S); ctx.fill();
+      ctx.strokeStyle = 'rgba(43,51,48,.15)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.fillStyle = '#2b3330'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = `500 ${Math.round(11 * S + 2)}px "Kiwi Maru", serif`;
+      ctx.fillText('ヘアサロン', sx + 66 * S, sy + 17 * S);
+      ctx.font = `500 ${Math.round(15 * S + 2)}px "Kiwi Maru", serif`;
+      ctx.fillText('ひとやすみ', sx + 66 * S, sy + 35 * S);
+      // plant
+      const px = chairX - 150 * S;
+      ctx.fillStyle = '#c8b59a'; rr(px - 18 * S, floor - 46 * S, 36 * S, 46 * S, 6 * S); ctx.fill();
+      ctx.fillStyle = '#7f9a7d';
+      for (let i = 0; i < 7; i++) {
+        const a = -Math.PI / 2 + (i - 3) * .32 + Math.sin(clock * .8 + i) * .03;
+        ctx.save(); ctx.translate(px, floor - 44 * S); ctx.rotate(a);
+        ctx.beginPath(); ctx.ellipse(34 * S, 0, 34 * S, 9 * S, 0, 0, 7); ctx.fill(); ctx.restore();
+      }
+    }
+    // pendant lamp
+    const lx = chairX + 30 * S, sw = Math.sin(clock * .9) * 2 * S;
+    ctx.strokeStyle = '#2b3330'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx + sw, 40 * S); ctx.stroke();
+    ctx.fillStyle = '#d39a2f';
+    ctx.beginPath(); ctx.moveTo(lx + sw - 22 * S, 58 * S); ctx.quadraticCurveTo(lx + sw, 30 * S, lx + sw + 22 * S, 58 * S); ctx.closePath(); ctx.fill();
+    g = ctx.createRadialGradient(lx + sw, 62 * S, 0, lx + sw, 62 * S, 90 * S);
+    g.addColorStop(0, 'rgba(255,230,170,.45)'); g.addColorStop(1, 'rgba(255,230,170,0)');
+    ctx.fillStyle = g; ctx.fillRect(lx - 90 * S, 0, 180 * S, 160 * S);
+  }
+
+  function drawMirror() {
+    const w = 150 * S, top = floor - 300 * S, bot = floor - 96 * S, x = chairX - w / 2;
+    ctx.fillStyle = '#b8936a';
+    ctx.beginPath(); ctx.moveTo(x - 8 * S, bot + 8 * S); ctx.lineTo(x - 8 * S, top + w / 2); ctx.arc(chairX, top + w / 2, w / 2 + 8 * S, Math.PI, 0); ctx.lineTo(x + w + 8 * S, bot + 8 * S); ctx.closePath(); ctx.fill();
+    const g = ctx.createLinearGradient(x, top, x + w, bot);
+    g.addColorStop(0, '#dfe8ea'); g.addColorStop(.5, '#c9d6da'); g.addColorStop(1, '#b7c7cc');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(x, bot); ctx.lineTo(x, top + w / 2); ctx.arc(chairX, top + w / 2, w / 2, Math.PI, 0); ctx.lineTo(x + w, bot); ctx.closePath(); ctx.fill();
+    ctx.save(); ctx.clip();
+    ctx.fillStyle = 'rgba(255,255,255,.45)';
+    ctx.beginPath(); ctx.moveTo(x + 20 * S, bot); ctx.lineTo(x + 60 * S, bot); ctx.lineTo(x + 130 * S, top); ctx.lineTo(x + 90 * S, top); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.3)';
+    ctx.beginPath(); ctx.moveTo(x + 70 * S, bot); ctx.lineTo(x + 80 * S, bot); ctx.lineTo(x + 150 * S, top); ctx.lineTo(x + 140 * S, top); ctx.fill();
+    ctx.restore();
+    // counter shelf
+    ctx.fillStyle = '#fbfbf8'; ctx.fillRect(chairX - 110 * S, bot + 8 * S, 220 * S, 10 * S);
+    ctx.fillStyle = 'rgba(43,51,48,.12)'; ctx.fillRect(chairX - 110 * S, bot + 18 * S, 220 * S, 3 * S);
+    ctx.fillStyle = '#8fa58f'; rr(chairX + 60 * S, bot - 18 * S, 12 * S, 26 * S, 3 * S); ctx.fill();
+    ctx.fillStyle = '#e7b9a6'; rr(chairX + 78 * S, bot - 12 * S, 12 * S, 20 * S, 3 * S); ctx.fill();
+  }
+
+  function drawChair() {
+    const x = chairX;
+    ctx.fillStyle = '#5b625e';
+    ctx.fillRect(x - 4 * S, floor - 60 * S, 8 * S, 58 * S);
+    ctx.beginPath(); ctx.ellipse(x, floor - 2 * S, 34 * S, 6 * S, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#2b3330'; rr(x - 40 * S, floor - 76 * S, 80 * S, 18 * S, 8 * S); ctx.fill();
+    // customer from behind: cape and the back of the head
+    ctx.fillStyle = '#9fb3a0';
+    ctx.beginPath(); ctx.moveTo(x - 30 * S, floor - 152 * S); ctx.quadraticCurveTo(x, floor - 162 * S, x + 30 * S, floor - 152 * S);
+    ctx.lineTo(x + 52 * S, floor - 66 * S); ctx.lineTo(x - 52 * S, floor - 66 * S); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 1;
+    for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(x + i * 10 * S, floor - 150 * S); ctx.lineTo(x + i * 18 * S, floor - 68 * S); ctx.stroke(); }
+    ctx.fillStyle = '#e9d3c0'; ctx.fillRect(x - 7 * S, floor - 164 * S, 14 * S, 12 * S);
+    ctx.fillStyle = '#4a3a30';
+    ctx.beginPath(); ctx.arc(x, floor - 182 * S, 22 * S, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, floor - 206 * S, 9 * S, 0, 7); ctx.fill();
+  }
+
+  function drawWagon() {
+    const x = wagonX, w = 78 * S, left = x - w / 2;
+    ctx.fillStyle = '#2b3330';
+    for (const dx of [-30, 30]) { ctx.beginPath(); ctx.arc(x + dx * S, floor - 6 * S, 6 * S, 0, 7); ctx.fill(); }
+    ctx.fillStyle = '#f6f3ea'; rr(left, floor - 124 * S, w, 112 * S, 6 * S); ctx.fill();
+    ctx.strokeStyle = 'rgba(43,51,48,.25)'; ctx.lineWidth = 1.2; ctx.stroke();
+    const cols = ['#e7b9a6', '#8fa58f', '#d39a2f'];
+    for (let i = 0; i < 3; i++) {
+      const y = floor - (116 - i * 34) * S;
+      const open = i === drawer.i ? drawer.open * 30 * S : 0;
+      if (open > 0) { ctx.fillStyle = '#5b625e'; ctx.fillRect(left - open, y + 2 * S, open + 4 * S, 26 * S); }
+      ctx.fillStyle = cols[i]; rr(left + 5 * S - open, y, w - 10 * S, 30 * S, 4 * S); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.75)'; rr(x - 9 * S - open, y + 13 * S, 18 * S, 4 * S, 2 * S); ctx.fill();
+    }
+    // things on top: a dryer and bottles
+    ctx.fillStyle = '#2b3330'; rr(left + 6 * S, floor - 142 * S, 30 * S, 14 * S, 6 * S); ctx.fill();
+    ctx.fillRect(left + 12 * S, floor - 130 * S, 6 * S, 6 * S);
+    ctx.fillStyle = '#9fb6c9'; rr(left + 46 * S, floor - 146 * S, 10 * S, 22 * S, 3 * S); ctx.fill();
+    ctx.fillStyle = '#c7b7d8'; rr(left + 60 * S, floor - 140 * S, 10 * S, 16 * S, 3 * S); ctx.fill();
+  }
+
+  function drawStylist() {
+    const x = st.x, f = st.face, moving = st.mode === 'toWagon' || st.mode === 'back';
+    const sw = moving ? Math.sin(st.walk) * 9 * S : 0, bob = moving ? Math.abs(Math.sin(st.walk)) * 2 * S : 0;
+    ctx.save(); ctx.translate(0, -bob);
+    ctx.strokeStyle = '#2b3330'; ctx.lineWidth = 7 * S; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x - 6 * S, floor - 62 * S); ctx.lineTo(x - 6 * S + sw, floor - 4 * S); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + 6 * S, floor - 62 * S); ctx.lineTo(x + 6 * S - sw, floor - 4 * S); ctx.stroke();
+    // shirt and apron
+    ctx.fillStyle = '#fbfbf8';
+    rr(x - 20 * S, floor - 134 * S, 40 * S, 76 * S, 12 * S); ctx.fill();
+    ctx.strokeStyle = 'rgba(43,51,48,.2)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = '#d39a2f';
+    ctx.beginPath(); ctx.moveTo(x - 15 * S, floor - 118 * S); ctx.lineTo(x + 15 * S, floor - 118 * S); ctx.lineTo(x + 20 * S, floor - 54 * S); ctx.lineTo(x - 20 * S, floor - 54 * S); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.55)'; rr(x - 9 * S, floor - 96 * S, 18 * S, 12 * S, 2 * S); ctx.fill();
+    ctx.strokeStyle = '#7a6a55'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x - 2 * S, floor - 98 * S); ctx.lineTo(x - 4 * S, floor - 108 * S); ctx.moveTo(x + 3 * S, floor - 98 * S); ctx.lineTo(x + 5 * S, floor - 106 * S); ctx.stroke();
+    // head
+    ctx.fillStyle = '#e9d3c0'; ctx.beginPath(); ctx.arc(x, floor - 150 * S, 15 * S, 0, 7); ctx.fill();
+    ctx.fillStyle = '#3a3029';
+    ctx.beginPath(); ctx.arc(x - f * 2 * S, floor - 154 * S, 16 * S, Math.PI * 1.05, Math.PI * 1.95); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x - f * 11 * S, floor - 152 * S, 6 * S, 11 * S, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#2b3330'; ctx.beginPath(); ctx.arc(x + f * 7 * S, floor - 150 * S, 1.6 * S, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#b5826a'; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(x + f * 8 * S, floor - 143 * S, 3 * S, .2, Math.PI - .2); ctx.stroke();
+    // arm: reaching into the drawer, holding the find up, or resting
+    ctx.strokeStyle = '#fbfbf8'; ctx.lineWidth = 8 * S; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x + f * 14 * S, floor - 124 * S);
+    let hx, hy;
+    if (st.mode === 'rummage') { hx = x + 34 * S + Math.sin(clock * 22) * 3 * S; hy = floor - (104 - drawer.i * 34) * S; }
+    else if (st.mode === 'back' && st.carry) { hx = x - 14 * S; hy = floor - 178 * S; }
+    else { hx = x + f * 22 * S; hy = floor - 84 * S; }
+    ctx.quadraticCurveTo(x + f * 24 * S, floor - 110 * S, hx, hy); ctx.stroke();
+    ctx.fillStyle = '#e9d3c0'; ctx.beginPath(); ctx.arc(hx, hy, 5 * S, 0, 7); ctx.fill();
+    if (st.mode === 'back' && st.carry) {
+      const rare = st.carry.r === 3;
+      const g = ctx.createRadialGradient(hx, hy - 10 * S, 0, hx, hy - 10 * S, (rare ? 30 : 20) * S);
+      g.addColorStop(0, rare ? `rgba(255,205,110,${.75 + .2 * Math.sin(clock * 9)})` : 'rgba(255,240,200,.7)');
+      g.addColorStop(1, 'rgba(255,230,170,0)');
+      ctx.fillStyle = g; ctx.fillRect(hx - 30 * S, hy - 40 * S, 60 * S, 60 * S);
+      ctx.fillStyle = rare ? '#d39a2f' : '#fbfbf8';
+      ctx.strokeStyle = 'rgba(43,51,48,.4)'; ctx.lineWidth = 1;
+      rr(hx - 8 * S, hy - 20 * S, 16 * S, 14 * S, 3 * S); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#2b3330'; ctx.font = `700 ${Math.round(10 * S + 2)}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('?', hx, hy - 13 * S);
+    }
+    ctx.restore();
+  }
+
+  function drawBubble() {
+    if (!bubble) return;
+    const a = clamp(bubble.life * 2, 0, 1);
+    ctx.save(); ctx.globalAlpha = a;
+    const size = Math.round(13 * Math.max(S, .85) + 2);
+    ctx.font = `700 ${size}px "Zen Kaku Gothic New", sans-serif`;
+    const tw = ctx.measureText(bubble.s).width + 24;
+    const bx = clamp(chairX - tw / 2, 6, W - tw - 6), by = Math.max(8, floor - 262 * S - size);
+    ctx.fillStyle = '#fbfbf8'; ctx.strokeStyle = 'rgba(43,51,48,.3)'; ctx.lineWidth = 1;
+    rr(bx, by, tw, size + 18, 12); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(chairX - 6, by + size + 17); ctx.lineTo(chairX, by + size + 28); ctx.lineTo(chairX + 6, by + size + 17); ctx.fill();
+    ctx.fillStyle = '#2b3330'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(bubble.s, bx + tw / 2, by + (size + 18) / 2);
+    ctx.restore();
+  }
+
+  function drawParts() {
+    for (const p of parts) {
+      const a = clamp(p.life / p.max * 1.5, 0, 1);
+      ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = p.col;
+      if (p.k === 'bit') { ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillRect(-p.r, -p.r * .6, p.r * 2, p.r * 1.2); ctx.strokeStyle = 'rgba(43,51,48,.25)'; ctx.lineWidth = 1; ctx.strokeRect(-p.r, -p.r * .6, p.r * 2, p.r * 1.2); }
+      else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill(); }
+      ctx.restore();
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawRoom(); drawMirror(); drawWagon(); drawChair(); drawStylist(); drawParts(); drawBubble();
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000);
+    last = now; clock += dt;
+    update(dt); draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
