@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>曲づくりの素｜DigiForest</title>
-<meta name="description" content="3つの質問に答えるだけで、家族への歌・誕生日ソング・お店や団体のテーマソングを作るための「AIへの頼み方」と「曲の雰囲気メモ」ができるページです。">
+<meta name="description" content="質問に答えるだけで、家族への歌・誕生日ソング・お店や団体のテーマソングをdstudioで作るための「歌詞のテーマ」と「設定の見本」ができるページです。">
 <meta name="robots" content="noindex">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#4f7d33">
@@ -18,7 +18,6 @@
   .tk-head h1 { font-size: 26px; font-weight: 900; line-height: 1.4; }
   .tk-head p { color: var(--sub); font-size: 15px; margin-top: 6px; }
   .tk-panel { background: #fff; border-radius: var(--radius); padding: 22px 18px; margin-top: 18px; box-shadow: 0 6px 18px rgba(60, 80, 40, .08); }
-  .tk-panel h2 { font-size: 19px; font-weight: 900; margin-bottom: 12px; }
   .f { margin-bottom: 18px; }
   .f > label, .f > .lab { display: block; font-weight: 700; margin-bottom: 6px; }
   .f .no { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--matcha); color: #fff; font-size: 13px; margin-right: 6px; line-height: 1; vertical-align: 2px; }
@@ -38,7 +37,11 @@
   .seg span { display: block; text-align: center; padding: 11px 8px; border-radius: 14px; background: var(--soft); border: 2px solid transparent; font-weight: 700; font-size: 15px; cursor: pointer; }
   .uses input:checked + span, .seg input:checked + span { border-color: var(--matcha); background: #e6f0dc; }
   .uses input:focus-visible + span, .seg input:focus-visible + span { outline: 3px solid var(--orange); }
-  .warn { background: #fff4e5; border-left: 5px solid var(--orange); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 16px; }
+  .mode { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--soft); border-radius: 999px; padding: 5px; margin-bottom: 18px; }
+  .mode button { font: inherit; font-size: 15px; font-weight: 700; border: 0; border-radius: 999px; padding: 10px 6px; background: transparent; color: var(--sub); cursor: pointer; }
+  .mode button[aria-pressed=true] { background: #fff; color: var(--matcha-d); box-shadow: 0 2px 6px rgba(60, 80, 40, .12); }
+  .more { border-top: 2px dashed var(--line); padding-top: 18px; margin-top: 6px; }
+  .more-title { font-size: 15px; font-weight: 900; color: var(--matcha-d); margin-bottom: 12px; }
   .tk-btn {
     display: block; width: 100%; min-height: 54px; border: 0; border-radius: 999px; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer;
     background: var(--orange); color: #fff; box-shadow: 0 4px 0 var(--orange-d); text-align: center; text-decoration: none; line-height: 54px;
@@ -47,16 +50,22 @@
   .tk-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--orange-d); }
   .tk-btn.green { background: var(--matcha); box-shadow: 0 4px 0 var(--matcha-d); }
   .tk-btn.ghost { background: #fff; color: var(--sub); border: 2px solid var(--line); box-shadow: none; }
+  .tk-btn.small { min-height: 44px; font-size: 15px; }
   .tk-card { background: #fff; border-radius: var(--radius); padding: 20px 18px; margin-top: 18px; border: 2px solid var(--line); }
   .tk-card.ai { border-color: var(--matcha); }
   .tk-card h2 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+  .tk-card h3 { font-size: 16px; font-weight: 900; margin: 16px 0 6px; }
   .tk-card .lbl { display: inline-block; background: var(--orange); color: #fff; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 1px 12px; margin-bottom: 6px; }
   .tk-card.ai .lbl { background: var(--matcha); }
   .tk-card .desc { font-size: 14px; color: var(--sub); margin-bottom: 10px; }
   .tk-text { white-space: pre-wrap; word-break: break-word; background: var(--cream); border-radius: 14px; padding: 14px; font-size: 16px; line-height: 1.85; }
   .tk-card.ai .tk-text { background: var(--soft); font-size: 15px; }
-  .tk-copy { margin-top: 12px; }
-  .tk-steps { list-style: none; counter-reset: s; margin-top: 14px; font-size: 15px; }
+  .tk-copy { margin-top: 10px; }
+  .set { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .set th, .set td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .set th { width: 38%; color: var(--sub); font-weight: 700; white-space: nowrap; }
+  .set td { font-weight: 700; }
+  .tk-steps { list-style: none; counter-reset: s; margin-top: 8px; font-size: 15px; }
   .tk-steps li { position: relative; padding: 6px 0 6px 36px; }
   .tk-steps li::before { counter-increment: s; content: counter(s); position: absolute; left: 0; top: 7px; width: 26px; height: 26px; border-radius: 50%; background: var(--matcha); color: #fff; font-size: 14px; font-weight: 700; display: grid; place-items: center; line-height: 1; }
   .tk-try { background: var(--cream); border-radius: 14px; padding: 14px; margin-top: 12px; font-size: 15px; }
@@ -73,76 +82,126 @@
   <div class="tk-head">
     <span class="badge">AIミニ体験</span>
     <h1>AIで、だれかのための<br>1曲をつくろう</h1>
-    <p>3つの質問に答えると、歌詞を作る「AIへの頼み方」と<br>曲の雰囲気メモができます。</p>
+    <p>質問に答えると、dstudioに入れる<br>「歌詞へのリクエスト」と「設定の見本」ができます。</p>
   </div>
 
   <form class="tk-panel" id="form" autocomplete="off" onsubmit="return false">
+    <div class="mode" role="group" aria-label="質問の数">
+      <button type="button" id="mEasy" aria-pressed="true">かんたん（3問）</button>
+      <button type="button" id="mFull" aria-pressed="false">じっくり（9問）</button>
+    </div>
+
     <div class="f">
       <span class="lab">どんな曲をつくりますか？</span>
       <div class="uses">
-        <label><input type="radio" name="use" value="family" checked><span><i class="e">💐</i><span>家族・大切な人への歌<small>お孫さん、パートナー、友だち、自分のために</small></span></span></label>
+        <label><input type="radio" name="use" value="family" checked><span><i class="e">💐</i><span>家族・大切な人への歌<small>お孫さん、パートナー、友だち、ペット、自分のために</small></span></span></label>
         <label><input type="radio" name="use" value="birthday"><span><i class="e">🎂</i><span>誕生日ソング<small>名前を入れて、お祝いの日に</small></span></span></label>
         <label><input type="radio" name="use" value="theme"><span><i class="e">🏪</i><span>お店・団体のテーマソング<small>SNSや店内BGM、イベントで流せる</small></span></span></label>
       </div>
     </div>
 
+    <button class="tk-btn ghost small" type="button" id="fillEx" style="margin-bottom:18px">✏️ 例を入れてみる</button>
+
     <div class="f">
-      <label for="who"><span class="no">1</span><span id="whoLab">だれに聴いてほしい曲ですか？</span></label>
-      <input type="text" id="who" maxlength="40" placeholder="例：孫のゆうちゃん">
-      <div class="f" id="ageBox" hidden style="margin:8px 0 0">
+      <label for="who"><span class="no">1</span><span id="whoLab"></span></label>
+      <input type="text" id="who" maxlength="40">
+      <div id="ageBox" hidden style="margin-top:8px">
         <input type="text" id="age" maxlength="20" placeholder="何歳の誕生日？（なくてもOK）例：5歳" aria-label="何歳の誕生日">
       </div>
     </div>
     <div class="f">
-      <label for="words"><span class="no">2</span><span id="wordsLab">入れたい言葉・思い出</span><span class="opt">単語でOK</span></label>
-      <textarea id="words" placeholder="例：&#10;・初めて歩いた日&#10;・宇治川の花火&#10;・いつも「ありがとう」と言ってくれる"></textarea>
-      <p class="tk-hint" id="wordsHint">思いつくまま、いくつでも。上手な文でなくて大丈夫です。</p>
+      <label for="words"><span class="no">2</span><span id="wordsLab"></span><span class="opt">単語でOK</span></label>
+      <textarea id="words"></textarea>
+      <p class="tk-hint">思いつくまま、いくつでも。上手な文でなくて大丈夫です。</p>
     </div>
     <div class="f">
       <span class="lab"><span class="no">3</span>どんな雰囲気がいいですか？</span>
       <div class="seg" id="moods"></div>
+      <p class="tk-hint">選ぶと、dstudioの設定の見本ができます。</p>
     </div>
-    <div class="f">
-      <span class="lab">長さ</span>
-      <div class="seg">
-        <label><input type="radio" name="len" value="0" checked><span>短め（1番＋サビ）</span></label>
-        <label><input type="radio" name="len" value="1"><span>ふつう（2番まで）</span></label>
+
+    <div class="more" id="more" hidden>
+      <p class="more-title">じっくり版の質問（書けるところだけでOK）</p>
+      <div class="f">
+        <label for="scene"><span class="no">4</span><span id="sceneLab"></span></label>
+        <textarea id="scene"></textarea>
+      </div>
+      <div class="f">
+        <label for="phrase"><span class="no">5</span><span id="phraseLab"></span></label>
+        <input type="text" id="phrase" maxlength="60">
+      </div>
+      <div class="f">
+        <label for="place"><span class="no">6</span>季節や場所</label>
+        <input type="text" id="place" maxlength="60" placeholder="例：春の宇治川、夏祭り、いつもの公園">
+      </div>
+      <div class="f">
+        <label for="msg"><span class="no">7</span><span id="msgLab"></span></label>
+        <input type="text" id="msg" maxlength="60">
+        <p class="tk-hint">サビに入れてもらう言葉になります。</p>
+      </div>
+      <div class="f">
+        <span class="lab"><span class="no">8</span>歌声</span>
+        <div class="seg">
+          <label><input type="radio" name="voice" value="" checked><span>見本のまま</span></label>
+          <label><input type="radio" name="voice" value="女性"><span>女性</span></label>
+          <label><input type="radio" name="voice" value="男性"><span>男性</span></label>
+        </div>
+        <p class="tk-hint" style="margin:10px 0 6px">声質</p>
+        <div class="seg" id="tones"></div>
+      </div>
+      <div class="f">
+        <span class="lab"><span class="no">9</span>テンポと楽器</span>
+        <div class="seg">
+          <label><input type="radio" name="tempo" value="-15"><span>ゆっくり</span></label>
+          <label><input type="radio" name="tempo" value="0" checked><span>見本のまま</span></label>
+          <label><input type="radio" name="tempo" value="15"><span>はやめ</span></label>
+        </div>
+        <input type="text" id="inst" maxlength="60" style="margin-top:8px" placeholder="入れたい楽器（なくてもOK）例：ピアノ、ウクレレ、琴" aria-label="入れたい楽器">
+      </div>
+      <div class="f">
+        <label for="title">曲のタイトル<span class="opt">なくてもOK</span></label>
+        <input type="text" id="title" maxlength="40" placeholder="空けておくと、AIが考えてくれます">
       </div>
     </div>
 
-    <button class="tk-btn" type="button" id="make">頼み方をつくる</button>
+    <button class="tk-btn" type="button" id="make">dstudioに入れる内容をつくる</button>
   </form>
 
   <div id="result" hidden>
     <article class="tk-card ai">
       <span class="lbl">カード1</span>
-      <h2>歌詞を作る「AIへの頼み方」</h2>
-      <p class="desc">ChatGPTやClaudeに貼り付けると、歌詞を考えてくれます。</p>
-      <div class="tk-text" id="prompt"></div>
-      <button class="tk-btn green tk-copy" type="button" data-copy="prompt">頼み方をコピー</button>
-      <ol class="tk-steps">
-        <li>上のボタンでコピー</li>
-        <li>ChatGPTかClaudeのアプリを開く</li>
-        <li>入力欄を長押しして「ペースト」→ 送信</li>
-        <li>出てきた歌詞を読んで、気になる言葉だけ自分で直す</li>
-      </ol>
-      <div class="tk-try"><b>もう一歩：</b>「もっと短く」「サビに名前を2回入れて」などと送ると、何度でも直してもらえます。</div>
+      <h2>歌詞へのリクエスト</h2>
+      <p class="desc">dstudioで「お任せ作詞」を選び、「歌詞へのリクエスト」欄にこの文を貼ります。</p>
+      <div class="tk-text" id="theme"></div>
+      <button class="tk-btn green tk-copy" type="button" data-copy="theme">リクエストをコピー</button>
     </article>
 
-    <article class="tk-card">
+    <article class="tk-card ai">
       <span class="lbl">カード2</span>
-      <h2>曲の雰囲気メモ</h2>
-      <p class="desc">曲を作るAIに、歌詞といっしょに入れる短い説明です。</p>
-      <div class="tk-text" id="style"></div>
-      <button class="tk-btn green tk-copy" type="button" data-copy="style">雰囲気メモをコピー</button>
+      <h2>設定の見本「<span id="moodName"></span>」</h2>
+      <p class="desc">dstudioの画面で、この通りに選びます。気に入らなければ変えてかまいません。</p>
+      <table class="set"><tbody id="setRows"></tbody></table>
+      <h3>追加の指示（コピーして貼る）</h3>
+      <div class="tk-text" id="extra"></div>
+      <button class="tk-btn green tk-copy" type="button" data-copy="extra">追加の指示をコピー</button>
+      <h3>除外スタイル</h3>
+      <div class="tk-text" id="exclude"></div>
+      <button class="tk-btn green tk-copy" type="button" data-copy="exclude">除外スタイルをコピー</button>
     </article>
 
     <article class="tk-card">
       <span class="lbl">カード3</span>
       <h2>曲にする<span class="pr">PR</span></h2>
-      <p class="desc">私（山中）はdstudio（ディースタジオ）で曲を作っています。<span id="bdNote" hidden>誕生日ソング専用の作り方もあります。</span>歌詞と雰囲気メモを入れると、歌つきの曲ができます。</p>
-      <a class="tk-btn" href="https://www.dstudio.one/?ref=19230068" target="_blank" rel="sponsored noopener">dstudioを開く</a>
-      <p class="tk-hint">紹介リンクです。ここから登録されると、私に紹介料が入ることがあります。ほかの曲づくりAIでも、カード1・2はそのまま使えます。</p>
+      <p class="desc">私（山中）はdstudio（ディースタジオ）で曲を作っています。<span id="bdNote" hidden>誕生日ソング専用の作り方もあります。</span></p>
+      <ol class="tk-steps">
+        <li>dstudioの音楽づくりを開き、「ボーカルあり」「お任せ作詞」を選ぶ</li>
+        <li>「歌詞へのリクエスト」にカード1を貼る</li>
+        <li>カード2の通りに設定を選ぶ</li>
+        <li>複数テイクで2〜3曲作って、歌詞が聞き取りやすいものを選ぶ</li>
+      </ol>
+      <a class="tk-btn tk-copy" href="https://www.dstudio.one/?ref=19230068" target="_blank" rel="sponsored noopener">dstudioを開く</a>
+      <p class="tk-hint">紹介リンクです。ここから登録されると、私に紹介料が入ることがあります。</p>
+      <div class="tk-try"><b>もう一歩：</b>できた歌詞は、気になる言葉だけ自分で直してから曲にできます。名前を何度も呼びたいときは、サビに書き足すのがいちばん確実です。</div>
     </article>
 
     <div class="tk-again">
@@ -161,106 +220,181 @@
 (() => {
   "use strict";
   const $ = id => document.getElementById(id);
-  const KEY = "df-song-draft";
-  const FIELDS = ["who", "age", "words"];
+  const KEY = "df-song-draft-2";
+  const FIELDS = ["who", "age", "words", "scene", "phrase", "place", "msg", "inst", "title"];
 
-  // 用途ごとの言葉づかい
+  // 設定の見本（今日子さんが実際にdstudioで使った設定がもと）
+  // genre/voice/tone/mood/bpm/extra/exclude
+  const P = (genre, voice, tone, mood, bpm, extra, exclude) => ({ genre, voice, tone, mood, bpm, extra, exclude });
   const USES = {
     family: {
-      whoLab: "だれに聴いてほしい曲ですか？", whoPh: "例：孫のゆうちゃん／夫へ／自分のために",
-      wordsLab: "入れたい言葉・思い出", wordsPh: "例：\n・初めて歩いた日\n・宇治川の花火\n・いつも「ありがとう」と言ってくれる",
-      moods: ["明るく元気に", "ゆったりやさしく", "懐かしい歌謡曲風", "童謡・こども向け"]
+      who: ["だれに聴いてほしい曲ですか？", "例：孫のひなちゃん／夫へ／自分のために"],
+      words: ["入れたい言葉・思い出", "例：\n・初めて歩いた日\n・宇治川の花火\n・いつも「ありがとう」と言ってくれる"],
+      scene: ["いちばん覚えている場面（いつ・どこで・何があった）", "例：はじめて「ばあば」と呼んでくれた日。うれしくて一日わらっていた"],
+      phrase: ["その人の口ぐせ・よく言う言葉", "例：「みてて！」"],
+      msg: ["いちばん伝えたい一言", "例：いつまでも その笑顔でいてね"],
+      moods: {
+        "やさしく語りかける": P("J-POP", "女性", "指定なし", "温かい・居心地よい", 80, "ピアノ中心、やさしくゆったり、語りかけるように", "ラップ、エレキギター"),
+        "明るくさわやか": P("J-POP", "女性", "透明感", "明るい・楽しい", 110, "アコースティックギター中心、さわやか、イントロは短く、サビから始まる", "ラップ、重いドラム"),
+        "童謡みたいに": P("童謡", "女性", "甘い", "温かい・居心地よい", 90, "木琴とピアノ、口ずさみやすいメロディ、やさしく", "ラップ、エレキギター、重いドラム"),
+        "懐かしい歌謡曲風": P("演歌", "女性", "エモーショナル", "切ない・哀愁", 80, "昭和の歌謡曲のように、ストリングスとアコースティックギター、こぶしは控えめ、しみじみと", "ラップ、エレキギター、重いドラム"),
+        "元気でコミカル": P("J-POP", "男性", "指定なし", "遊び心・ポップ", 125, "ウクレレと手拍子、コミカルで元気、口笛を少し", "ラップ、ヘビーなギター")
+      },
+      ex: { who: "孫のひなちゃん", words: "・ちいさな手でぎゅっとにぎった\n・公園のすべり台\n・大好き", scene: "はじめて「ばあば」と呼んでくれた春の日。うれしくて一日わらっていた", phrase: "「みてて！」", place: "春、近所の公園", msg: "いつまでも その笑顔でいてね", inst: "鈴の音を少し", title: "ひなちゃんのうた", mood: 0 }
     },
     birthday: {
-      whoLab: "だれの誕生日ですか？", whoPh: "例：ゆうちゃん",
-      wordsLab: "その人の好きなもの・いいところ", wordsPh: "例：\n・電車が大好き\n・笑うとえくぼができる\n・最近ひとりで自転車に乗れた",
-      moods: ["にぎやかにお祝い", "ゆったりやさしく", "こども向けで楽しく", "大人っぽくおしゃれに"]
+      who: ["だれの誕生日ですか？", "例：ゆうちゃん"],
+      words: ["その人の好きなもの・いいところ", "例：\n・電車が大好き\n・笑うとえくぼができる\n・最近ひとりで自転車に乗れた"],
+      scene: ["この1年でうれしかったこと", "例：ひとりで自転車に乗れて、何度も「見て！」と走ってきた"],
+      phrase: ["その人の口ぐせ・よく言う言葉", "例：「もう1回！」"],
+      msg: ["いちばん伝えたい一言", "例：生まれてきてくれて ありがとう"],
+      moods: {
+        "にぎやかにお祝い": P("J-POP", "女性", "指定なし", "明るい・楽しい", 120, "手拍子とブラス、パーティーのように楽しく、サビで「おめでとう」をくり返す、イントロは短く", "ラップ、重いドラム"),
+        "やさしくお祝い": P("J-POP", "女性", "透明感", "温かい・居心地よい", 85, "ピアノとアコースティックギター、やさしく、あたたかく", "ラップ、エレキギター"),
+        "こども向けで楽しく": P("童謡", "女性", "甘い", "遊び心・ポップ", 115, "木琴と手拍子、はずむリズム、みんなで歌える", "ラップ、ヘビーなギター"),
+        "コミカルに": P("J-POP", "男性", "指定なし", "遊び心・ポップ", 125, "ウクレレと手拍子、コミカルで元気、口笛を少し", "ラップ、ヘビーなギター")
+      },
+      ex: { who: "ゆうちゃん", age: "5歳", words: "・電車が大好き\n・笑うとえくぼ\n・ひとりで自転車に乗れた", scene: "ひとりで自転車に乗れて、何度も「見て！」と走ってきた", phrase: "「もう1回！」", place: "秋、宇治川のそば", msg: "生まれてきてくれて ありがとう", inst: "", title: "", mood: 0 }
     },
     theme: {
-      whoLab: "お店・団体の名前は？", whoPh: "例：ふれあいサロン／茶房○○",
-      wordsLab: "自慢したいこと・場所・合言葉", wordsPh: "例：\n・手づくりの日替わりランチ\n・宇治橋から歩いて3分\n・「ただいま」と言いたくなる店",
-      moods: ["明るいポップ", "落ち着いたカフェ風", "和の雰囲気", "元気なCMソング風"]
+      who: ["お店・団体の名前は？", "例：ふれあいサロン／茶房○○"],
+      words: ["自慢したいこと・場所・合言葉", "例：\n・手づくりの日替わりランチ\n・宇治橋から歩いて3分\n・「ただいま」と言いたくなる店"],
+      scene: ["お客さん・参加者がいちばん喜ぶ場面", "例：はじめての人が、帰りに「また来ます」と言ってくれる"],
+      phrase: ["お店・団体でよく出る言葉", "例：「おかえりなさい」"],
+      msg: ["いちばん伝えたい一言", "例：また いつでも 寄ってってね"],
+      moods: {
+        "さわやかご当地風": P("J-POP", "女性", "透明感", "明るい・楽しい", 110, "アコースティックギター中心、さわやか、イントロは短く、サビから始まる", "ラップ、重いドラム"),
+        "落ち着いたカフェ風": P("J-POP", "女性", "ウィスパー", "落ち着いた・リラックス", 90, "アコースティックギターとピアノ、カフェで流れるような落ち着いた雰囲気", "ラップ、重いドラム、エレキギター"),
+        "元気なCMソング風": P("J-POP", "男性", "力強い", "エネルギッシュ・活気", 125, "短く覚えやすいくり返し、手拍子、元気よく、サビに店名", "ラップ、ヘビーなギター"),
+        "和の雰囲気": P("J-POP", "女性", "透明感", "上品・洗練", 90, "琴や三味線の音色を少し、和の雰囲気、ゆったり", "ラップ、重いドラム、エレキギター")
+      },
+      ex: { who: "ふれあいサロン", words: "・毎週水曜の手づくり体験\n・お茶とおしゃべり\n・子連れでも大歓迎", scene: "はじめての人が、帰りに「また来ます」と言ってくれる", phrase: "「おかえりなさい」", place: "宇治の町なか", msg: "また いつでも 寄ってってね", inst: "", title: "", mood: 1 }
     }
   };
-  const use = () => document.querySelector("input[name=use]:checked").value;
 
-  function applyUse() {
-    const u = USES[use()];
-    $("whoLab").textContent = u.whoLab;
-    $("who").placeholder = u.whoPh;
-    $("wordsLab").textContent = u.wordsLab;
-    $("words").placeholder = u.wordsPh;
+  // dstudioの声質の選択肢
+  ["見本のまま", "指定なし", "透明感", "ハスキー", "力強い", "甘い", "クール", "エモーショナル", "ウィスパー", "アニメ声"].forEach((t, i) => {
+    const l = document.createElement("label");
+    l.innerHTML = `<input type="radio" name="tone"${i === 0 ? " checked" : ""}><span></span>`;
+    l.querySelector("input").value = i === 0 ? "" : t;
+    l.querySelector("span").textContent = t;
+    $("tones").appendChild(l);
+  });
+
+  let full = false;
+  const use = () => document.querySelector("input[name=use]:checked").value;
+  const U = () => USES[use()];
+  const radio = n => document.querySelector(`input[name=${n}]:checked`).value;
+
+  function setMode(f) {
+    full = f;
+    $("mEasy").setAttribute("aria-pressed", String(!f));
+    $("mFull").setAttribute("aria-pressed", String(f));
+    $("more").hidden = !f;
+    save();
+  }
+  $("mEasy").addEventListener("click", () => setMode(false));
+  $("mFull").addEventListener("click", () => setMode(true));
+
+  function applyUse(keepMood) {
+    const u = U();
+    const pick = keepMood ? (document.querySelector("input[name=mood]:checked") || {}).value : null;
+    [["who", "whoLab"], ["words", "wordsLab"], ["scene", "sceneLab"], ["phrase", "phraseLab"], ["msg", "msgLab"]].forEach(([k, lab]) => {
+      $(lab).textContent = u[k][0];
+      $(k).placeholder = u[k][1];
+    });
     $("ageBox").hidden = use() !== "birthday";
     $("moods").innerHTML = "";
-    u.moods.forEach((m, i) => {
+    Object.keys(u.moods).forEach((m, i) => {
       const l = document.createElement("label");
-      l.innerHTML = `<input type="radio" name="mood" value="${i}"${i === 0 ? " checked" : ""}><span></span>`;
+      l.innerHTML = `<input type="radio" name="mood" value="${i}"><span></span>`;
       l.querySelector("span").textContent = m;
+      l.querySelector("input").checked = String(i) === String(pick || 0);
       $("moods").appendChild(l);
     });
   }
-  document.querySelectorAll("input[name=use]").forEach(r => r.addEventListener("change", applyUse));
+  document.querySelectorAll("input[name=use]").forEach(r => r.addEventListener("change", () => { applyUse(false); save(); }));
 
   // 書きかけはこの端末の中だけに残します（送信はしません）
   try {
     const s = JSON.parse(localStorage.getItem(KEY) || "{}");
     if (s.use && USES[s.use]) document.querySelector(`input[name=use][value=${s.use}]`).checked = true;
     FIELDS.forEach(k => { if (s[k]) $(k).value = s[k]; });
+    if (s.full) setMode(true);
   } catch (e) {}
-  applyUse();
-  const save = () => {
-    try { const o = { use: use() }; FIELDS.forEach(k => o[k] = $(k).value); localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
-  };
+  applyUse(false);
+  function save() {
+    try { const o = { use: use(), full }; FIELDS.forEach(k => o[k] = $(k).value); localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
+  }
   FIELDS.forEach(k => $(k).addEventListener("input", save));
-  document.querySelectorAll("input[name=use]").forEach(r => r.addEventListener("change", save));
+
+  $("fillEx").addEventListener("click", () => {
+    const ex = U().ex;
+    const has = FIELDS.some(k => $(k).value.trim());
+    if (has && !confirm("いま書いてある内容を、例に置きかえますか？")) return;
+    FIELDS.forEach(k => $(k).value = ex[k] || "");
+    document.querySelectorAll("input[name=mood]")[ex.mood].checked = true;
+    if (!full) setMode(true);
+    save();
+  });
 
   const v = k => $(k).value.trim();
-  const mood = () => USES[use()].moods[document.querySelector("input[name=mood]:checked").value];
-  const long = () => document.querySelector("input[name=len]:checked").value === "1";
+  const moodKey = () => Object.keys(U().moods)[radio("mood")];
 
-  function buildPrompt() {
+  function buildTheme() {
     const u = use();
     const who = v("who") || "【名前】";
-    const words = v("words") || "【入れたい言葉】";
-    const shape = long() ? "1番・2番・サビ" : "1番とサビだけの短い歌";
     const L = [];
-    if (u === "family") {
-      L.push(`${who}に贈る歌の歌詞を作ってください。`);
-    } else if (u === "birthday") {
-      L.push(`${who}の${v("age") ? v("age") + "の" : ""}誕生日を祝う歌の歌詞を作ってください。`);
-    } else {
-      L.push(`「${who}」のテーマソングの歌詞を作ってください。お客さんや地域の人が口ずさめる歌にしたいです。`);
+    if (u === "family") L.push(`${who}に贈る歌。`);
+    else if (u === "birthday") L.push(`${who}の${v("age") ? v("age") + "の" : ""}誕生日を祝う歌。サビに名前と「おめでとう」を入れる。`);
+    else L.push(`「${who}」のテーマソング。サビに名前を入れて、覚えやすい短いフレーズをくり返す。`);
+    if (v("words")) L.push("入れたい言葉：" + v("words").split(/\n+/).map(s => s.replace(/^[・\-\s]+/, "")).filter(Boolean).join("、"));
+    if (full) {
+      if (v("scene")) L.push("思い出の場面：" + v("scene"));
+      if (v("phrase")) L.push("よく言う言葉：" + v("phrase"));
+      if (v("place")) L.push("季節・場所：" + v("place"));
+      if (v("msg")) L.push(`いちばん伝えたい一言（サビに入れる）：${v("msg")}`);
     }
-    L.push("", "■ 入れたい言葉", words, "", "【お願い】");
-    L.push(`・雰囲気は「${mood()}」。形は${shape}。`);
-    if (u === "birthday") L.push("・サビに名前と「おめでとう」を入れてください。");
-    if (u === "theme") L.push("・サビに名前を入れて、覚えやすい短いフレーズをくり返してください。");
-    L.push("・歌いやすいよう、1行は短めに。むずかしい言葉は使わないでください。");
-    L.push("・上の言葉にないできごとや数字は作らないでください。");
-    L.push("・曲のタイトル案も2つください。");
+    L.push(`雰囲気：${moodKey()}。1行は短めで、歌いやすく。書いていないできごとは足さない。`);
     return L.join("\n");
   }
 
-  function buildStyle() {
-    const map = {
-      "明るく元気に": "明るく元気なポップス、手拍子したくなるテンポ",
-      "ゆったりやさしく": "ゆったりしたバラード、やさしい歌声、ピアノとアコースティックギター",
-      "懐かしい歌謡曲風": "昭和の歌謡曲風、あたたかいストリングス、ゆったりしたテンポ",
-      "童謡・こども向け": "童謡のような親しみやすいメロディ、やさしい歌声、木琴とピアノ",
-      "にぎやかにお祝い": "にぎやかなお祝いソング、明るいブラスと手拍子",
-      "こども向けで楽しく": "こども向けの楽しい歌、はずむリズム、みんなで歌える",
-      "大人っぽくおしゃれに": "おしゃれなジャズポップ、落ち着いた歌声",
-      "明るいポップ": "明るく爽やかなポップス、覚えやすいサビ",
-      "落ち着いたカフェ風": "カフェで流れるような落ち着いたアコースティック、やわらかい歌声",
-      "和の雰囲気": "和の雰囲気、琴や三味線の音色を少し、ゆったりしたテンポ",
-      "元気なCMソング風": "短く元気なCMソング風、はっきりした歌声、覚えやすいくり返し"
-    };
-    return `${map[mood()] || mood()}、日本語の歌`;
+  function buildSet() {
+    const p = Object.assign({}, U().moods[moodKey()]);
+    if (full) {
+      if (radio("voice")) p.voice = radio("voice");
+      if (radio("tone")) p.tone = radio("tone");
+      p.bpm += Number(radio("tempo"));
+      if (v("inst")) p.extra = `${v("inst")}も入れる、` + p.extra;
+    }
+    const rows = [
+      ["ボーカル", "あり（日本語）"],
+      ["作詞", "お任せ作詞"],
+      ["ジャンル", p.genre],
+      ["ボーカル性別", p.voice],
+      ["声質", p.tone],
+      ["ムード", p.mood],
+      ["BPM", `${p.bpm}前後`],
+      ["楽曲の長さ", "短め"]
+    ];
+    if (use() === "theme") rows.push(["店舗名・会社名", v("who") || "【名前】"]);
+    rows.push(["楽曲タイトル", (full && v("title")) || "空けておく（あとで決めてOK）"]);
+    return { p, rows };
   }
 
   $("make").addEventListener("click", () => {
-    $("prompt").textContent = buildPrompt();
-    $("style").textContent = buildStyle();
+    $("theme").textContent = buildTheme();
+    const { p, rows } = buildSet();
+    $("moodName").textContent = moodKey();
+    $("setRows").innerHTML = "";
+    rows.forEach(([a, b]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = "<th></th><td></td>";
+      tr.children[0].textContent = a; tr.children[1].textContent = b;
+      $("setRows").appendChild(tr);
+    });
+    $("extra").textContent = p.extra;
+    $("exclude").textContent = p.exclude;
     $("bdNote").hidden = use() !== "birthday";
     $("form").hidden = true;
     $("result").hidden = false;
