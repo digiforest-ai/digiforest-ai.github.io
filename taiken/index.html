@@ -61,6 +61,10 @@
   .tk-again { display: grid; gap: 10px; margin-top: 22px; }
   .tk-foot { text-align: center; font-size: 13px; color: var(--sub); padding: 24px 16px 32px; }
   .tk-foot a { font-weight: 700; }
+  .tk-next { display: block; margin-top: 22px; padding: 18px; border-radius: var(--radius); background: #e6f0dc; border: 2px solid var(--matcha); color: var(--ink); text-decoration: none; }
+  .tk-next .lbl { display: inline-block; background: var(--matcha); color: #fff; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 1px 12px; margin-bottom: 6px; }
+  .tk-next b { display: block; font-size: 19px; font-weight: 900; }
+  .tk-next span:last-child { display: block; font-size: 14px; color: var(--sub); margin-top: 4px; }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -118,11 +122,17 @@
       <button class="tk-btn" type="button" id="variant">別の伝え方で</button>
       <button class="tk-btn ghost" type="button" id="restart" style="flex:1">もう一度（最初から）</button>
     </div>
+
+    <a class="tk-next" href="/taiken/blog/">
+      <span class="lbl">次はこちら</span>
+      <b>活動レポートを10分で下書き</b>
+      <span>その日のメモを入れると、ブログの下書きと「AIへの頼み方」ができます →</span>
+    </a>
   </div>
 </main>
 
 <footer class="tk-foot">
-  <p>DigiForest（山中今日子）｜<a href="/">トップページへ</a></p>
+  <p>DigiForest（山中今日子）｜<a href="/taiken/blog/">活動レポートの下書き</a>｜<a href="/">トップページへ</a></p>
   <p>このページは入力内容をどこにも送信しません。</p>
 </footer>
 
