@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>活動レポートの下書きの素｜DigiForest</title>
+<meta name="description" content="その日のメモを入れるだけで、活動レポート（ブログ）の下書きと、ChatGPTやClaudeに貼り付けて使える「AIへの頼み方」ができるページです。">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#4f7d33">
+<link rel="stylesheet" href="/assets/css/style.css?v=20261109">
+<style>
+  /* このページだけで使うスタイル（体験ページ /taiken/ と同じ見た目） */
+  body { font-size: 17px; background: var(--cream); }
+  .tk { max-width: 560px; margin: 0 auto; padding: 20px 16px 40px; }
+  .tk-head { text-align: center; padding: 8px 0 4px; }
+  .tk-head .badge { margin-bottom: 10px; font-size: 13px; }
+  .tk-head h1 { font-size: 26px; font-weight: 900; line-height: 1.4; }
+  .tk-head p { color: var(--sub); font-size: 15px; margin-top: 6px; }
+  .tk-panel { background: #fff; border-radius: var(--radius); padding: 22px 18px; margin-top: 18px; box-shadow: 0 6px 18px rgba(60, 80, 40, .08); }
+  .tk-panel h2 { font-size: 19px; font-weight: 900; margin-bottom: 12px; }
+  .f { margin-bottom: 16px; }
+  .f > label, .f > .lab { display: block; font-weight: 700; margin-bottom: 6px; }
+  .f .no { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--matcha); color: #fff; font-size: 13px; margin-right: 6px; line-height: 1; vertical-align: 2px; }
+  .f .opt { font-size: 12px; font-weight: 700; color: var(--sub); border: 1px solid var(--line); border-radius: 999px; padding: 0 8px; margin-left: 6px; }
+  .tk input[type=text], .tk textarea { width: 100%; font: inherit; font-size: 17px; padding: 12px 14px; border: 2px solid var(--line); border-radius: 14px; color: var(--ink); background: #fff; }
+  .tk textarea { min-height: 84px; resize: vertical; line-height: 1.7; }
+  .tk textarea.big { min-height: 140px; }
+  .tk input[type=text]:focus, .tk textarea:focus { outline: none; border-color: var(--matcha); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tk-hint { font-size: 14px; color: var(--sub); margin-top: 6px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 8px; }
+  .seg label { flex: 1 1 auto; min-width: 30%; }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg span { display: block; text-align: center; padding: 11px 8px; border-radius: 14px; background: var(--soft); border: 2px solid transparent; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .seg input:checked + span { border-color: var(--matcha); background: #e6f0dc; }
+  .seg input:focus-visible + span { outline: 3px solid var(--orange); }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; font-weight: 700; cursor: pointer; }
+  .check input { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--matcha); flex: none; }
+  .warn { background: #fff4e5; border-left: 5px solid var(--orange); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 16px; }
+  .tk-btn {
+    width: 100%; min-height: 54px; border: 0; border-radius: 999px; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer;
+    background: var(--orange); color: #fff; box-shadow: 0 4px 0 var(--orange-d);
+  }
+  .tk-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--orange-d); }
+  .tk-btn.green { background: var(--matcha); box-shadow: 0 4px 0 var(--matcha-d); }
+  .tk-btn.ghost { background: #fff; color: var(--sub); border: 2px solid var(--line); box-shadow: none; }
+  .tk-card { background: #fff; border-radius: var(--radius); padding: 20px 18px; margin-top: 18px; border: 2px solid var(--line); }
+  .tk-card.ai { border-color: var(--matcha); }
+  .tk-card h2 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+  .tk-card .lbl { display: inline-block; background: var(--orange); color: #fff; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 1px 12px; margin-bottom: 6px; }
+  .tk-card.ai .lbl { background: var(--matcha); }
+  .tk-card .desc { font-size: 14px; color: var(--sub); margin-bottom: 10px; }
+  .tk-text { white-space: pre-wrap; word-break: break-word; background: var(--cream); border-radius: 14px; padding: 14px; font-size: 16px; line-height: 1.85; }
+  .tk-card.ai .tk-text { background: var(--soft); font-size: 15px; }
+  .tk-copy { margin-top: 12px; }
+  .tk-steps { list-style: none; counter-reset: s; margin-top: 14px; font-size: 15px; }
+  .tk-steps li { position: relative; padding: 6px 0 6px 36px; }
+  .tk-steps li::before { counter-increment: s; content: counter(s); position: absolute; left: 0; top: 7px; width: 26px; height: 26px; border-radius: 50%; background: var(--matcha); color: #fff; font-size: 14px; font-weight: 700; display: grid; place-items: center; line-height: 1; }
+  .tk-try { background: var(--cream); border-radius: 14px; padding: 14px; margin-top: 12px; font-size: 15px; }
+  .tk-try b { color: var(--orange-d); }
+  .tk-again { display: grid; gap: 10px; margin-top: 22px; }
+  .tk-foot { text-align: center; font-size: 13px; color: var(--sub); padding: 24px 16px 32px; }
+  .tk-foot a { font-weight: 700; }
+  [hidden] { display: none !important; }
+
+  /* 紙版（印刷したときだけ出る穴埋めシート） */
+  #sheet { display: none; }
+  @media print {
+    @page { size: A4; margin: 12mm 14mm; }
+    body { background: #fff; font-size: 12pt; }
+    .tk, .tk-foot { display: none !important; }
+    #sheet { display: block; color: #000; }
+    #sheet h1 { font-size: 18pt; margin: 0 0 2mm; }
+    #sheet .s-sub { font-size: 10pt; margin: 0 0 5mm; }
+    #sheet .s-box { border: 1.2pt solid #555; border-radius: 3mm; padding: 2.5mm 4mm; margin-bottom: 3mm; break-inside: avoid; }
+    #sheet .s-box b { display: block; font-size: 11.5pt; }
+    #sheet .s-box small { font-size: 9pt; color: #444; }
+    #sheet .s-line { border-bottom: 0.8pt dashed #888; height: 7mm; }
+    #sheet .s-ask { border: 1.2pt solid #4f7d33; border-radius: 3mm; padding: 3mm 4mm; font-size: 10pt; line-height: 1.6; white-space: pre-wrap; }
+    #sheet .s-foot { font-size: 8.5pt; color: #444; margin-top: 3mm; }
+  }
+</style>
+</head>
+<body>
+<main class="tk">
+  <div class="tk-head">
+    <span class="badge">AIミニ体験</span>
+    <h1>活動レポートを<br>10分で下書きしよう</h1>
+    <p>その日のメモを入れると、ブログの下書きと<br>「AIへの頼み方」ができます。</p>
+  </div>
+
+  <form class="tk-panel" id="form" autocomplete="off" onsubmit="return false">
+    <h2>その日のメモ</h2>
+    <p class="warn">参加者のお名前や、相談の中身など個人のことは書かないでください。<br>「参加者さん」「Aさん」などに置きかえればOKです。</p>
+
+    <div class="f">
+      <label for="title"><span class="no">1</span>会の名前</label>
+      <input type="text" id="title" maxlength="40" placeholder="例：ふれあいサロン">
+    </div>
+    <div class="f">
+      <span class="lab"><span class="no">2</span>日付と参加人数</span>
+      <input type="text" id="date" maxlength="30" placeholder="例：11月26日（水）" aria-label="日付">
+      <div class="row2" style="margin-top:8px">
+        <input type="text" id="ppl" maxlength="20" placeholder="参加者 例：6名" aria-label="参加者の人数">
+        <input type="text" id="staff" maxlength="20" placeholder="スタッフ 例：4名" aria-label="スタッフの人数">
+      </div>
+    </div>
+    <div class="f">
+      <label for="what"><span class="no">3</span>何をしたか<span class="opt">箇条書きでOK</span></label>
+      <textarea id="what" placeholder="例：&#10;・ハンドマッサージ講座&#10;・講師はアロマの先生&#10;・終わってからお茶とおしゃべり"></textarea>
+    </div>
+    <div class="f">
+      <label for="voice"><span class="no">4</span>参加者のひと言</label>
+      <textarea id="voice" placeholder="例：「手がぽかぽかする」「家でもやってみたい」"></textarea>
+    </div>
+    <div class="f">
+      <label for="feel"><span class="no">5</span>スタッフの感想<span class="opt">なくてもOK</span></label>
+      <textarea id="feel" placeholder="例：笑顔が多くて、こちらも元気をもらいました"></textarea>
+    </div>
+    <div class="f">
+      <label for="next"><span class="no">6</span>次回のお知らせ<span class="opt">なくてもOK</span></label>
+      <input type="text" id="next" maxlength="60" placeholder="例：12月3日（水）クリスマス飾りづくり">
+    </div>
+
+    <div class="f">
+      <span class="lab">口調</span>
+      <div class="seg">
+        <label><input type="radio" name="tone" value="0" checked><span>やわらかく</span></label>
+        <label><input type="radio" name="tone" value="1"><span>ていねいに</span></label>
+      </div>
+    </div>
+    <div class="f">
+      <span class="lab">絵文字</span>
+      <div class="seg">
+        <label><input type="radio" name="emoji" value="1" checked><span>少しだけ</span></label>
+        <label><input type="radio" name="emoji" value="2"><span>多め</span></label>
+        <label><input type="radio" name="emoji" value="0"><span>なし</span></label>
+      </div>
+    </div>
+    <div class="f">
+      <label for="sample">いつもの記事の見本<span class="opt">なくてもOK</span></label>
+      <textarea id="sample" class="big" placeholder="前に書いた記事を1本まるごと貼ると、AIがその書き方に合わせてくれます"></textarea>
+    </div>
+    <div class="f">
+      <label class="check"><input type="checkbox" id="short" checked>X・Instagram用の短い文も作ってもらう</label>
+    </div>
+
+    <button class="tk-btn" type="button" id="make">下書きをつくる</button>
+  </form>
+
+  <div id="result" hidden>
+    <article class="tk-card ai">
+      <span class="lbl">カード1</span>
+      <h2>AIへの頼み方</h2>
+      <p class="desc">これをChatGPTやClaudeに貼り付けると、メモから記事を書いてくれます。</p>
+      <div class="tk-text" id="prompt"></div>
+      <button class="tk-btn green tk-copy" type="button" data-copy="prompt">頼み方をコピー</button>
+      <ol class="tk-steps">
+        <li>上のボタンでコピー</li>
+        <li>ChatGPTかClaudeのアプリを開く</li>
+        <li>入力欄を長押しして「ペースト」→ 送信</li>
+        <li>出てきた記事を読んで、自分の言葉で少し直す</li>
+      </ol>
+      <div class="tk-try"><b>もう一歩：</b>「もっと短く」「参加者のひと言を前に」などと送ると、何度でも直してもらえます。写真もいっしょに送ると、写真に合わせた文にしてくれます。</div>
+    </article>
+
+    <article class="tk-card">
+      <span class="lbl">カード2</span>
+      <h2>AIを使わない下書き</h2>
+      <p class="desc">メモをいつもの順番に並べたものです。このまま手直ししても使えます。</p>
+      <div class="tk-text" id="draft"></div>
+      <button class="tk-btn green tk-copy" type="button" data-copy="draft">下書きをコピー</button>
+    </article>
+
+    <div class="tk-again">
+      <button class="tk-btn ghost" type="button" id="edit">メモを直す</button>
+      <button class="tk-btn ghost" type="button" id="clear">次の回のために空にする</button>
+    </div>
+  </div>
+
+  <div class="tk-again">
+    <button class="tk-btn ghost" type="button" id="print">紙のメモ用紙を印刷する</button>
+  </div>
+</main>
+
+<footer class="tk-foot">
+  <p>DigiForest（山中今日子）｜<a href="/taiken/">SNS投稿の体験</a>｜<a href="/">トップページへ</a></p>
+  <p>このページは入力内容をどこにも送信しません。</p>
+</footer>
+
+<!-- 印刷用の穴埋めシート -->
+<section id="sheet" aria-hidden="true">
+  <h1>活動レポート メモ用紙</h1>
+  <p class="s-sub">会の終わりに5分で記入 → 写真といっしょにAIへ。お名前など個人のことは書かない。</p>
+  <div class="s-box"><b>① 会の名前・日付</b><div class="s-line"></div></div>
+  <div class="s-box"><b>② 参加人数</b><small>参加者　　　名 ／ スタッフ　　　名</small><div class="s-line"></div></div>
+  <div class="s-box"><b>③ 何をしたか（箇条書き）</b><div class="s-line"></div><div class="s-line"></div><div class="s-line"></div></div>
+  <div class="s-box"><b>④ 参加者のひと言</b><div class="s-line"></div><div class="s-line"></div></div>
+  <div class="s-box"><b>⑤ スタッフの感想</b><div class="s-line"></div></div>
+  <div class="s-box"><b>⑥ 次回のお知らせ</b><div class="s-line"></div></div>
+  <div class="s-ask">【AIへの頼み方】メモの下にこれを書き添えて送る
+活動レポートのブログ記事を書いてください。
+順番：①日付と参加人数 ②内容 ③参加者のひと言 ④スタッフの感想 ⑤次回のお知らせ。
+やわらかい口調で、絵文字は少しだけ。メモにないことは作らないでください。</div>
+  <p class="s-foot">DigiForest（山中今日子）　入力して使えるページ：digiforest-ai.github.io/taiken/blog/</p>
+</section>
+
+<script>
+(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const FIELDS = ["title", "date", "ppl", "staff", "what", "voice", "feel", "next", "sample"];
+  const KEY = "df-blog-draft";
+
+  // 書きかけのメモはこの端末の中だけに残します（送信はしません）
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+    FIELDS.forEach(k => { if (saved[k]) $(k).value = saved[k]; });
+  } catch (e) {}
+  const save = () => {
+    try { const o = {}; FIELDS.forEach(k => o[k] = $(k).value); localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
+  };
+  FIELDS.forEach(k => $(k).addEventListener("input", save));
+
+  const v = k => $(k).value.trim();
+  const radio = n => document.querySelector(`input[name=${n}]:checked`).value;
+  const or = (s, alt) => s || alt;
+
+  function people() {
+    const a = [];
+    if (v("ppl")) a.push("参加者 " + v("ppl"));
+    if (v("staff")) a.push("スタッフ " + v("staff"));
+    return a.join("、");
+  }
+
+  function buildPrompt() {
+    const tone = radio("tone") === "1" ? "ていねいで、あたたかい口調" : "やわらかく、親しみのある口調";
+    const emoji = ["絵文字は使わない", "絵文字は少しだけ", "絵文字は多めに、楽しい雰囲気で"][radio("emoji")];
+    const L = [
+      "あなたは、地域の小さな団体のブログを手伝うアシスタントです。",
+      "次のメモから、活動レポートのブログ記事を書いてください。",
+      "",
+      `■ 会の名前：${or(v("title"), "【会の名前】")}`,
+      `■ 日付：${or(v("date"), "【日付】")}`,
+      `■ 参加人数：${or(people(), "【人数】")}`,
+      "■ 何をしたか：", or(v("what"), "【内容】"),
+      "■ 参加者のひと言：", or(v("voice"), "（なし）"),
+      "■ スタッフの感想：", or(v("feel"), "（なし）"),
+      `■ 次回のお知らせ：${or(v("next"), "（なし）")}`,
+      "",
+      "【お願い】",
+      "・順番は ①日付と参加人数 ②内容 ③参加者のひと言 ④スタッフの感想 ⑤次回のお知らせ。「（なし）」の項目は省いてください。",
+      `・${tone}で、${emoji}。400〜600字くらい。記事のタイトル案も2つ。`,
+      "・メモにないこと（人数・名前・できごと・効果など）は作らないでください。足りないところは【　】で空けておいてください。",
+      "・参加者が特定されるような書き方はしないでください。"
+    ];
+    if ($("short").checked) L.push("・最後に、同じ内容のX・Instagram用の短い文（120字以内、ハッシュタグ3つ）も付けてください。");
+    if (v("sample")) L.push("", "【いつもの記事の見本】この書き方・雰囲気に合わせてください。", "---", v("sample"), "---");
+    return L.join("\n");
+  }
+
+  function buildDraft() {
+    const em = radio("emoji") !== "0";
+    const L = [];
+    L.push(`${or(v("date"), "【日付】")}の${or(v("title"), "【会の名前】")}${em ? " 🌱" : ""}`);
+    if (people()) L.push(`今回は${people()}でした。`);
+    L.push("", "【今回の内容】", or(v("what"), "【内容】"));
+    if (v("voice")) L.push("", "【参加者さんの声】", v("voice"));
+    if (v("feel")) L.push("", "【スタッフより】", v("feel"));
+    if (v("next")) L.push("", `次回は${v("next")}です。${em ? "お待ちしています😊" : "お待ちしています。"}`);
+    return L.join("\n");
+  }
+
+  $("make").addEventListener("click", () => {
+    $("prompt").textContent = buildPrompt();
+    $("draft").textContent = buildDraft();
+    $("form").hidden = true;
+    $("result").hidden = false;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  $("edit").addEventListener("click", () => {
+    $("result").hidden = true;
+    $("form").hidden = false;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  $("clear").addEventListener("click", () => {
+    if (!confirm("メモを空にしますか？（見本の記事は残します）")) return;
+    FIELDS.filter(k => k !== "sample").forEach(k => $(k).value = "");
+    save();
+    $("edit").click();
+  });
+  $("print").addEventListener("click", () => window.print());
+
+  document.querySelectorAll("[data-copy]").forEach(btn => {
+    const orig = btn.textContent;
+    btn.addEventListener("click", async () => {
+      const text = $(btn.dataset.copy).textContent;
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+        const t = document.createElement("textarea");
+        t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+        document.body.appendChild(t); t.select();
+        try { ok = document.execCommand("copy"); } catch (_) {}
+        t.remove();
+      }
+      btn.textContent = ok ? "コピーしました ✓" : "うまくいかない時は、文を長押ししてコピー";
+      btn.classList.toggle("green", !ok);
+      setTimeout(() => { btn.textContent = orig; btn.classList.add("green"); }, 2000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
