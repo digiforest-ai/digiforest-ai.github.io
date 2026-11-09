@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 外部への通信を一切禁止する設定。文章がネットに出ないことをブラウザ側で保証する -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:">
+<title>かんたん匿名化ツール｜DigiForest</title>
+<meta name="description" content="議事録やアンケートをAIに渡す前に、名前・電話番号・住所などをブラウザの中だけで置き換える試作ツールです。">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#f6f8f4; --card:#ffffff; --ink:#1f2a22; --sub:#5b675e; --line:#d9e0d6;
+  --green:#2f6b45; --green-soft:#e3efe6; --yellow:#fff3bf; --yellow-ink:#7a5a00;
+  --red-soft:#fde8e6; --red-ink:#9b2c22; --chip:#dfe9ff; --chip-ink:#1d3f8f; --off:#eeeeee;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;line-height:1.7;font-size:16px}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.lead{color:var(--sub);margin:0 0 12px}
+.safe{display:inline-block;background:var(--green-soft);color:var(--green);font-weight:bold;border-radius:999px;padding:4px 14px;font-size:.9rem}
+.warn{background:var(--red-soft);color:var(--red-ink);border-radius:10px;padding:10px 14px;margin:14px 0;font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:16px 0}
+.step{font-weight:bold;color:var(--green);font-size:1.05rem;margin:0 0 8px}
+.step span{display:inline-block;background:var(--green);color:#fff;border-radius:50%;width:1.6em;height:1.6em;text-align:center;line-height:1.6em;margin-right:6px;font-size:.9rem}
+textarea,input[type=text]{width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;color:var(--ink)}
+textarea{min-height:170px;resize:vertical}
+#names{min-height:70px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+button,.btn{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer}
+button.main{background:var(--green);color:#fff;border-color:var(--green);font-weight:bold;font-size:1.1rem;padding:10px 26px}
+button:hover,.btn:hover{filter:brightness(.96)}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 12px;margin:8px 0}
+.opts label{font-size:.95rem}
+details summary{cursor:pointer;color:var(--sub)}
+.summary{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.summary b{background:var(--chip);color:var(--chip-ink);border-radius:999px;padding:2px 10px;font-size:.88rem;font-weight:normal}
+.summary b.caution{background:var(--yellow);color:var(--yellow-ink)}
+#preview{white-space:pre-wrap;word-break:break-all;border:1px dashed var(--line);border-radius:10px;padding:12px;min-height:80px;background:#fcfdfb}
+.hit{background:var(--chip);color:var(--chip-ink);border-radius:5px;padding:0 3px;cursor:pointer;border-bottom:2px solid var(--chip-ink)}
+.hit.off{background:var(--off);color:#666;border-bottom:2px dotted #999;text-decoration:line-through}
+.care{background:var(--yellow);color:var(--yellow-ink);border-radius:4px;padding:0 2px;border-bottom:2px solid #e0b400}
+.hint{color:var(--sub);font-size:.88rem;margin:6px 0 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin-top:8px}
+th,td{border:1px solid var(--line);padding:5px 8px;text-align:left}
+th{background:var(--green-soft)}
+.check label{display:block;margin:4px 0}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);white-space:nowrap;max-width:92vw;background:var(--ink);color:#fff;padding:8px 18px;border-radius:999px;opacity:0;transition:.3s;pointer-events:none}
+#toast.show{opacity:1}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>かんたん匿名化ツール <small style="font-size:.8rem;color:var(--sub)">試作版</small></h1>
+  <p class="lead">議事録やアンケートをAIに渡す前に、名前・電話番号・住所などを自動で置き換えます。</p>
+  <span class="safe">🔒 この画面の中だけで処理します（インターネットに送信しません）</span>
+  <div class="warn">⚠ 自動で見つけられるのは<b>決まった形の情報だけ</b>です。珍しい出来事・経歴などから個人が分かることもあるので、<b>最後は必ず人の目で確認</b>してください。</div>
+
+  <div class="card">
+    <p class="step"><span>1</span>元の文章を貼り付ける</p>
+    <textarea id="src" placeholder="ここに議事録・アンケート・相談メモなどを貼り付けます"></textarea>
+    <div class="row">
+      <button id="sample">見本① 相談記録</button>
+      <button id="sample2">見本② 会議メモ</button>
+      <label class="btn">テキストファイルを開く<input id="file" type="file" accept=".txt,.csv,.md,text/plain" class="hidden"></label>
+      <button id="clear">消す</button>
+    </div>
+    <details style="margin-top:12px">
+      <summary>詳しい設定（名簿・見つける項目）</summary>
+      <p class="hint">名簿の名前を入れておくと、確実に置き換えられます（1行に1人。姓だけでもOK）</p>
+      <textarea id="names" placeholder="例）&#10;山田花子&#10;田中"></textarea>
+      <div class="row">置き換え後の呼び方：<input id="prefix" type="text" value="参加者" style="width:9em"> A、B、C…</div>
+      <div class="opts">
+        <label><input type="checkbox" data-k="name" checked> 名前</label>
+        <label><input type="checkbox" data-k="phone" checked> 電話番号</label>
+        <label><input type="checkbox" data-k="mail" checked> メールアドレス</label>
+        <label><input type="checkbox" data-k="zip" checked> 郵便番号</label>
+        <label><input type="checkbox" data-k="addr" checked> 住所</label>
+        <label><input type="checkbox" data-k="age" checked> 年齢 → 年代</label>
+        <label><input type="checkbox" data-k="date" checked> 日付 → 上旬・中旬・下旬</label>
+        <label><input type="checkbox" data-k="place" checked> 病院・学校の名前</label>
+        <label><input type="checkbox" data-k="care" checked> 気をつけたい言葉に印</label>
+      </div>
+    </details>
+  </div>
+
+  <div style="text-align:center"><button class="main" id="run">匿名化する ▼</button></div>
+
+  <div id="out" class="hidden">
+    <div class="card">
+      <p class="step"><span>2</span>置き換えた所を確かめる</p>
+      <div class="summary" id="summary"></div>
+      <div id="preview"></div>
+      <p class="hint">青い所＝置き換えた所。<b>クリックすると元に戻せます</b>（もう一度押すと置き換え直し）。<br>黄色い所＝病気・家庭の事情など、気をつけたい言葉。必要なら下の欄で手直ししてください。</p>
+    </div>
+
+    <div class="card">
+      <p class="step"><span>3</span>手で仕上げる</p>
+      <textarea id="result"></textarea>
+      <p class="hint">この欄は手で直せます（上の青い所を押すと、この欄は作り直されます）。見落としがあれば、名簿に足して「匿名化する」を押し直すのが確実です。</p>
+    </div>
+
+    <div class="card check">
+      <p class="step"><span>4</span>AIに渡す前の確認</p>
+      <label><input type="checkbox" class="ck"> 名前・あだ名・家族の名前が残っていない</label>
+      <label><input type="checkbox" class="ck"> 珍しい出来事・経歴・職業から、誰か分かってしまわない</label>
+      <label><input type="checkbox" class="ck"> 病気・介護・家庭の事情は、必要な分だけになっている</label>
+      <label><input type="checkbox" class="ck"> 日付と場所の組み合わせで、誰か分かってしまわない</label>
+      <p id="ckmsg" class="hint">4つとも確認できたら、AIに渡してOKです。</p>
+      <div class="row">
+        <button id="copyPrompt" class="main" style="font-size:1rem;padding:8px 18px">議事録の頼み方つきでコピー</button>
+        <button id="copy">文章だけコピー</button>
+        <button id="save">テキストで保存</button>
+      </div>
+      <p class="hint">コピーしたら、ChatGPTやClaudeに貼り付けて送ります。</p>
+    </div>
+
+    <div class="card">
+      <p class="step"><span>5</span>AIの答えを、元の名前に戻す</p>
+      <p class="hint" style="margin-top:0">AIが作った議事録を貼ると、「参加者A」などを<b>このパソコンの中で</b>元の名前に戻します。</p>
+      <textarea id="aiOut" placeholder="ここにAIの答えを貼り付けます" style="min-height:120px"></textarea>
+      <div class="row"><button id="restore">名前を戻す</button><button id="copyRestored">戻した文章をコピー</button></div>
+      <div id="restored" class="hidden" style="white-space:pre-wrap;border:1px dashed var(--line);border-radius:10px;padding:12px;margin-top:10px;background:#fcfdfb"></div>
+      <p class="hint">戻すのは名前だけです（住所・電話番号はAIに渡していないので、戻しません）。</p>
+    </div>
+
+    <div class="card">
+      <details>
+        <summary>対応表（誰が「参加者A」か）を見る</summary>
+        <p class="hint" style="color:var(--red-ink)">※対応表はAIに渡さないでください。必要なら手元だけで保管します。</p>
+        <table id="map"></table>
+      </details>
+    </div>
+  </div>
+
+  <p class="hint" style="text-align:center;margin-top:30px">DigiForest 試作 ／ 入力した文章はこの画面の外に送られません<br><a href="https://digiforest-ai.github.io/" style="color:var(--green)">DigiForest トップへ</a></p>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+
+const SAMPLE =
+`【11月 暮らしの保健室 相談記録】
+日時：2026年11月12日 13:30〜
+記録者：田中
+
+山田花子さん（78歳）から相談。宇治市○○町1-2在住、電話090-1234-5678。
+最近夫を亡くし、一人暮らしで不安とのこと。○○病院に月2回通院中。
+娘さんは大阪に住んでいて、なかなか来られない。
+
+佐藤さんから「次回は体操の会もやりたい」と提案あり。
+連絡先：sato.example@example.com
+次回は11月26日、山田さんにも声をかける（担当：田中さん）。`;
+
+const SAMPLE2 =
+`運営ミーティング メモ　11月20日 10時〜
+参加：田中、佐藤、鈴木、山本
+
+・クリスマス会は12月17日の方向。お菓子は佐藤さんが手配
+・山本さん「会場の暖房が弱い」→ 事務局に相談する（鈴木さん）
+・先週相談に来た高橋さん（82歳）、宇治市槇島町1-2で一人暮らし。認知症の心配あり、娘さんにも連絡したい → 次回までに田中さんが様子を聞く
+・ボランティア募集のチラシ、まだ決まらず。Instagramにも出すか？次回また話す
+・次回は12月4日`;
+
+const MINUTES_PROMPT =
+`次の会議メモを、議事録の形に整理してください。
+
+【形】
+1. 会議名・日時・参加者
+2. 話し合った内容（短い箇条書き）
+3. 決まったこと
+4. まだ決まっていないこと・課題
+5. 次回までの担当と作業（表にする）
+
+【ルール】
+- 「参加者A」「【住所】」などの記号は、そのまま使ってください
+- メモにないことは書き足さないでください
+- 分からない所は「（確認）」と書いてください
+
+【会議メモ】
+`;
+
+// ---- 名前まわりの準備 ----
+const SURNAMES = ("佐藤 鈴木 高橋 田中 伊藤 渡辺 山本 中村 小林 加藤 吉田 山田 佐々木 山口 松本 井上 木村 斎藤 清水 山崎 池田 橋本 阿部 石川 山下 中島 石井 小川 前田 岡田 長谷川 藤田 後藤 近藤 村上 遠藤 青木 坂本 斉藤 福田 太田 西村 藤井 金子 岡本 藤原 中野 三浦 原田 中川 松田 竹内 小野 田村 中山 和田 石田 森田 上田 内田 柴田 酒井 宮崎 横山 高木 安藤 宮本 大野 小島 谷口 今井 工藤 高田 増田 丸山 杉山 村田 大塚 新井 小山 平野 藤本 河野 上野 野口 武田 松井 千葉 岩崎 菅原 木下 久保 佐野 野村 松尾 市川 菊地 杉本 古川 大西 島田 水野 桜井 高野 渡部 吉川 山内 西田 飯田 菊池 西川 小松 北村 安田 五十嵐 川口 平田 中田 久保田 服部 岩田 土屋 川崎 福島 本田 樋口 秋山 田口 永井 山中 中西 吉村 川上 大石 須藤 荒木 松岡 小池 浅野 大久保 熊谷 松下 奥田 西岡 辻本 北川 堀 宮田 森本").split(" ");
+// 「〇〇さん」の〇〇に来ても名前ではない言葉
+const NOT_NAME = new Set(("皆 皆様 みな お客 客 母 父 お母 お父 子 お子 娘 息子 奥 旦那 孫 妹 姉 兄 弟 夫 妻 嫁 婿 叔母 叔父 伯母 伯父 祖母 祖父 医者 看護師 先生 隣 近所 職員 担当 参加者 相談者 回答者 利用者 会員 委員 社長 店長 大家 赤 お嬢 王 神 仏 皆々 方々 業者 講師 司会 受付 事務局 ボランティア スタッフ ヘルパー ケアマネ ドクター ナース ママ パパ メンバー ゲスト お客様 お医者").split(" "));
+const KANJI = "[一-龥々]";
+const NAMECH = "[一-龥々ァ-ヶー]";
+const DIG = "[0-9０-９]";
+const toHalf = s => s.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const html = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const CARE_WORDS = ["認知症","がん","癌","入院","通院","手術","要介護","介護","障害","障がい","うつ","鬱","亡くし","亡くなっ","離婚","別居","借金","生活保護","虐待","DV","妊娠","持病","病気","服薬","不登校","ひきこもり","引きこもり"];
+
+function opts(){
+  const o = {};
+  document.querySelectorAll(".opts input").forEach(c => o[c.dataset.k] = c.checked);
+  return o;
+}
+
+// ---- 検出：文章の中から [開始, 終了, 種類, 元の文字] を集める ----
+function detect(text, o){
+  const hits = [];
+  const add = (re, type, fn) => {
+    re.lastIndex = 0; let m;
+    while ((m = re.exec(text))){
+      if (!m[0]) { re.lastIndex++; continue; }
+      const h = fn ? fn(m) : {s:m.index, e:m.index+m[0].length};
+      if (h) hits.push(Object.assign({type, prio:PRIO[type]}, h));
+    }
+  };
+  const PRIO = {mail:1, phone:2, zip:3, addr:4, list:5, name:6, place:7, date:8, age:9, care:10};
+
+  if (o.mail)  add(/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g, "mail");
+  if (o.phone) add(new RegExp(`(?<![0-9０-９])0${DIG}{1,4}[-－ー‐ ]?[0-9０-９xX×＊*]{1,4}[-－ー‐ ]?[0-9０-９xX×＊*]{3,4}(?![0-9０-９])`, "g"), "phone",
+                 m => toHalf(m[0]).replace(/[^0-9xX×＊*]/g,"").length >= 9 ? {s:m.index, e:m.index+m[0].length} : null);
+  if (o.zip)   add(new RegExp(`〒?\\s?${DIG}{3}[-－ー]${DIG}{4}`, "g"), "zip");
+  if (o.addr){
+    const pref = `(?:北海道|東京都|京都府|大阪府|${KANJI}{2,3}県)`;
+    const banchi = `(?:[0-9０-９一二三四五六七八九十]+(?:丁目|番地|番|号|[-－ー‐の])?)*`;
+    add(new RegExp(`${pref}?${KANJI}{1,4}[市郡][一-龥々ぁ-んァ-ヶ○〇◯]{0,8}?[町村区]${banchi}`, "g"), "addr");
+    const town = `(?:[一-龥々ァ-ヶ○〇◯]{0,8}?[0-9０-９一二三四五六七八九十]+(?:丁目|番地|番|号|[-－ー‐の][0-9０-９]*)*)?`;
+    add(new RegExp(`${pref}${KANJI}{1,4}[市郡区]${town}`, "g"), "addr");
+    // 都道府県なし・「町」なしでも、番地（1-2 など）が付いていれば住所とみなす
+    add(new RegExp(`${KANJI}{1,4}市[一-龥々ァ-ヶ○〇◯]{1,8}?[0-9０-９]+(?:[-－ー‐の丁目番地号][0-9０-９]*)+`, "g"), "addr");
+  }
+  // 名簿に入れた名前（確実に置き換える）
+  const listed = $("#names").value.split(/\r?\n|[,、，]/).map(s => s.trim()).filter(s => s.length >= 1);
+  if (o.name && listed.length){
+    listed.sort((a,b) => b.length - a.length);
+    add(new RegExp(listed.map(esc).join("|"), "g"), "list", m => ({s:m.index, e:m.index+m[0].length, core:m[0]}));
+  }
+  if (o.name){
+    // ① 〇〇さん・様・氏・先生 など
+    add(new RegExp(`(?<![ァ-ヶー])(${NAMECH}{1,5})(?=さん|様|さま|氏|くん|君|ちゃん|先生)`, "g"), "name", m => {
+      let core = m[1], s = m.index;
+      // 「昨日田中」のように前の言葉がくっついたら、名字から始まるように切る
+      for (const sn of SURNAMES){ const i = core.indexOf(sn); if (i > 0){ s += i; core = core.slice(i); break; } }
+      if (NOT_NAME.has(core) || /^[ァ-ヶー]{1,2}$/.test(core)) return null;
+      return {s, e:s+core.length, core};
+    });
+    // ② よくある名字＋下の名前（山田花子 など）
+    const sn = SURNAMES.slice().sort((a,b)=>b.length-a.length).map(esc).join("|");
+    add(new RegExp(`(?:${sn})[ 　]?(?!さん|さま|様|ちゃん|くん|君|氏|先生|[区市町村郡県都府のはがとにもをへでや])(?:[一-龥々]{1,3}|[ぁ-ん]{2,4}|[ァ-ヶー]{2,4})(?=さん|様|さま|氏|[、。，．,\\s（(「」）)：:]|は|が|の|と|に|も|$)`, "gm"), "name",
+        m => ({s:m.index, e:m.index+m[0].length, core:m[0].replace(/[ 　]/g,"")}));
+    // ③ 「氏名：」「記録者：」など項目名のあとの名前
+    add(new RegExp(`(?:氏名|名前|お名前|記録者|担当者|担当|相談者|回答者|司会)[ 　]*[:：][ 　]*(${NAMECH}{1,6})`, "g"), "name", m => {
+      const s = m.index + m[0].length - m[1].length;
+      return NOT_NAME.has(m[1]) ? null : {s, e:s+m[1].length, core:m[1]};
+    });
+  }
+  if (o.place) add(new RegExp(`[一-龥々ァ-ヶー○〇◯]{1,10}(?:病院|クリニック|医院|診療所|歯科|小学校|中学校|高等学校|高校|保育園|幼稚園|こども園)`, "g"), "place");
+  if (o.date)  add(new RegExp(`(?:(?:昭和|平成|令和|大正)?${DIG}{1,4}年)?${DIG}{1,2}月${DIG}{1,2}日`, "g"), "date");
+  if (o.age)   add(new RegExp(`(?<![0-9０-９])${DIG}{1,3}\\s?(?:歳|才)`, "g"), "age");
+  if (o.care)  add(new RegExp(CARE_WORDS.map(esc).join("|"), "g"), "care");
+
+  // 重なりを整理：優先度の高いもの→長いもの を残す
+  hits.sort((a,b) => a.prio - b.prio || (b.e-b.s) - (a.e-a.s) || a.s - b.s);
+  const kept = [];
+  for (const h of hits){
+    if (!kept.some(k => h.s < k.e && k.s < h.e)) kept.push(h);
+  }
+  return kept.sort((a,b) => a.s - b.s);
+}
+
+// ---- 置き換え後の文字を決める ----
+function label(i, prefix){
+  let s = ""; i++;
+  while (i > 0){ i--; s = String.fromCharCode(65 + i % 26) + s; i = Math.floor(i / 26); }
+  return prefix + s;
+}
+function buildReplacements(text, hits){
+  const prefix = $("#prefix").value.trim() || "参加者";
+  // 同じ人は同じ記号に（「山田花子」と「山田」はまとめる）
+  const names = hits.filter(h => h.type === "name" || h.type === "list");
+  const cores = [...new Set(names.map(h => h.core))];
+  const canon = c => cores.filter(x => x !== c && x.length > c.length && x.startsWith(c) && c.length >= 2).sort((a,b)=>b.length-a.length)[0] || c;
+  const order = [];
+  names.forEach(h => { const k = canon(h.core); h.key = k; if (!order.includes(k)) order.push(k); });
+  const map = {}; order.forEach((k,i) => map[k] = label(i, prefix));
+
+  hits.forEach(h => {
+    const orig = text.slice(h.s, h.e);
+    h.orig = orig;
+    switch (h.type){
+      case "name": case "list": h.rep = map[h.key]; break;
+      case "phone": h.rep = "【電話番号】"; break;
+      case "mail": h.rep = "【メール】"; break;
+      case "zip": h.rep = "【郵便番号】"; break;
+      case "addr": h.rep = "【住所】"; break;
+      case "place": h.rep = /病院|クリニック|医院|診療所|歯科/.test(orig) ? "【医療機関】" : "【学校・園】"; break;
+      case "age": {
+        const n = parseInt(toHalf(orig), 10);
+        h.rep = n < 10 ? "10歳未満" : n >= 100 ? "100歳以上" : Math.floor(n/10)*10 + "代"; break;
+      }
+      case "date": {
+        if (/^生/.test(text.slice(h.e, h.e+2))) { h.rep = "【生年月日】"; break; }
+        const t = toHalf(orig), mm = t.match(/(\d{1,2})月(\d{1,2})日/);
+        const d = +mm[2], part = d <= 10 ? "上旬" : d <= 20 ? "中旬" : "下旬";
+        h.rep = t.replace(/(\d{1,2})月\d{1,2}日/, `${+mm[1]}月${part}`); break;
+      }
+      case "care": h.rep = orig; break;
+    }
+    h.on = true;
+  });
+  return map;
+}
+
+// ---- 表示 ----
+const TYPE_NAME = {name:"名前", list:"名前（名簿）", phone:"電話番号", mail:"メール", zip:"郵便番号", addr:"住所", age:"年齢", date:"日付", place:"病院・学校", care:"気をつけたい言葉"};
+let state = null;
+
+function render(){
+  const {text, hits} = state;
+  let p = 0, view = "", out = "";
+  hits.forEach((h, i) => {
+    const before = text.slice(p, h.s);
+    view += html(before); out += before;
+    if (h.type === "care"){
+      view += `<span class="care" title="病気・家庭の事情など。必要な分だけ残しましょう">${html(h.orig)}</span>`;
+      out += h.orig;
+    } else {
+      const shown = h.on ? h.rep : h.orig;
+      view += `<span class="hit${h.on ? "" : " off"}" data-i="${i}" title="元：${html(h.orig)}（クリックで切り替え）">${html(shown)}</span>`;
+      out += shown;
+    }
+    p = h.e;
+  });
+  view += html(text.slice(p)); out += text.slice(p);
+  $("#preview").innerHTML = view;
+  $("#result").value = out;
+
+  const cnt = {};
+  hits.forEach(h => { if (h.type === "care" || h.on) cnt[h.type] = (cnt[h.type]||0) + 1; });
+  $("#summary").innerHTML = Object.keys(cnt).length
+    ? Object.entries(cnt).map(([k,v]) => `<b class="${k==="care"?"caution":""}">${TYPE_NAME[k]} ${v}</b>`).join("")
+    : "<b>見つかった項目はありません（人の目で確認してください）</b>";
+
+  const rows = hits.filter(h => h.type !== "care" && h.on);
+  const seen = new Set();
+  $("#map").innerHTML = "<tr><th>元の文字</th><th>置き換え後</th><th>種類</th></tr>" +
+    rows.filter(h => { const k = h.orig + "→" + h.rep; if (seen.has(k)) return false; seen.add(k); return true; })
+        .map(h => `<tr><td>${html(h.orig)}</td><td>${html(h.rep)}</td><td>${TYPE_NAME[h.type]}</td></tr>`).join("");
+}
+
+function run(){
+  const text = $("#src").value;
+  if (!text.trim()){ toast("文章を貼り付けてください"); return; }
+  const hits = detect(text, opts());
+  const map = buildReplacements(text, hits);
+  state = {text, hits, map};
+  $("#out").classList.remove("hidden");
+  document.querySelectorAll(".ck").forEach(c => c.checked = false);
+  updateCheck();
+  render();
+  $("#out").scrollIntoView({behavior:"smooth"});
+}
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 1800);
+}
+function updateCheck(){
+  const all = [...document.querySelectorAll(".ck")].every(c => c.checked);
+  $("#ckmsg").textContent = all ? "✅ 確認できました。AIに渡してOKです。" : "4つとも確認できたら、AIに渡してOKです。";
+  $("#ckmsg").style.color = all ? "var(--green)" : "";
+}
+
+// ---- ボタン ----
+$("#run").onclick = run;
+$("#sample").onclick = () => { $("#src").value = SAMPLE; toast("見本（架空の文章）を入れました"); };
+$("#sample2").onclick = () => { $("#src").value = SAMPLE2; toast("見本（架空の会議メモ）を入れました"); };
+async function copyText(t, msg){
+  try { await navigator.clipboard.writeText(t); }
+  catch { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  toast(msg);
+}
+$("#copyPrompt").onclick = () => copyText(MINUTES_PROMPT + $("#result").value, "頼み方つきでコピーしました");
+// 「参加者A」→ 元の名前（長い記号から順に戻す：参加者AA を 参加者A より先に）
+function restoreNames(t){
+  if (!state) return t;
+  const pairs = Object.entries(state.map).sort((a,b) => b[1].length - a[1].length);
+  for (const [orig, lab] of pairs) t = t.split(lab).join(orig);
+  return t;
+}
+$("#restore").onclick = () => {
+  if (!state){ toast("先に匿名化してください"); return; }
+  const r = $("#restored"); r.textContent = restoreNames($("#aiOut").value); r.classList.remove("hidden");
+};
+$("#copyRestored").onclick = () => copyText(restoreNames($("#aiOut").value), "コピーしました");
+$("#clear").onclick = () => { $("#src").value = ""; $("#out").classList.add("hidden"); state = null; };
+$("#file").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { $("#src").value = r.result; toast("読み込みました"); };
+  r.readAsText(f, "utf-8");
+  e.target.value = "";
+};
+$("#preview").onclick = e => {
+  const el = e.target.closest(".hit"); if (!el || !state) return;
+  const h = state.hits[+el.dataset.i]; h.on = !h.on; render();
+};
+$("#copy").onclick = () => copyText($("#result").value, "コピーしました");
+$("#save").onclick = () => {
+  const blob = new Blob([$("#result").value], {type:"text/plain"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "匿名化済み.txt"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+document.querySelectorAll(".ck").forEach(c => c.onchange = updateCheck);
+})();
+</script>
+</body>
+</html>
