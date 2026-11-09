@@ -235,6 +235,27 @@ section { padding: 88px 0; }
   .price-table th { border-bottom: 0; padding-bottom: 0; }
   .cta-row .btn { flex: 1 1 100%; }
 }
-.works-peek { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; background: #fff; border: 2px dashed var(--line); border-radius: 24px; padding: 18px 24px; }
-.works-peek p { color: var(--sub); font-size: 15px; }
-.works-peek b { color: var(--ink); }
+/* トップの「つくったもの棚」欄 */
+.shelf { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; list-style: none; }
+.shelf a { display: flex; flex-direction: column; height: 100%; background: #fff; border: 2px solid var(--line); border-radius: 28px; overflow: hidden; color: inherit; text-decoration: none; transition: transform .2s, box-shadow .2s; }
+.shelf a:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(60, 80, 40, .12); }
+.shelf-pic { aspect-ratio: 4 / 3; background: var(--soft); display: grid; place-items: center; overflow: hidden; }
+.shelf-pic > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.shelf-pic.stamps { grid-template-columns: 1fr 1fr; gap: 6px; padding: 14px; place-items: stretch; }
+.shelf-pic.stamps img { width: 100%; height: 100%; min-height: 0; object-fit: contain; background: #fff; border-radius: 12px; }
+.shelf-pic .emoji { font-size: 72px; line-height: 1; }
+.shelf-body { padding: 18px 22px 22px; }
+.shelf-tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--matcha-d); background: var(--soft); border-radius: 999px; padding: 2px 10px; }
+.shelf h3 { font-size: 19px; margin: 8px 0 6px; }
+.shelf p { color: var(--sub); font-size: 14px; }
+.shelf-more { text-align: center; margin-top: 32px; }
+.shelf-note { text-align: center; color: var(--sub); font-size: 14px; margin-top: 10px; }
+@media (max-width: 760px) {
+  .shelf { grid-template-columns: 1fr; gap: 16px; }
+  .shelf a { flex-direction: row; }
+  .shelf-pic { aspect-ratio: auto; width: 38%; flex: none; }
+  .shelf-pic.stamps { padding: 8px; gap: 4px; }
+  .shelf-pic .emoji { font-size: 48px; }
+  .shelf-body { padding: 14px 16px; }
+  .shelf h3 { font-size: 17px; }
+}
