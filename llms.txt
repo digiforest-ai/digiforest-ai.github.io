@@ -21,9 +21,9 @@
 - 取り扱いサービス：DX-TABLE（飲食店向け店舗システム）、Localyzer（集客診断ツール）、D-STUDIO（AIクリエイティブ制作）。業種別シリーズ（サロン・歯科・訪問看護・訪問介護など）は順次リリース予定
 
 ## ページ
-- [日本語トップ](https://digiforest-ai.github.io/)
-- [English（海外の取扱パートナー向け）](https://digiforest-ai.github.io/en/)
-- [プライバシーポリシー](https://digiforest-ai.github.io/privacy/)
-- [スタンプ指示文メーカー（無料ツール）](https://digiforest-ai.github.io/stamp/)：お店のLINEスタンプの絵を画像AIで作るための指示文をつくる
-- [つくったもの棚](https://digiforest-ai.github.io/works/)：AIと一緒に作った曲・動画・ゲーム・道具の一覧（AIと自分の役割分担つき）
-- [活動ポータル（創作活動・宇治案内）](https://digiforest-ai.github.io/portal-ja.html)
+- [日本語トップ](https://digiforestai.com/)
+- [English（海外の取扱パートナー向け）](https://digiforestai.com/en/)
+- [プライバシーポリシー](https://digiforestai.com/privacy/)
+- [スタンプ指示文メーカー（無料ツール）](https://digiforestai.com/stamp/)：お店のLINEスタンプの絵を画像AIで作るための指示文をつくる
+- [つくったもの棚](https://digiforestai.com/works/)：AIと一緒に作った曲・動画・ゲーム・道具の一覧（AIと自分の役割分担つき）
+- [活動ポータル（創作活動・宇治案内）](https://digiforestai.com/portal-ja.html)
