@@ -98,7 +98,16 @@ section { padding: 88px 0; }
 .service h3 { font-size: 20px; margin-bottom: 4px; }
 .service .for { font-size: 13px; color: var(--matcha-d); font-weight: 700; margin-bottom: 10px; }
 .service p { color: var(--sub); font-size: 15px; flex: 1; }
-.service a { margin-top: 14px; font-weight: 700; font-size: 14px; }
+.service a { font-weight: 700; font-size: 14px; }
+.service p.for { flex: 0 0 auto; }
+.service .acts { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.service .acts small { font-weight: 400; font-size: 11px; color: var(--sub); }
+.soon { margin-top: 20px; background: var(--cream); border: 2px dashed #eeb07c; border-radius: 20px; padding: 18px 24px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.soon .tag2 { background: var(--orange); color: #fff; border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 700; }
+.soon p { color: var(--sub); font-size: 15px; flex: 1; min-width: 220px; }
+.soon b { color: var(--ink); }
+.offer-cta { text-align: center; }
+.offer-cta small { display: block; margin-top: 10px; font-size: 12px; opacity: .9; }
 .note-small { text-align: center; font-size: 14px; color: var(--sub); margin-top: 24px; }
 .agent-note { text-align: center; margin-bottom: 32px; font-weight: 500; }
 
