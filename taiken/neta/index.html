@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ネタ箱｜DigiForest</title>
+<meta name="description" content="投稿のネタを一言ずつためておき、投稿する日はAIに選んでもらうためのページです。今日の1問・ネタ箱・AIへの頼み方つき。入力内容はどこにも送信しません。">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#4f7d33">
+<link rel="stylesheet" href="/assets/css/style.css?v=20261109">
+<style>
+  /* このページだけで使うスタイル（体験ページ /taiken/ と同じ見た目） */
+  body { font-size: 17px; background: var(--cream); }
+  .tk { max-width: 560px; margin: 0 auto; padding: 20px 16px 40px; }
+  .tk-head { text-align: center; padding: 8px 0 4px; }
+  .tk-head .badge { margin-bottom: 10px; font-size: 13px; }
+  .tk-head h1 { font-size: 26px; font-weight: 900; line-height: 1.4; }
+  .tk-head p { color: var(--sub); font-size: 15px; margin-top: 6px; }
+  .tk-panel { background: #fff; border-radius: var(--radius); padding: 22px 18px; margin-top: 18px; box-shadow: 0 6px 18px rgba(60, 80, 40, .08); }
+  .tk-panel h2 { font-size: 19px; font-weight: 900; margin-bottom: 4px; }
+  .tk-panel .desc { font-size: 14px; color: var(--sub); margin-bottom: 12px; }
+  .step-no { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--matcha); color: #fff; font-size: 14px; margin-right: 6px; line-height: 1; vertical-align: 3px; }
+  .tk input[type=text], .tk textarea { width: 100%; font: inherit; font-size: 17px; padding: 12px 14px; border: 2px solid var(--line); border-radius: 14px; color: var(--ink); background: #fff; }
+  .tk textarea { min-height: 90px; resize: vertical; line-height: 1.7; }
+  .tk input[type=text]:focus, .tk textarea:focus { outline: none; border-color: var(--matcha); }
+  .warn { background: #fff4e5; border-left: 5px solid var(--orange); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 14px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .seg label { flex: 1 1 auto; }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg span { display: block; text-align: center; padding: 9px 10px; border-radius: 14px; background: var(--soft); border: 2px solid transparent; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .seg input:checked + span { border-color: var(--matcha); background: #e6f0dc; }
+  .seg input:focus-visible + span { outline: 3px solid var(--orange); }
+  .lab { display: block; font-weight: 700; margin: 4px 0 6px; font-size: 15px; }
+  .tk-btn {
+    width: 100%; min-height: 54px; border: 0; border-radius: 999px; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer;
+    background: var(--orange); color: #fff; box-shadow: 0 4px 0 var(--orange-d);
+  }
+  .tk-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--orange-d); }
+  .tk-btn.green { background: var(--matcha); box-shadow: 0 4px 0 var(--matcha-d); }
+  .tk-btn.ghost { background: #fff; color: var(--sub); border: 2px solid var(--line); box-shadow: none; min-height: 48px; font-size: 15px; }
+  .btns { display: grid; gap: 10px; margin-top: 12px; }
+  .q { background: var(--soft); border-radius: 14px; padding: 16px; margin: 12px 0; font-size: 19px; font-weight: 900; line-height: 1.55; min-height: 64px; }
+  .q small { display: block; font-size: 12px; color: var(--matcha-d); font-weight: 700; margin-bottom: 2px; }
+  .q.empty { color: var(--sub); font-weight: 700; font-size: 15px; }
+  .count { display: inline-block; background: var(--orange); color: #fff; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 1px 10px; margin-left: 6px; vertical-align: 3px; }
+  .box { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+  .box li { background: var(--cream); border-radius: 14px; padding: 10px 12px; display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; align-items: start; }
+  .box .meta { font-size: 12px; color: var(--sub); grid-column: 1 / 2; }
+  .box .txt { white-space: pre-wrap; word-break: break-word; font-size: 16px; line-height: 1.6; grid-column: 1 / 2; }
+  .box .del { grid-column: 2; grid-row: 1 / span 2; border: 0; background: none; color: var(--sub); font: inherit; font-size: 13px; cursor: pointer; padding: 4px 6px; text-decoration: underline; }
+  .box-empty { color: var(--sub); font-size: 15px; text-align: center; padding: 14px 0 4px; }
+  .tk-text { white-space: pre-wrap; word-break: break-word; background: var(--soft); border-radius: 14px; padding: 14px; font-size: 15px; line-height: 1.8; margin-top: 10px; }
+  .ways { display: grid; gap: 10px; }
+  .ways div { background: var(--cream); border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.65; }
+  .ways b { font-size: 17px; margin-right: 6px; }
+  .ways small { display: block; color: var(--sub); font-size: 13px; margin-top: 4px; }
+  .ladder { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .ladder li { border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.65; }
+  .ladder .hd { font-weight: 900; font-size: 16px; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .ladder .lv { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 14px; line-height: 1; flex: none; }
+  .ladder .tag { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 0 8px; border: 1px solid var(--line); color: var(--sub); }
+  .ladder .tag.now { background: var(--matcha); border-color: var(--matcha); color: #fff; }
+  .ladder small { display: block; color: var(--sub); font-size: 13px; margin-top: 4px; }
+  details.more { margin-top: 10px; }
+  details.more summary { cursor: pointer; font-weight: 700; color: var(--matcha-d); font-size: 15px; }
+  .add-q { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
+  .add-q button { border: 0; border-radius: 14px; background: var(--matcha); color: #fff; font: inherit; font-weight: 700; padding: 0 16px; cursor: pointer; }
+  .myq { list-style: none; padding: 0; margin: 8px 0 0; font-size: 15px; }
+  .myq li { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px dashed var(--line); }
+  .myq button { border: 0; background: none; color: var(--sub); text-decoration: underline; font: inherit; font-size: 13px; cursor: pointer; }
+  .note { font-size: 13px; color: var(--sub); margin-top: 10px; line-height: 1.6; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 32px); text-align: center; background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 15px; font-weight: 700; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 10; }
+  .toast.show { opacity: 1; }
+  .tk-foot { text-align: center; font-size: 13px; color: var(--sub); padding: 24px 16px 32px; }
+  .tk-foot a { font-weight: 700; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main class="tk">
+  <div class="tk-head">
+    <span class="badge">投稿を続けるしくみ</span>
+    <h1>ネタは、ためておいて<br>AIに選んでもらう</h1>
+    <p>ふだんは一言ずつネタ箱へ。<br>投稿する日は、ボタン1つでAIに渡せます。</p>
+  </div>
+
+  <!-- 1 今日の1問 -->
+  <section class="tk-panel">
+    <h2><span class="step-no">1</span>今日の1問に答える</h2>
+    <p class="desc">思いつかない日は、質問に一言で答えるだけ。思いついたことがあれば、質問なしで書いてもOKです。</p>
+    <div class="seg" id="cats">
+      <label><input type="radio" name="cat" value="all" checked><span>ぜんぶ</span></label>
+      <label><input type="radio" name="cat" value="today"><span>今日のこと</span></label>
+      <label><input type="radio" name="cat" value="people"><span>人のこと</span></label>
+      <label><input type="radio" name="cat" value="heart"><span>思いのこと</span></label>
+      <label><input type="radio" name="cat" value="notice"><span>お知らせ前</span></label>
+    </div>
+    <button class="tk-btn green" type="button" id="draw">今日の1問を出す</button>
+    <div class="q empty" id="q">ボタンを押すと、ここに質問が出ます。</div>
+    <label class="lab" for="ans">一言メモ</label>
+    <p class="warn">相談に来た人の名前や話は書かないでください。「来てくれた方」などに置きかえればOKです。</p>
+    <textarea id="ans" placeholder="例：「また来週も来るね」と言ってもらえた"></textarea>
+    <div class="btns">
+      <button class="tk-btn" type="button" id="put">ネタ箱に入れる</button>
+    </div>
+
+    <details class="more">
+      <summary>自分たちの質問を足す</summary>
+      <div class="add-q">
+        <input type="text" id="newq" maxlength="60" placeholder="例：今月の季節のものは？" aria-label="足す質問">
+        <button type="button" id="addq">足す</button>
+      </div>
+      <ul class="myq" id="myq"></ul>
+    </details>
+  </section>
+
+  <!-- 2 ネタ箱 -->
+  <section class="tk-panel">
+    <h2><span class="step-no">2</span>ネタ箱<span class="count" id="count">0</span></h2>
+    <p class="desc">ためたネタは、このスマホ（このブラウザ）の中だけに残ります。どこにも送信しません。</p>
+    <ul class="box" id="box"></ul>
+    <p class="box-empty" id="boxEmpty">まだ空っぽです。上の1問から始めましょう。</p>
+    <div class="btns">
+      <button class="tk-btn ghost" type="button" id="export">テキストで書き出す（控え用）</button>
+    </div>
+    <p class="note">ブラウザの履歴やデータを消すと、ネタ箱も消えます。ときどき「書き出す」で控えを残すと安心です。</p>
+  </section>
+
+  <!-- 3 投稿する日 -->
+  <section class="tk-panel">
+    <h2><span class="step-no">3</span>投稿する日：AIに渡す</h2>
+    <p class="desc">ためたネタをまとめた「AIへの頼み方」を作ります。ChatGPT・Gemini・Claudeなど、ふだん使っているAIに貼るだけです。</p>
+    <label class="lab" for="org">団体・お店の名前</label>
+    <input type="text" id="org" maxlength="40" placeholder="例：〇〇サロン">
+    <span class="lab" style="margin-top:12px">投稿先</span>
+    <div class="seg">
+      <label><input type="radio" name="sns" value="Instagram" checked><span>Instagram</span></label>
+      <label><input type="radio" name="sns" value="Facebook"><span>Facebook</span></label>
+      <label><input type="radio" name="sns" value="Threads"><span>Threads</span></label>
+      <label><input type="radio" name="sns" value="LINE公式アカウント"><span>LINE</span></label>
+    </div>
+    <button class="tk-btn green" type="button" id="make">AIへの頼み方を作ってコピー</button>
+    <div class="tk-text" id="prompt" hidden></div>
+    <p class="note">AIが出した文は、自分の言葉で少し直してから投稿してください。</p>
+  </section>
+
+  <!-- ため方 -->
+  <section class="tk-panel">
+    <h2>ため方は、自分に合うものを1つ</h2>
+    <p class="desc">このページを使わなくても大丈夫。ふだん使っているものが一番続きます。</p>
+    <div class="ways">
+      <div><b>書く</b>LINEで自分に送る、スマホのメモ帳に一行。<small>もっとためたい人は、無料のメモアプリ「Obsidian」も。メモが自分の端末に残り、あとから探しやすくなります。</small></div>
+      <div><b>答える</b>このページの「今日の1問」や、AIに質問してもらって一言で答える。</div>
+      <div><b>話す</b>移動中や家事の合間に話して録音し、AIに要約してもらう。</div>
+    </div>
+  </section>
+
+  <!-- もっと楽に -->
+  <section class="tk-panel">
+    <h2>もっと楽にするなら</h2>
+    <p class="desc">全部やらなくてOK。気になったものだけ試してください。</p>
+    <ol class="ladder">
+      <li><div class="hd"><span class="lv">1</span>毎回貼る<span class="tag now">今日から</span></div>このページで作った頼み方を、そのつどAIに貼る。だれでもできます。</li>
+      <li><div class="hd"><span class="lv">2</span>一度だけ登録<span class="tag now">今日から</span></div>ChatGPTの「プロジェクト」や Geminiの「Gem」に、下の文を登録しておく。開いて「今日の1問」と打つだけで質問してくれます。<small>どちらも無料で使えます。Gemを作るのはパソコンのブラウザから。</small>
+        <button class="tk-btn ghost" type="button" id="copyReg" style="margin-top:10px">登録用の文をコピー</button>
+      </li>
+      <li><div class="hd"><span class="lv">3</span>決まった時間に届く<span class="tag">紹介</span></div>ChatGPTの「タスク」で、毎朝AIから質問が届くようにする。<small>無料は1日1回まで・「朝」など時間帯での指定。Geminiの同じ機能は有料プランです。</small></li>
+      <li><div class="hd"><span class="lv">4</span>ためたネタから提案<span class="tag">紹介</span></div>メモをAIが読める場所にためておき、AIのほうから「今週はこれどう？」と提案してもらう。<small>このページを作ったDigiForestは、Obsidianにネタをため、毎朝AIからネタが届く形で使っています。</small></li>
+    </ol>
+    <p class="note">AIの機能や無料の範囲は変わることがあります（2026年11月時点）。使う前に画面で確かめてください。</p>
+  </section>
+</main>
+
+<footer class="tk-foot">
+  <p>DigiForest（山中今日子）｜<a href="/taiken/">SNS投稿の体験</a>｜<a href="/taiken/blog/">活動レポートの下書きの素</a>｜<a href="/">トップページへ</a></p>
+  <p>このページは入力内容をどこにも送信しません。</p>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const KEY = "df-neta-box";
+
+  const QUESTIONS = {
+    today: ["今日いちばん印象に残った一言は？", "準備で手間取ったことは？", "今日うまくいったことを1つ挙げると？", "今日の会で、写真に撮りたかった場面は？"],
+    people: ["最近来てくれた人で、気になった人は？（名前は出さずに）", "手伝ってくれている人の好きなところは？", "最近、だれかにお礼を言いたくなったことは？"],
+    heart: ["この活動を始めたきっかけは？", "続けていてよかったと思った瞬間は？", "この活動で、いちばん大事にしていることは？"],
+    notice: ["次の会で、来た人に持ち帰ってほしいものは？", "初めての人がよく迷うことは？", "初めての人に「これだけは知っておいて」と言うなら？"]
+  };
+  const CAT_NAME = { today: "今日のこと", people: "人のこと", heart: "思いのこと", notice: "お知らせ前", mine: "自分たちの質問" };
+
+  // 保存（この端末の中だけ）
+  let st = { items: [], myq: [], org: "" };
+  try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+
+  const toast = msg => { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 1800); };
+  const today = () => { const d = new Date(); return `${d.getMonth() + 1}/${d.getDate()}`; };
+
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+      const t = document.createElement("textarea");
+      t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (_) {}
+      t.remove(); return ok;
+    }
+  }
+
+  // 今日の1問
+  let current = null;
+  function pool(cat) {
+    const mine = st.myq.map(q => ({ q, c: "mine" }));
+    if (cat === "all") return Object.entries(QUESTIONS).flatMap(([c, a]) => a.map(q => ({ q, c }))).concat(mine);
+    return QUESTIONS[cat].map(q => ({ q, c: cat }));
+  }
+  $("draw").addEventListener("click", () => {
+    const cat = document.querySelector("input[name=cat]:checked").value;
+    let list = pool(cat);
+    if (current && list.length > 1) list = list.filter(x => x.q !== current.q);
+    current = list[Math.floor(Math.random() * list.length)];
+    const box = $("q");
+    box.classList.remove("empty");
+    box.innerHTML = "";
+    const s = document.createElement("small"); s.textContent = CAT_NAME[current.c];
+    box.append(s, document.createTextNode(current.q));
+    $("draw").textContent = "別の質問にする";
+  });
+
+  $("put").addEventListener("click", () => {
+    const text = $("ans").value.trim();
+    if (!text) { toast("一言メモを書いてください"); $("ans").focus(); return; }
+    st.items.unshift({ d: today(), q: current ? current.q : "", t: text });
+    save(); render();
+    $("ans").value = "";
+    current = null;
+    $("q").className = "q empty";
+    $("q").textContent = "入れました。次の1問も、気が向いたらどうぞ。";
+    $("draw").textContent = "今日の1問を出す";
+    toast("ネタ箱に入れました");
+  });
+
+  // 自分たちの質問
+  function renderMyq() {
+    const ul = $("myq"); ul.innerHTML = "";
+    st.myq.forEach((q, i) => {
+      const li = document.createElement("li");
+      const sp = document.createElement("span"); sp.textContent = q;
+      const b = document.createElement("button"); b.type = "button"; b.textContent = "消す";
+      b.addEventListener("click", () => { st.myq.splice(i, 1); save(); renderMyq(); });
+      li.append(sp, b); ul.append(li);
+    });
+  }
+  $("addq").addEventListener("click", () => {
+    const q = $("newq").value.trim();
+    if (!q) return;
+    st.myq.push(q); save(); renderMyq();
+    $("newq").value = "";
+    toast("「ぜんぶ」から出るようになりました");
+  });
+
+  // ネタ箱
+  function render() {
+    const ul = $("box"); ul.innerHTML = "";
+    st.items.forEach((it, i) => {
+      const li = document.createElement("li");
+      const m = document.createElement("div"); m.className = "meta"; m.textContent = it.d + (it.q ? "　Q. " + it.q : "");
+      const t = document.createElement("div"); t.className = "txt"; t.textContent = it.t;
+      const b = document.createElement("button"); b.type = "button"; b.className = "del"; b.textContent = "消す";
+      b.addEventListener("click", () => { if (!confirm("このネタを消しますか？")) return; st.items.splice(i, 1); save(); render(); });
+      li.append(m, t, b); ul.append(li);
+    });
+    $("count").textContent = st.items.length;
+    $("boxEmpty").hidden = st.items.length > 0;
+  }
+
+  const netaText = () => st.items.map(it => `・${it.t.replace(/\n+/g, " ")}${it.q ? `（Q. ${it.q}）` : ""}（${it.d}）`).join("\n");
+
+  $("export").addEventListener("click", () => {
+    if (!st.items.length) { toast("ネタ箱が空です"); return; }
+    const text = "ネタ箱の控え\n\n" + netaText() + "\n";
+    try {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+      a.download = "netabako.txt";
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      toast("書き出しました");
+    } catch (e) {
+      copy(text).then(ok => toast(ok ? "コピーしました（メモ帳に貼って保存）" : "うまくいきませんでした"));
+    }
+  });
+
+  // 投稿する日
+  $("org").value = st.org || "";
+  $("org").addEventListener("input", () => { st.org = $("org").value; save(); });
+
+  $("make").addEventListener("click", async () => {
+    if (!st.items.length) { toast("先にネタ箱にネタを入れてください"); return; }
+    const sns = document.querySelector("input[name=sns]:checked").value;
+    const org = $("org").value.trim() || "【団体・お店の名前】";
+    const text = [
+      `私たちは宇治で活動している「${org}」です。`,
+      `下は、最近ためておいた投稿のネタのメモです。`,
+      "",
+      netaText(),
+      "",
+      "【お願い】",
+      `1. この中から、今週の${sns}投稿に向くネタを3つ選び、それぞれ「なぜ向いているか」を一言で教えてください。`,
+      "2. 私が1つ選んだら、そのネタで投稿文を作ってください。",
+      "・メモにないこと（人数・名前・できごと・効果など）は足さないでください。",
+      "・人が特定されるような書き方はしないでください。"
+    ].join("\n");
+    $("prompt").textContent = text;
+    $("prompt").hidden = false;
+    const ok = await copy(text);
+    toast(ok ? "コピーしました。AIに貼ってください" : "下の文を長押ししてコピーしてください");
+  });
+
+  // 登録用の文（プロジェクト・Gem）
+  $("copyReg").addEventListener("click", async () => {
+    const all = Object.values(QUESTIONS).flat().concat(st.myq);
+    const text = [
+      "あなたは、私たちの投稿ネタを集めるインタビュアーです。",
+      "私が「今日の1問」と送ったら、次の質問リストから1つ選んで聞いてください。前回と同じ質問は避けてください。",
+      "私が答えたら、投稿のネタとして一行にまとめて返してください。",
+      "私が「今週のネタ」と送って、ためたメモを貼ったら、投稿に向くネタを3つ選んでください。メモにないことは足さないでください。",
+      "",
+      "【質問リスト】",
+      ...all.map(q => "・" + q)
+    ].join("\n");
+    const ok = await copy(text);
+    toast(ok ? "コピーしました" : "うまくいきませんでした");
+  });
+
+  render(); renderMyq();
+})();
+</script>
+</body>
+</html>
