@@ -55,13 +55,30 @@
   .ways div { background: var(--cream); border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.65; }
   .ways b { font-size: 17px; margin-right: 6px; }
   .ways small { display: block; color: var(--sub); font-size: 13px; margin-top: 4px; }
-  .ladder { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  .ladder li { border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.65; }
-  .ladder .hd { font-weight: 900; font-size: 16px; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .ladder .lv { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 14px; line-height: 1; flex: none; }
-  .ladder .tag { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 0 8px; border: 1px solid var(--line); color: var(--sub); }
-  .ladder .tag.now { background: var(--matcha); border-color: var(--matcha); color: #fff; }
-  .ladder small { display: block; color: var(--sub); font-size: 13px; margin-top: 4px; }
+  /* もっと楽に：階段で上がっていく欄 */
+  .lvup { background: linear-gradient(160deg, #2f5a1f 0%, #4f7d33 100%); color: #fff; border-radius: var(--radius); padding: 24px 18px 20px; margin-top: 22px; box-shadow: 0 10px 26px rgba(40, 70, 20, .28); position: relative; overflow: hidden; }
+  .lvup::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,.07); }
+  .lvup .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .2em; color: #ffd28a; }
+  .lvup h2 { font-size: 22px; font-weight: 900; margin: 2px 0 4px; color: #fff; }
+  .lvup .desc { color: rgba(255,255,255,.82); font-size: 14px; margin-bottom: 16px; }
+  .lv-steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; position: relative; z-index: 1; }
+  .lv-steps li { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 16px; padding: 14px 14px 14px 14px; font-size: 15px; line-height: 1.65; }
+  .lv-steps .hd { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .lv-steps .lvl { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #ffd28a; line-height: 1; }
+  .lv-steps .lvl b { display: block; font-size: 22px; letter-spacing: 0; color: #fff; margin-top: 2px; }
+  .lv-steps .ttl { font-weight: 900; font-size: 17px; flex: 1; }
+  .stair { display: flex; align-items: flex-end; gap: 3px; height: 26px; flex: none; }
+  .stair i { width: 7px; border-radius: 2px; background: rgba(255,255,255,.22); }
+  .stair i:nth-child(1) { height: 25%; } .stair i:nth-child(2) { height: 50%; } .stair i:nth-child(3) { height: 75%; } .stair i:nth-child(4) { height: 100%; }
+  .stair i.on { background: #ffd28a; }
+  .chip { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 10px; margin-bottom: 6px; }
+  .chip.now { background: #fff; color: var(--matcha-d); }
+  .chip.intro { border: 1px solid rgba(255,255,255,.5); color: #fff; }
+  .lv-steps small { display: block; color: rgba(255,255,255,.75); font-size: 13px; margin-top: 4px; }
+  .lv-steps .tk-btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.6); }
+  .lv-steps li.goal { background: linear-gradient(135deg, rgba(240,140,60,.35), rgba(255,210,138,.18)); border: 2px solid #ffd28a; box-shadow: 0 0 0 4px rgba(255,210,138,.15); }
+  .badge-goal { display: inline-block; background: #ffd28a; color: #3a2a10; font-size: 12px; font-weight: 900; border-radius: 999px; padding: 2px 10px; margin-bottom: 6px; }
+  .lvup .note { color: rgba(255,255,255,.7); position: relative; z-index: 1; }
   details.more { margin-top: 10px; }
   details.more summary { cursor: pointer; font-weight: 700; color: var(--matcha-d); font-size: 15px; }
   .add-q { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
@@ -158,16 +175,17 @@
   </section>
 
   <!-- もっと楽に -->
-  <section class="tk-panel">
+  <section class="lvup">
+    <div class="eyebrow">LEVEL UP</div>
     <h2>もっと楽にするなら</h2>
-    <p class="desc">全部やらなくてOK。気になったものだけ試してください。</p>
-    <ol class="ladder">
-      <li><div class="hd"><span class="lv">1</span>毎回貼る<span class="tag now">今日から</span></div>このページで作った頼み方を、そのつどAIに貼る。だれでもできます。</li>
-      <li><div class="hd"><span class="lv">2</span>一度だけ登録<span class="tag now">今日から</span></div>ChatGPTの「プロジェクト」や Geminiの「Gem」に、下の文を登録しておく。開いて「今日の1問」と打つだけで質問してくれます。<small>どちらも無料で使えます。Gemを作るのはパソコンのブラウザから。</small>
+    <p class="desc">全部やらなくてOK。1段ずつ上がっていけば、投稿はどんどん楽になります。</p>
+    <ol class="lv-steps">
+      <li><div class="hd"><span class="lvl">LEVEL<b>1</b></span><span class="ttl">毎回貼る</span><span class="stair" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span></div><span class="chip now">今日から</span><br>このページで作った頼み方を、そのつどAIに貼る。だれでもできます。</li>
+      <li><div class="hd"><span class="lvl">LEVEL<b>2</b></span><span class="ttl">一度だけ登録</span><span class="stair" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></span></div><span class="chip now">今日から</span><br>ChatGPTの「プロジェクト」や Geminiの「Gem」に、下の文を登録しておく。開いて「今日の1問」と打つだけで質問してくれます。<small>どちらも無料で使えます。Gemを作るのはパソコンのブラウザから。</small>
         <button class="tk-btn ghost" type="button" id="copyReg" style="margin-top:10px">登録用の文をコピー</button>
       </li>
-      <li><div class="hd"><span class="lv">3</span>決まった時間に届く<span class="tag">紹介</span></div>ChatGPTの「タスク」で、毎朝AIから質問が届くようにする。<small>無料は1日1回まで・「朝」など時間帯での指定。Geminiの同じ機能は有料プランです。</small></li>
-      <li><div class="hd"><span class="lv">4</span>ためたネタから提案<span class="tag">紹介</span></div>メモをAIが読める場所にためておき、AIのほうから「今週はこれどう？」と提案してもらう。<small>このページを作ったDigiForestは、Obsidianにネタをため、毎朝AIからネタが届く形で使っています。</small></li>
+      <li><div class="hd"><span class="lvl">LEVEL<b>3</b></span><span class="ttl">決まった時間に届く</span><span class="stair" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><span class="chip intro">紹介</span><br>ChatGPTの「タスク」で、毎朝AIから質問が届くようにする。<small>無料は1日1回まで・「朝」など時間帯での指定。Geminiの同じ機能は有料プランです。</small></li>
+      <li class="goal"><div class="hd"><span class="lvl">LEVEL<b>4</b></span><span class="ttl">ためたネタから提案</span><span class="stair" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><span class="badge-goal">★ 講師が実際に使っている形</span><br>メモをAIが読める場所にためておき、AIのほうから「今週はこれどう？」と提案してもらう。<small>このページを作ったDigiForestは、Obsidianにネタをため、毎朝AIからネタが届く形で使っています。</small></li>
     </ol>
     <p class="note">AIの機能や無料の範囲は変わることがあります（2026年11月時点）。使う前に画面で確かめてください。</p>
   </section>
